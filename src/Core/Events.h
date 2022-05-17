@@ -12,7 +12,7 @@
 #include "Window.h"
 
 namespace lf {
-	struct EventHandler {
+	struct Events {
 		bool mouse_scrollup;
 		bool mouse_scrolldown;
 		
@@ -33,11 +33,11 @@ namespace lf {
 
 		std::set<unsigned int> mouse_pressed;
 
-		EventHandler() {}
+		Events() {}
 
 		glm::vec3 GetMousePos(Window& window, bool normalized = false) {
 			if (normalized)
-				return glm::vec3(((mousepos.x - window.posx) / (window.width * 0.5)) - 1.0, 1.0 - ((mousepos.y - window.posy) / (window.height * 0.5)), 0);
+				return glm::vec3(((mousepos.x - window.posx) / (window.width * 0.5)) - 1.0, ((mousepos.y - window.posy) / (window.height * 0.5)) - 1.0, 0);
 			else
 				return glm::vec3((1 + mousepos_normalized.x) * window.width / 2.0, (1 + mousepos_normalized.y) * window.height / 2.0, 0);
 		}

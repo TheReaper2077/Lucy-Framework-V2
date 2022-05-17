@@ -3,7 +3,6 @@
 #include <chrono>
 
 #include "Core/Editor/Editor.h"
-#include "Core/Editor/Panels.h"
 #include "Core/Systems/CameraSystem.h"
 #include "Core/ECS.h"
 #include "Core/Engine.h"
@@ -19,7 +18,7 @@ int main(int ArgCount, char **Args) {
 	lf::Registry registry;
 
 	auto& engine = registry.store<lf::Engine>();
-	auto& eventhandler = registry.store<lf::EventHandler>();
+	auto& eventhandler = registry.store<lf::Events>();
 	auto& window = registry.store<lf::Window>();
 
 	auto& renderer = registry.store<lf::Renderer>();
@@ -68,9 +67,14 @@ int main(int ArgCount, char **Args) {
 
 	glViewport(0, 0, window.width, window.height);
 
-	auto camera = registry.create();
-	registry.emplace<lf::Component::Transform>(camera);
-	registry.emplace<lf::Component::Camera>(camera, lf::ORTHOGRAPHIC, true);
+	// auto camera = registry.create();
+	// registry.emplace<lf::Component::Transform>(camera);
+	// registry.emplace<lf::Component::Camera>(camera, lf::ORTHOGRAPHIC, true);
+
+	auto entity_test = registry.create();
+	registry.emplace<lf::Component::Tag>(entity_test, lf::Component::Tag{"dddddddddd", "ssssssssssss"});
+	registry.emplace<lf::Component::Transform>(entity_test);
+	registry.emplace<lf::Component::Camera>(entity_test, lf::ORTHOGRAPHIC, true);
 	
 	while (!engine.quit) {
 		const auto& start_time = std::chrono::high_resolution_clock::now();
@@ -79,10 +83,11 @@ int main(int ArgCount, char **Args) {
 
 		lf::CameraSystem(registry);
 
-		glClearColor(0, 0, 0, 0);
+		glClearColor(0, 0, 0, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		renderer.Render(gamewindow, camera);
+		renderer.Render(gamewindow);
+		renderer.Render(editorwindow);
 
 		#ifdef ENABLE_EDITOR
 			ImGui_ImplOpenGL3_NewFrame();
@@ -119,6 +124,7 @@ int main(int ArgCount, char **Args) {
 			lf::Editor::InspectorPanel(registry);
 
 			lf::Editor::GamePanel(registry);
+			lf::Editor::EditorPanel(registry);
 
 			ImGui::EndFrame();
 			ImGui::Render();

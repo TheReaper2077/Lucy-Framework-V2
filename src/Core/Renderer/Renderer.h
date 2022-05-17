@@ -9,6 +9,8 @@
 #include "../Window.h"
 #include "../Components/Components.h"
 
+#include "assert.h"
+
 namespace lf {
 	class Renderer {
 		lf::Registry* registry = nullptr;
@@ -38,22 +40,11 @@ namespace lf {
 			Render(window.framebuffer, camera_entity, window.width, window.height);
 		}
 
-		void Render(FrameBuffer* framebuffer, Entity camera_entity, int width, int height) {
-			auto [transform, camera] = registry->try_get<lf::Component::Transform, lf::Component::Camera>(camera_entity);
-
-			if (transform == nullptr || camera == nullptr) return;
-
-			SetProjection(camera->projection);
-			SetModel(glm::mat4(1.0));
-			SetView(camera->view);
-			SetViewPosition(transform->translation);
-
-			if (framebuffer != nullptr) framebuffer->Bind();
-			
-			Render(width, height);
-
-			if (framebuffer != nullptr) framebuffer->UnBind();
+		void Render(Window& window) {
+			Render(window, window.camera);
 		}
+
+		void Render(FrameBuffer* framebuffer, Entity camera_entity, int width, int height);
 
 		void SetLighting();
 

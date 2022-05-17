@@ -1,8 +1,6 @@
 #pragma once
 
-#include "../ECS.h"
-#include <imgui.h>
-#include <imgui_internal.h>
+#include "Import.h"
 
 namespace lf {
 	namespace Editor {

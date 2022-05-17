@@ -50,7 +50,6 @@ void lf::Renderer::Render(int width, int height) {
 
 	glEnable(GL_DEPTH_TEST);
 	
-	glClearColor(0, 0, 1, 1);
 	glViewport(0, 0, width, height);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -75,6 +74,30 @@ void lf::Renderer::Render(int width, int height) {
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
 	shader->SetUniformi("has_texture", 0);
+}
+
+void lf::Renderer::Render(FrameBuffer* framebuffer, Entity camera_entity, int width, int height) {
+	if ((uint32_t)camera_entity == 0) return;
+
+	auto [transform, camera] = registry->try_get<lf::Component::Transform, lf::Component::Camera>(camera_entity);
+
+	if (transform == nullptr || camera == nullptr) return;
+
+	SetProjection(camera->projection);
+	SetModel(glm::mat4(1.0));
+	SetView(camera->view);
+	SetViewPosition(transform->translation);
+
+	if (framebuffer != nullptr) {
+		framebuffer->Bind();
+
+		assert(framebuffer->width >= width && framebuffer->height >= height);
+	}
+	
+	glClearColor(camera->clear_color.x, camera->clear_color.y, camera->clear_color.z, camera->clear_color.w);
+	Render(width, height);
+
+	if (framebuffer != nullptr) framebuffer->UnBind();
 }
 
 void lf::Renderer::SetLighting() {

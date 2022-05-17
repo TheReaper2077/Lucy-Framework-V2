@@ -8,6 +8,8 @@
 
 #include <string>
 
+#include "Panels/Panels.h"
+
 namespace lf {
 	class EditorPropeties {
 	public:

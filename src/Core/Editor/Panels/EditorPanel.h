@@ -1,8 +1,6 @@
 #pragma once
 
-#include "../ECS.h"
-#include <imgui.h>
-#include "../Window.h"
+#include "Import.h"
 
 namespace lf {
 	namespace Editor {
@@ -14,6 +12,9 @@ namespace lf {
 
 			ImGui::Begin(editorwindow.title.c_str());
 			ImGui::PopStyleVar();
+
+			editorwindow.window_focus = ImGui::IsWindowFocused();
+			editorwindow.mouse_hover = ImGui::IsWindowHovered();
 
 			editorwindow.posx = ImGui::GetWindowPos().x;
 			editorwindow.posy = ImGui::GetWindowPos().y;

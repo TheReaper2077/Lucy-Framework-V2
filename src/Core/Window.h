@@ -9,11 +9,12 @@ namespace lf {
 		int width = 1280, height = 640, posx = 50, posy = 50;
 
 		FrameBuffer* framebuffer = nullptr;
-		Entity camera = 0;
+		Entity camera = (Entity)0;
 
-		bool mouse_in_window = false;
+		bool window_focus = true;
+		bool mouse_hover = true;
 
-		void SetCamera(uint32_t camera) {
+		void SetCamera(Entity camera) {
 			this->camera = camera;
 		}
 	};

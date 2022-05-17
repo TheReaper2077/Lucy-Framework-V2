@@ -46,6 +46,8 @@ namespace lf {
 			bool changed = true;
 			bool init = false;
 
+			glm::vec4 clear_color = glm::vec4(0, 0, 0, 0);
+
 			Camera() {}
 			Camera(Projection mode, bool enable = false, CameraType type = Default) {
 				this->enable = enable;
