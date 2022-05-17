@@ -35,13 +35,23 @@ namespace lf {
 
 		EventHandler() {}
 
-		void Update(Engine& engine, Window& window) {
+		glm::vec3 GetMousePos(Window& window, bool normalized = false) {
+			if (normalized)
+				return glm::vec3(((mousepos.x - window.posx) / (window.width * 0.5)) - 1.0, 1.0 - ((mousepos.y - window.posy) / (window.height * 0.5)), 0);
+			else
+				return glm::vec3((1 + mousepos_normalized.x) * window.width / 2.0, (1 + mousepos_normalized.y) * window.height / 2.0, 0);
+		}
+
+		void Update(Registry& registry) {
 			mouse_scrollup = false;
 			mouse_scrolldown = false;
 
+			auto& window = registry.store<Window>();
+			auto& engine = registry.store<Engine>();
+
 			while (SDL_PollEvent(&engine.event)) {
-				#ifdef IMGUI_API
-				ImGui_ImplSDL2_ProcessEvent(&engine.event);
+				#ifdef ENABLE_EDITOR
+					ImGui_ImplSDL2_ProcessEvent(&engine.event);
 				#endif
 
 				if (engine.event.type == SDL_QUIT) {

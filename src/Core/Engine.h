@@ -2,6 +2,8 @@
 
 #include <SDL2/SDL.h>
 
+#define ENABLE_EDITOR
+
 namespace lf {
 	struct Engine {
 		bool quit = false;

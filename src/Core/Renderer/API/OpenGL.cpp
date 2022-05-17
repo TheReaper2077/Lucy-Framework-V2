@@ -16,3 +16,4 @@ void OpenGL_CreateContext() {
 void OpenGL_DestroyContext() {
 	GL_ASSERT(gl_context != nullptr);
 }
+

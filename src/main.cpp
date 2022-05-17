@@ -15,8 +15,6 @@
 #include "Core/Registries/ShaderRegistry.h"
 #include "Core/Registries/VertexArrayRegistry.h"
 
-#define ENABLE_EDITOR
-
 int main(int ArgCount, char **Args) {
 	lf::Registry registry;
 
@@ -33,11 +31,14 @@ int main(int ArgCount, char **Args) {
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 5);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
-	engine.window = SDL_CreateWindow(window.title, window.posx, window.posy, window.width, window.height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+	engine.window = SDL_CreateWindow(window.title.c_str(), window.posx, window.posy, window.width, window.height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 	assert(engine.window);
 	engine.context = SDL_GL_CreateContext(engine.window);
 
 	gladLoadGLLoader(SDL_GL_GetProcAddress);
+	OpenGL_CreateContext();
+
+	auto& gamewindow = registry.store<lf::GameWindow>();
 
 	#ifdef ENABLE_EDITOR
 		IMGUI_CHECKVERSION();
@@ -56,6 +57,11 @@ int main(int ArgCount, char **Args) {
 		style.WindowRounding = 0;
 		style.ScrollbarRounding = 0;
 		style.FrameBorderSize = 1;
+		
+		auto& editorwindow = registry.store<lf::EditorWindow>();
+
+		editorwindow.framebuffer = FrameBuffer_Create(editorwindow.width, editorwindow.height, true);
+		gamewindow.framebuffer = FrameBuffer_Create(gamewindow.width, gamewindow.height, true);
 	#endif
 
 	renderer.Init(&registry);
@@ -69,11 +75,14 @@ int main(int ArgCount, char **Args) {
 	while (!engine.quit) {
 		const auto& start_time = std::chrono::high_resolution_clock::now();
 
-		eventhandler.Update(engine, window);
+		eventhandler.Update(registry);
 
 		lf::CameraSystem(registry);
 
-		renderer.Render();
+		glClearColor(0, 0, 0, 0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		renderer.Render(gamewindow, camera);
 
 		#ifdef ENABLE_EDITOR
 			ImGui_ImplOpenGL3_NewFrame();
@@ -95,9 +104,8 @@ int main(int ArgCount, char **Args) {
 			static bool p_open;
 
 			ImGui::Begin("DockSpace", &p_open, window_flags);
-			ImGui::PopStyleVar();
-			ImGui::PopStyleVar(2);
 
+			ImGui::PopStyleVar(3);
 			if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DockingEnable) {
 				ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
 				ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
@@ -109,6 +117,8 @@ int main(int ArgCount, char **Args) {
 			
 			lf::Editor::ScenePanel(registry);
 			lf::Editor::InspectorPanel(registry);
+
+			lf::Editor::GamePanel(registry);
 
 			ImGui::EndFrame();
 			ImGui::Render();

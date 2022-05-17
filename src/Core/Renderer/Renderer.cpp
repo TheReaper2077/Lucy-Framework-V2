@@ -25,7 +25,6 @@ void lf::Renderer::SetViewPosition(const glm::vec3& view_position) {
 }
 
 void lf::Renderer::Init(lf::Registry* registry) {
-	OpenGL_CreateContext();
 	this->registry = registry;
 
 	uniformbuffer = UniformBuffer_Create();
@@ -40,31 +39,23 @@ void lf::Renderer::RenderIndexed(VertexArray* vertexarray, VertexBuffer* vertexb
 }
 
 std::vector<glm::vec3> vertices = {
-	{100.0, 100.0, 0.0},
-	{100.0, 0.0, 0.0},
+	{1.0, 1.0, 0.0},
+	{1.0, 0.0, 0.0},
 	{0.0, 0.0, 0.0},
-	{0.0, 100.0, 0.0},
+	{0.0, 1.0, 0.0},
 };
 
-void lf::Renderer::Render() {
+void lf::Renderer::Render(int width, int height) {
 	using namespace lf::Component;
 
 	glEnable(GL_DEPTH_TEST);
 	
-	glClearColor(0, 0, 1, 0);
+	glClearColor(0, 0, 1, 1);
+	glViewport(0, 0, width, height);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	shader = registry->store<ShaderRegistry>().GetShader(0, registry);
 	shader->Bind();
-
-	for (auto [entity, transform, camera]: registry->view<Transform, Camera>().each()) {
-		if (!camera.enable) continue;
-
-		SetProjection(camera.projection);
-		SetModel(glm::mat4(1.0));
-		SetView(camera.view);
-		SetViewPosition(camera.Position);
-	}
 
 	static VertexBuffer* vertexbuffer;
 	VertexArray* vertexarray = registry->store<VertexArrayRegistry>().GetVertexArray(POSITION_ATTRIB_BIT);

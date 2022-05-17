@@ -6,11 +6,25 @@
 #include "../Window.h"
 
 namespace lf {
-	void CameraSystem(Registry& registry) {
+	void EditorCamera(Registry& registry) {
 		using namespace lf::Component;
 
 		auto& engine = registry.store<Engine>();
-		auto& window = registry.store<Window>();
+		auto& editorwindow = registry.store<EditorWindow>();
+
+		if ((uint32_t)editorwindow.camera == 0) {
+			editorwindow.camera = registry.create();
+			registry.emplace<Transform>(editorwindow.camera);
+		}
+	}
+
+	void CameraSystem(Registry& registry) {
+		using namespace lf::Component;
+
+		EditorCamera(registry);
+
+		auto& engine = registry.store<Engine>();
+		auto& window = registry.store<GameWindow>();
 
 		for (auto [entity, transform, camera]: registry.view<Transform, Camera>().each()) {
 			if (!camera.enable) continue;
@@ -27,11 +41,13 @@ namespace lf {
 				if (camera.mode == PERSPECTIVE)
 					camera.projection = glm::perspective(glm::radians(camera.fov), (float)camera.width / camera.height, camera.camera_near, camera.camera_far);
 				if (camera.mode == ORTHOGRAPHIC) {
-					// int widen = std::tan(glm::radians(camera.fov/2.0)) * camera.camera_far;
-					// int highten = std::tan(glm::radians((float)(camera.fov / (float)(camera.width/camera.height))/2.0)) * camera.camera_far;
+					int widen = std::tan(glm::radians(camera.fov/2.0)) * camera.camera_far;
+					int highten = std::tan(glm::radians((float)(camera.fov / 2.0) / (float)(camera.width/camera.height))) * camera.camera_far;
 
-					// camera.projection = glm::ortho<float>(-widen, widen, -highten, highten, 0.0, (float)(camera.width/camera.height)*camera.camera_far);
-					camera.projection = glm::ortho<float>(-window.width, window.width, -window.height, window.height, -1, 1);
+					std::cout << highten << ' ' << widen << ' ' << camera.width / camera.height << '\n';
+
+					camera.projection = glm::ortho<float>(-widen*2, widen*2, -highten*2, highten*2, -1, 1);
+					// camera.projection = glm::ortho<float>(-window.width, window.width, -window.height, window.height, -1, 1);
 				}
 				if (!camera.init) camera.Position = glm::vec3(0, 0, 10);
 				camera.init = true;

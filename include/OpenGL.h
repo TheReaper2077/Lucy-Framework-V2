@@ -70,6 +70,7 @@ struct OpenGLContext {
 
 struct FrameBuffer {
 	FrameBufferId id;
+	int index;
 	int width, height;
 
 	unsigned int picking;

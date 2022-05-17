@@ -4,6 +4,8 @@
 #include <unordered_map>
 
 namespace lf {
+	typedef entt::entity Entity;
+
 	class Registry: public entt::registry {
 		std::unordered_map<std::size_t, entt::entity> singleton_instances;
 	

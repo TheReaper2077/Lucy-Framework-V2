@@ -37,8 +37,8 @@ namespace lf {
 
 			int initx, inity;
 
-			int width = 0;
-			int height = 0;
+			float width = 0;
+			float height = 0;
 			float fov = 45.0;
 			float camera_near = 0.001f;
 			float camera_far = 1000.0f;

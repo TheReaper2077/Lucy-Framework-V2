@@ -16,14 +16,14 @@ namespace lf {
 			float roughness;
 			float metallic;
 
-			Texture albedo_map;
-			Texture diffuse_map;
-			Texture ambient_map;
-			Texture specular_map;
-			Texture emission_map;
-			Texture roughness_map;
-			Texture metallic_map;
-			Texture normal_map;
+			// Texture albedo_map;
+			// Texture diffuse_map;
+			// Texture ambient_map;
+			// Texture specular_map;
+			// Texture emission_map;
+			// Texture roughness_map;
+			// Texture metallic_map;
+			// Texture normal_map;
 
 			int illum_model;
 		};

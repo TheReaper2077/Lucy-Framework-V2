@@ -3,6 +3,8 @@
 #include <string>
 #include <glm/vec2.hpp>
 
+#include <OpenGL.h>
+
 namespace lf {
 	namespace Component {
 		struct Sprite {
