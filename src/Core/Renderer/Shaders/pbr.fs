@@ -170,7 +170,7 @@ void main() {
 	}
 
 	if (has_texture > 0) {
-		gl_FragData[0] = vec4(1, 1, 0, 1);
+		gl_FragData[0] = color;
 		return;
 	}
 

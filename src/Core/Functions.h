@@ -5,8 +5,18 @@
 
 namespace lf {
 	struct Functions {
-		std::unordered_map<std::string, Entity> entity_store;
+		Registry* registry = nullptr;
 
+		bool save_entities = false;
+		bool runtime_creation = false;
+
+		Functions() {}
+		Functions(Registry* registry) {
+			this->registry = registry;
+		}
+
+		std::string GetName(std::string name);
+		
 		Entity CreateEmptyEntity();
 		Entity CreateCameraEntity();
 		Entity CreateMeshEntity();

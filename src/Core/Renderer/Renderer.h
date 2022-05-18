@@ -44,6 +44,8 @@ namespace lf {
 			Render(window, window.camera);
 		}
 
+		void RenderSprite(int vertexcount);
+
 		void Render(FrameBuffer* framebuffer, Entity camera_entity, int width, int height);
 
 		void SetLighting();

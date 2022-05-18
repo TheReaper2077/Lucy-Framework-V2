@@ -10,3 +10,4 @@
 #include "Mesh.h"
 #include "MeshRenderer.h"
 #include "Material.h"
+#include "ParentEntity.h"

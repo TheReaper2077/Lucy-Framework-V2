@@ -6,5 +6,6 @@
 #include "../../Enumerations.h"
 #include "../../Components/Components.h"
 #include "../../Functions.h"
+#include "../Editor.h"
 
 #include <imgui.h>

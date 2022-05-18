@@ -3,11 +3,13 @@
 #include <chrono>
 
 #include "Core/Editor/Editor.h"
+#include "Core/Editor/Panels/Panels.h"
 #include "Core/Systems/CameraSystem.h"
 #include "Core/ECS.h"
 #include "Core/Engine.h"
 #include "Core/Window.h"
 #include "Core/Events.h"
+#include "Core/Functions.h"
 
 #include "Core/Renderer/Renderer.h"
 
@@ -67,14 +69,10 @@ int main(int ArgCount, char **Args) {
 
 	glViewport(0, 0, window.width, window.height);
 
-	// auto camera = registry.create();
-	// registry.emplace<lf::Component::Transform>(camera);
-	// registry.emplace<lf::Component::Camera>(camera, lf::ORTHOGRAPHIC, true);
+	auto& functions = registry.store<lf::Functions>(&registry);
 
-	auto entity_test = registry.create();
-	registry.emplace<lf::Component::Tag>(entity_test, lf::Component::Tag{"dddddddddd", "ssssssssssss"});
-	registry.emplace<lf::Component::Transform>(entity_test);
-	registry.emplace<lf::Component::Camera>(entity_test, lf::ORTHOGRAPHIC, true);
+	functions.CreateEmptyEntity();
+	functions.CreateCameraEntity();
 	
 	while (!engine.quit) {
 		const auto& start_time = std::chrono::high_resolution_clock::now();

@@ -2,9 +2,10 @@
 
 #include <string>
 #include <vector>
+#include "../ECS.h"
 
 namespace lf {
 	namespace Component {
-		using ParentEntity = uint32_t;
+		using ParentEntity = Entity;
 	}
 }

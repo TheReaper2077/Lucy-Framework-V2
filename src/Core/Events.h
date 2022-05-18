@@ -6,6 +6,7 @@
 #include <glm/vec3.hpp>
 #include <vector>
 #include <SDL2/SDL_scancode.h>
+#include <imgui_impl_sdl.h>
 
 #include "Core/ECS.h"
 #include "Engine.h"

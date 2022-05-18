@@ -8,15 +8,13 @@
 
 #include <string>
 
-#include "Panels/Panels.h"
+#include "../ECS.h"
+
+void PopupOpenLogic(lf::Registry& registry, bool& open, bool& toggle);
 
 namespace lf {
 	class EditorPropeties {
 	public:
-		uint32_t selected_entity = 0;
-
-		void Init() {
-
-		}
+		Entity selected_entity;
 	};
 }

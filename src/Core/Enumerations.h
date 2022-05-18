@@ -23,6 +23,7 @@ namespace lf {
 		FPS,
 		TPS,
 		Default,
+		None,
 
 		CameraType_COUNT
 	};
