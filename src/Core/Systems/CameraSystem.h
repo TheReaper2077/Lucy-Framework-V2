@@ -43,7 +43,7 @@ namespace lf {
 			camera.init = true;
 		}
 
-		if (!editorwindow.window_focus) return;
+		// if (!editorwindow.window_focus) return;
 		if (!editorwindow.mouse_hover) return;
 
 		if (eventhandler.mouse_pressed.contains(SDL_BUTTON_MIDDLE)) {
