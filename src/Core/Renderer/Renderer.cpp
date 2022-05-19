@@ -1,4 +1,5 @@
 #include "Renderer.h"
+#include "../Events.h"
 #include "../Engine.h"
 #include "../Components/Components.h"
 #include "../Registries/ShaderRegistry.h"
@@ -41,14 +42,14 @@ void lf::Renderer::RenderIndexed(VertexArray* vertexarray, VertexBuffer* vertexb
 	
 }
 
-std::vector<glm::vec3> vertices = {
-	{1.0, 1.0, 0.0},
-	{1.0, 0.0, 0.0},
-	{0.0, 0.0, 0.0},
-	{0.0, 1.0, 0.0},
-};
+// std::vector<glm::vec3> vertices = {
+// 	{1.0, 1.0, 0.0},
+// 	{1.0, 0.0, 0.0},
+// 	{0.0, 0.0, 0.0},
+// 	{0.0, 1.0, 0.0},
+// };
 
-void lf::Renderer::Render(int width, int height) {
+void lf::Renderer::Render(int width, int height, bool debug) {
 	using namespace lf::Component;
 
 	glEnable(GL_DEPTH_TEST);
@@ -103,6 +104,8 @@ void lf::Renderer::RenderSprite(int vertexcount) {
 
 	float* vertices = (float*)malloc(sizeof(float) * (3 + 4 + 2) * vertexcount);
 
+	drawn_sprite_entities.clear();
+
 	int i = 0;
 	for (auto entity: registry->view<Tag, Transform, SpriteRenderer>()) {
 		auto& transform = registry->get<Transform>(entity);
@@ -113,6 +116,8 @@ void lf::Renderer::RenderSprite(int vertexcount) {
 			vertexcount -= 4;
 			continue;
 		}
+
+		drawn_sprite_entities.push_back(entity);
 
 		glm::vec3 pos00 = (quaternion * glm::vec3(-transform.scale.x / 2.0, -transform.scale.y / 2.0, 0)) + transform.translation;
 		glm::vec3 pos01 = (quaternion * glm::vec3(+transform.scale.x / 2.0, -transform.scale.y / 2.0, 0)) + transform.translation;

@@ -54,6 +54,7 @@ void main() {
 	view_pos = v_view_pos;
 
 	gl_Position = projection * view * vec4(frag_pos, 1.0);
+	
 	vertexid = gl_VertexID;
 	instanceid = gl_InstanceID;
 }

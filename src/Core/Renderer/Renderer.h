@@ -24,6 +24,8 @@ namespace lf {
 		glm::vec3 view_position;
 
 	public:
+		std::vector<Entity> drawn_sprite_entities;
+
 		void SetModel(const glm::mat4& model);
 		void SetView(const glm::mat4& view);
 		void SetProjection(const glm::mat4& projection);
@@ -34,7 +36,7 @@ namespace lf {
 		void RenderIndexed(VertexArray* vertexarray, VertexBuffer* vertexbuffer, IndexBuffer* indexbuffer, std::size_t size, std::size_t offset = 0, std::size_t basevertex = 0);
 
 		void RenderEditor(int width, int height);
-		void Render(int width, int height);
+		void Render(int width, int height, bool debug = false);
 		
 		void Render(Window& window, Entity camera_entity) {
 			Render(window.framebuffer, camera_entity, window.width, window.height);
@@ -44,11 +46,11 @@ namespace lf {
 			Render(window, window.camera);
 		}
 
-		void RenderSprite(int vertexcount);
 
 		void Render(FrameBuffer* framebuffer, Entity camera_entity, int width, int height);
 
 		void SetLighting();
+		void RenderSprite(int vertexcount);
 
 		IndexBuffer* GetQuadIndices(VertexArray* vertexarray, int vertexcount);
 	};

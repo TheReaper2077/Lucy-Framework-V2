@@ -43,6 +43,28 @@ lf::Entity lf::Functions::CreateCameraEntity() {
 	return entity;
 }
 
+lf::Entity lf::Functions::CreateSpriteEntity() {
+	auto entity = registry->create();
+
+	registry->emplace<lf::Component::Tag>(entity, GetName("Sprite"), uuids::to_string(uuids::uuid_system_generator{}()));
+	registry->emplace<lf::Component::Transform>(entity);
+	registry->emplace<lf::Component::SpriteRenderer>(entity);
+	if (!runtime_creation) save_entities = true;
+
+	return entity;
+}
+
+lf::Entity lf::Functions::CreateLightEntity() {
+	auto entity = registry->create();
+
+	registry->emplace<lf::Component::Tag>(entity, GetName("Light"), uuids::to_string(uuids::uuid_system_generator{}()));
+	registry->emplace<lf::Component::Transform>(entity);
+	registry->emplace<lf::Component::Light>(entity);
+	if (!runtime_creation) save_entities = true;
+
+	return entity;
+}
+
 void lf::Functions::SaveEntities() {
 	Util::Serializer(registry, "scene.yaml");
 }
@@ -50,16 +72,3 @@ void lf::Functions::SaveEntities() {
 void lf::Functions::LoadEntities() {
 	Util::Deserializer(registry, "scene.yaml");
 }
-
-// lf::Entity lf::Functions::CreateMeshEntity() {
-	
-// }
-
-// lf::Entity lf::Functions::CreateSpriteEntity() {
-	
-// }
-
-// lf::Entity lf::Functions::CreateLightEntity() {
-	
-// }
-

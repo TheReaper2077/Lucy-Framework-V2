@@ -16,6 +16,8 @@
 #include "Core/Registries/ShaderRegistry.h"
 #include "Core/Registries/VertexArrayRegistry.h"
 
+#include <glm/gtx/string_cast.hpp>
+
 int main(int ArgCount, char **Args) {
 	lf::Registry registry;
 
@@ -84,12 +86,42 @@ int main(int ArgCount, char **Args) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		renderer.Render(gamewindow);
-		renderer.Render(editorwindow);
 
-		if (eventhandler.key_pressed.contains(SDL_SCANCODE_LCTRL) && eventhandler.key_pressed.contains(SDL_SCANCODE_S))
-			functions.SaveEntities();
 
 		#ifdef ENABLE_EDITOR
+			// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			renderer.Render(editorwindow);
+			// glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+			{
+				editorwindow.framebuffer->Bind();
+
+				glReadBuffer(GL_COLOR_ATTACHMENT1);
+
+				glm::vec3 pos = eventhandler.GetMousePos(editorwindow);
+				
+				glm::vec4 pixel;
+				glReadPixels(pos.x, pos.y, 1, 1, GL_RGBA, GL_FLOAT, &pixel[0]);
+
+				if (pixel.w) {
+					int idx = pixel.x / 2;
+					if (idx % 2 != 0) {
+						idx--;
+					}
+					idx /= 2;
+					std::cout << idx << ' ' << glm::to_string(pixel) << '\n';
+					if (eventhandler.mouse_pressed.contains(SDL_BUTTON_LEFT))
+						registry.store<lf::EditorPropeties>().selected_entity = renderer.drawn_sprite_entities[idx];
+				}
+
+				glReadBuffer(GL_NONE);
+
+				editorwindow.framebuffer->UnBind();
+			}
+
+			if (eventhandler.key_pressed.contains(SDL_SCANCODE_LCTRL) && eventhandler.key_pressed.contains(SDL_SCANCODE_S))
+				functions.SaveEntities();
+			
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplSDL2_NewFrame();
 			ImGui::NewFrame();
