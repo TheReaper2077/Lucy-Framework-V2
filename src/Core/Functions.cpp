@@ -1,5 +1,7 @@
+#include "Components/Components.h"
 #include "Functions.h"
 #include "uuid.h"
+#include "Util/Serializer.h"
 
 bool is_name_present(lf::Registry* registry, std::string name) {
 	for (auto entity: registry->view<lf::Component::Tag>()) {
@@ -39,6 +41,14 @@ lf::Entity lf::Functions::CreateCameraEntity() {
 	if (!runtime_creation) save_entities = true;
 
 	return entity;
+}
+
+void lf::Functions::SaveEntities() {
+	Util::SerializeToFile(registry, "scene.yaml");
+}
+
+void lf::Functions::LoadEntities() {
+	
 }
 
 // lf::Entity lf::Functions::CreateMeshEntity() {

@@ -87,6 +87,9 @@ int main(int ArgCount, char **Args) {
 		renderer.Render(gamewindow);
 		renderer.Render(editorwindow);
 
+		if (eventhandler.key_pressed.contains(SDL_SCANCODE_LCTRL) && eventhandler.key_pressed.contains(SDL_SCANCODE_S))
+			functions.SaveEntities();
+
 		#ifdef ENABLE_EDITOR
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplSDL2_NewFrame();

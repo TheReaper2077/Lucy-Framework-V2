@@ -13,10 +13,12 @@ namespace lf {
 		Entity last_entity;
 		std::string name;
 		bool has_component = false;
+		bool permanent = false;
 
 		ComponentHeader() {}
-		ComponentHeader(std::string name) {
+		ComponentHeader(std::string name, bool permanent = false) {
 			this->name = name;
+			this->permanent = permanent;
 		}
 
 		void Render(Registry& registry, Entity entity);
@@ -26,7 +28,10 @@ namespace lf {
 			has_component = (registry.try_get<T>(entity) != nullptr);
 
 			if (has_component) {
-				if (ImGui::CollapsingHeader(name.c_str(), &open, flags)) {
+				if (permanent) {
+					if (ImGui::CollapsingHeader(name.c_str()))
+						Render(registry, entity);
+				} else if (ImGui::CollapsingHeader(name.c_str(), &open, flags)) {
 					Render(registry, entity);
 				} else if (!open) {
 					registry.remove<T>(entity);

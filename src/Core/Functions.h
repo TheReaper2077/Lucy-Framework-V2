@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ECS.h"
-#include "Components/Components.h"
 
 namespace lf {
 	struct Functions {
@@ -24,5 +23,8 @@ namespace lf {
 		Entity CreateLightEntity();
 
 		void CreateRenderTarget();
+
+		void SaveEntities();
+		void LoadEntities();
 	};
 }
