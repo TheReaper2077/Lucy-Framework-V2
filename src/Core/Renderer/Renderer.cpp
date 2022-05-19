@@ -53,6 +53,7 @@ void lf::Renderer::Render(int width, int height, bool debug) {
 	using namespace lf::Component;
 
 	glEnable(GL_DEPTH_TEST);
+	drawcount = 0;
 	
 	glViewport(0, 0, width, height);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -185,6 +186,7 @@ void lf::Renderer::RenderSprite(int vertexcount) {
 	vertexarray->Bind();
 	vertexarray->BindVertexBuffer(vertexbuffer, vertexarray->stride);
 	vertexarray->BindIndexBuffer(GetQuadIndices(vertexarray, vertexcount));
+	shader->SetUniformi("drawcount", drawcount);
 
 	glDrawElements(GL_TRIANGLES, vertexcount * 1.5, GL_UNSIGNED_INT, nullptr);
 	

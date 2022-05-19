@@ -57,4 +57,18 @@ namespace lf {
 
 		MaterialAttrib_COUNT
 	};
+
+	enum DrawMode {
+		NONE = 0,
+		INDIRECT,
+		INSTANCED,
+		INSTANCED_BASE,
+		
+		INDEXED,
+		INDEXED_INDIRECT,
+		INDEXED_INSTANCED,
+		INDEXED_INSTANCED_BASE,
+
+		DrawMode_COUNT
+	};
 }

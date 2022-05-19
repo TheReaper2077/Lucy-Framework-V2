@@ -109,7 +109,7 @@ int main(int ArgCount, char **Args) {
 						idx--;
 					}
 					idx /= 2;
-					std::cout << idx << ' ' << glm::to_string(pixel) << '\n';
+
 					if (eventhandler.mouse_pressed.contains(SDL_BUTTON_LEFT))
 						registry.store<lf::EditorPropeties>().selected_entity = renderer.drawn_sprite_entities[idx];
 				}

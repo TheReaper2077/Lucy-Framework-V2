@@ -16,7 +16,6 @@ namespace lf {
 		auto& eventhandler = registry.store<Events>();
 
 		auto normalized_pos = eventhandler.GetMousePos(editorwindow, true);
-		auto mousepos = eventhandler.GetMousePos(editorwindow, false);
 
 		if ((uint32_t)editorwindow.camera == 0) {
 			editorwindow.camera = registry.create();
@@ -86,7 +85,7 @@ namespace lf {
 
 		if (eventhandler.mouse_pressed.contains(SDL_BUTTON_LEFT) && eventhandler.key_pressed.contains(SDL_SCANCODE_LALT)) {
 			glm::vec3 pos;
-			glm::vec4 ray_clip = glm::vec4(normalized_pos.x, normalized_pos.y, -1.0, 1.0);
+			glm::vec4 ray_clip = glm::vec4(normalized_pos.x, -normalized_pos.y, -1.0, 1.0);
 			glm::vec4 ray_eye = glm::inverse(camera.projection) * ray_clip;
 			ray_eye = glm::vec4(ray_eye.x, ray_eye.y, -1.0, 0.0);
 			glm::vec3 ray_wor = glm::inverse(camera.view) * ray_eye;

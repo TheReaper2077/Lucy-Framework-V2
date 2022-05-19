@@ -25,6 +25,7 @@ namespace lf {
 
 	public:
 		std::vector<Entity> drawn_sprite_entities;
+		int drawcount = 0;
 
 		void SetModel(const glm::mat4& model);
 		void SetView(const glm::mat4& view);
@@ -45,7 +46,23 @@ namespace lf {
 		void Render(Window& window) {
 			Render(window, window.camera);
 		}
-
+		
+		void DrawCall(DrawMode drawmode, GLenum mode, int first, int count, int instancecount, int baseinstance, GLenum type, void* indices, void* indirect) {
+			switch (drawmode) {
+				case NONE:
+					glDrawArrays(mode, first, count);
+				case INDIRECT:
+					glDrawArraysIndirect(mode, indirect);
+				case INSTANCED:
+					glDrawArraysInstanced(mode, first, count, instancecount);
+				case INSTANCED_BASE:
+					glDrawArraysInstancedBaseInstance(mode, first, count, instancecount, baseinstance);
+					
+				case INDEXED:
+					glDrawElements(mode, count, type, indices);
+				
+			}
+		}
 
 		void Render(FrameBuffer* framebuffer, Entity camera_entity, int width, int height);
 
