@@ -6,7 +6,7 @@
 namespace lf {
 	namespace Util {
 		std::string ReadFile(const std::string& filename) {
-			std::string line, text;
+			std::string line, text = "";
 			std::fstream file(filename);
 
 			if (!file.is_open()) return text;

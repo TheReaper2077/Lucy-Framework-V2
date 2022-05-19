@@ -1,3 +1,5 @@
+#pragma once
+
 #include "yaml-cpp/yaml.h"
 #include "yaml-cpp/emitter.h"
 #include "../Components/Components.h"
@@ -23,9 +25,9 @@ template<> struct YAML::convert<glm::vec2>;
 template<> struct YAML::convert<glm::vec3>;
 template<> struct YAML::convert<glm::vec4>;
 
-template<> struct YAML::convert<lf::Component::Tag>;
-template<> struct YAML::convert<lf::Component::Transform>;
-template<> struct YAML::convert<lf::Component::Camera>;
-template<> struct YAML::convert<lf::Component::Light>;
-template<> struct YAML::convert<lf::Component::SpriteRenderer>;
-template<> struct YAML::convert<lf::Component::MeshRenderer>;
+// template<> struct YAML::convert<lf::Component::Tag>;
+// template<> struct YAML::convert<lf::Component::Transform>;
+// template<> struct YAML::convert<lf::Component::Camera>;
+// template<> struct YAML::convert<lf::Component::Light>;
+// template<> struct YAML::convert<lf::Component::SpriteRenderer>;
+// template<> struct YAML::convert<lf::Component::MeshRenderer>;

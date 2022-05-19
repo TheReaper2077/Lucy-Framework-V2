@@ -71,8 +71,7 @@ int main(int ArgCount, char **Args) {
 
 	auto& functions = registry.store<lf::Functions>(&registry);
 
-	functions.CreateEmptyEntity();
-	functions.CreateCameraEntity();
+	functions.LoadEntities();
 	
 	while (!engine.quit) {
 		const auto& start_time = std::chrono::high_resolution_clock::now();

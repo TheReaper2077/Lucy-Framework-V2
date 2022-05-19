@@ -91,7 +91,7 @@ void lf::Editor::InspectorPanel(Registry& registry) {
 		Entity entity = registry.store<EditorPropeties>().selected_entity;
 
 		if (entity != (Entity)0) {
-			static ComponentHeader<Tag> tag("Tag");
+			static ComponentHeader<Tag> tag("Tag", true);
 			static ComponentHeader<Transform> transform("Transform");
 			static ComponentHeader<Camera> camera("Camera");
 			static ComponentHeader<Light> light("Light");

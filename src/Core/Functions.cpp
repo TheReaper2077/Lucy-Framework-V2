@@ -48,7 +48,7 @@ void lf::Functions::SaveEntities() {
 }
 
 void lf::Functions::LoadEntities() {
-	
+	Util::Deserializer(registry, "scene.yaml");
 }
 
 // lf::Entity lf::Functions::CreateMeshEntity() {
