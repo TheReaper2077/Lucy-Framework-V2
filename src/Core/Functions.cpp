@@ -44,7 +44,7 @@ lf::Entity lf::Functions::CreateCameraEntity() {
 }
 
 void lf::Functions::SaveEntities() {
-	Util::SerializeToFile(registry, "scene.yaml");
+	Util::Serializer(registry, "scene.yaml");
 }
 
 void lf::Functions::LoadEntities() {

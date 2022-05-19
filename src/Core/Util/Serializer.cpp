@@ -2,7 +2,7 @@
 #include "ToYAML.h"
 #include "FileIO.h"
 
-std::string lf::Util::Serializer(Registry* registry) {
+bool lf::Util::Serializer(Registry* registry, const std::string& filename) {
 	using namespace lf::Component;
 
 	YAML::Emitter out;
@@ -44,18 +44,9 @@ std::string lf::Util::Serializer(Registry* registry) {
 	}
 	out << YAML::EndSeq;
 
-	return std::string(out.c_str());
-}
-
-void lf::Util::SerializeToFile(Registry* registry, const std::string& filename) {
-	WriteFile(filename, Serializer(registry));
+	return WriteFile(filename, out.c_str());
 }
 
 void lf::Util::Deserializer(Registry* registry, const std::string& source) {
 	
 }
-
-void lf::Util::DeserializeFromFile(Registry* registry, const std::string& filename) {
-	
-}
-
