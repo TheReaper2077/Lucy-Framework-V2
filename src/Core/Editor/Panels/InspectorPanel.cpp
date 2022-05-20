@@ -1,5 +1,6 @@
 #include "InspectorPanel.h"
 #include <imgui_stdlib.h>
+#include <iostream>
 
 using namespace lf::Component;
 

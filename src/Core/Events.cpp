@@ -74,13 +74,15 @@ void lf::Events::Update(Registry& registry) {
 		
 		#ifdef ENABLE_EDITOR
 			ImGui_ImplSDL2_ProcessEvent(&engine.event);
+			
+			if (ImGui::IsMouseDragging(ImGuiPopupFlags_MouseButtonLeft) && !relative) {
+				SDL_SetRelativeMouseMode(SDL_TRUE);
+				relative = true;
+			}
+			if (!ImGui::IsMouseDragging(ImGuiPopupFlags_MouseButtonLeft) && relative) {
+				SDL_SetRelativeMouseMode(SDL_FALSE);
+				relative = false;
+			}
 		#endif
-	}
-	
-	if (engine.event.type == SDL_MOUSEMOTION && dragging) {
-		engine.event.motion.x = drag_mousepos.x;
-		engine.event.motion.y = drag_mousepos.y;
-		
-		dragging = false;
 	}
 }
