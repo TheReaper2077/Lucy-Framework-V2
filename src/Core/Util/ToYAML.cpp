@@ -74,6 +74,8 @@ YAML::Emitter& operator<<(YAML::Emitter& out, const lf::Component::Camera* v) {
 	out << YAML::Value << v->mode;
 	out << YAML::Key << "CameraType";
 	out << YAML::Value << v->mode;
+	out << YAML::Key << "enable";
+	out << YAML::Value << v->enable;
 	out << YAML::EndMap;
 	return out;
 }

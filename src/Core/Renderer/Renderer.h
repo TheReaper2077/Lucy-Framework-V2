@@ -37,17 +37,16 @@ namespace lf {
 
 		void Init(lf::Registry* registry);
 
-		void RenderIndexed(VertexArray* vertexarray, VertexBuffer* vertexbuffer, IndexBuffer* indexbuffer, std::size_t size, std::size_t offset = 0, std::size_t basevertex = 0);
-
-		void RenderEditor(int width, int height);
 		void Render(int width, int height, bool debug = false);
 		
-		void Render(Window& window, Entity camera_entity) {
-			Render(window.framebuffer, camera_entity, window.width, window.height);
+		void Render(FrameBuffer* framebuffer, Entity camera_entity, int width, int height, bool debug = false);
+		
+		void Render(Window& window, Entity camera_entity, bool debug = false) {
+			Render(window.framebuffer, camera_entity, window.width, window.height, debug);
 		}
 
-		void Render(Window& window) {
-			Render(window, window.camera);
+		void Render(Window& window, bool debug = false) {
+			Render(window, window.camera, debug);
 		}
 
 		bool DrawIndexed(GLenum mode, int count, GLenum type, void* indices) {
@@ -118,11 +117,13 @@ namespace lf {
 			return true;
 		}
 
-		void Render(FrameBuffer* framebuffer, Entity camera_entity, int width, int height);
-
 		void SetLighting();
-		void RenderSprite(int vertexcount);
+		void RenderSprite();
+		void RenderMesh();
+		void RenderCamera();
 
 		IndexBuffer* GetQuadIndices(VertexArray* vertexarray, int vertexcount);
+	private:
+		void Test();
 	};
 }

@@ -46,12 +46,18 @@ namespace lf {
 			bool changed = true;
 			bool init = false;
 
-			glm::vec4 clear_color = glm::vec4(0, 0, 0, 0);
+			glm::vec4 clear_color = glm::vec4(0, 0.502, 0.498, 1);
 
 			Camera() {}
-			Camera(Projection mode, bool enable = false, CameraType type = Default) {
-				this->enable = enable;
+			Camera(Projection mode) {
 				this->mode = mode;
+				this->speed = 0.256f;
+				this->scrollspeed = 0.750f;
+				this->sensitivity = 0.5f;
+			}
+			Camera(Projection mode, bool enable, CameraType type) {
+				this->mode = mode;
+				this->enable = enable;
 				this->type = type;
 				this->speed = 0.256f;
 				this->scrollspeed = 0.750f;

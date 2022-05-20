@@ -38,59 +38,85 @@ void lf::Renderer::Init(lf::Registry* registry) {
 	// shader = Shader("test1", "D:\\C++\\Lucy Framework V2\\src\\Core\\Renderer\\Shaders\\default.vs", "D:\\C++\\Lucy Framework V2\\src\\Core\\Renderer\\Shaders\\color.fs");
 }
 
-void lf::Renderer::RenderIndexed(VertexArray* vertexarray, VertexBuffer* vertexbuffer, IndexBuffer* indexbuffer, std::size_t size, std::size_t offset, std::size_t basevertex) {
+void lf::Renderer::Render(FrameBuffer* framebuffer, Entity camera_entity, int width, int height, bool debug) {
+	if (camera_entity == (Entity)0) return;
+	if (!registry->valid(camera_entity)) return;
+
+	auto [transform, camera] = registry->try_get<lf::Component::Transform, lf::Component::Camera>(camera_entity);
+
+	if (transform == nullptr || camera == nullptr) return;
+
+	SetProjection(camera->projection);
+	SetModel(glm::mat4(1.0));
+	SetView(camera->view);
+	SetViewPosition(transform->translation);
+
+	if (framebuffer != nullptr) {
+		framebuffer->Bind();
+
+		assert(framebuffer->width >= width && framebuffer->height >= height);
+	}
 	
+	glClearColor(camera->clear_color.x, camera->clear_color.y, camera->clear_color.z, camera->clear_color.w);
+	Render(width, height, debug);
+
+	if (framebuffer != nullptr) framebuffer->UnBind();
 }
 
-// std::vector<glm::vec3> vertices = {
-// 	{1.0, 1.0, 0.0},
-// 	{1.0, 0.0, 0.0},
-// 	{0.0, 0.0, 0.0},
-// 	{0.0, 1.0, 0.0},
-// };
+void lf::Renderer::Test() {
+	static std::vector<glm::vec3> vertices = {
+		{1.0, 1.0, 0.0},
+		{1.0, 0.0, 0.0},
+		{0.0, 0.0, 0.0},
+		{0.0, 1.0, 0.0},
+	};
+	static VertexBuffer* vertexbuffer;
+	VertexArray* vertexarray = registry->store<VertexArrayRegistry>().GetVertexArray(POSITION_ATTRIB_BIT);
+
+	shader->SetUniformi("has_texture", 1);
+
+	if (vertexbuffer == nullptr) {
+		vertexbuffer = new VertexBuffer();
+
+		vertexbuffer->AddDataStatic(vertices.data(), vertices.size()*vertexarray->stride);
+	}
+
+	vertexarray->Bind();
+	vertexarray->BindVertexBuffer(vertexbuffer, vertexarray->stride);
+	vertexarray->BindIndexBuffer(GetQuadIndices(vertexarray, 4));
+
+	DrawIndexed(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+
+	shader->SetUniformi("has_texture", 0);
+}
 
 void lf::Renderer::Render(int width, int height, bool debug) {
 	using namespace lf::Component;
-
-	glEnable(GL_DEPTH_TEST);
 
 	drawcount = 0;
 	drawn_sprite_entities.clear();
 	drawn_sprite_entities.push_back(std::vector<Entity>());
 	
+	glEnable(GL_DEPTH_TEST);
 	glViewport(0, 0, width, height);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	shader = registry->store<ShaderRegistry>().GetShader(0, registry);
 	shader->Bind();
 
-	RenderSprite(registry->view<Tag, Transform, SpriteRenderer>().size_hint()*4);
-	// std::cout << registry->view<Tag, Transform, SpriteRenderer>().size_hint() << '\n';
+	RenderSprite();
+	RenderMesh();
 
-	// static VertexBuffer* vertexbuffer;
-	// VertexArray* vertexarray = registry->store<VertexArrayRegistry>().GetVertexArray(POSITION_ATTRIB_BIT);
-
-	// shader->SetUniformi("has_texture", 1);
-
-	// if (vertexbuffer == nullptr) {
-	// 	vertexbuffer = new VertexBuffer();
-
-	// 	vertexbuffer->AddDataStatic(vertices.data(), vertices.size()*vertexarray->stride);
-	// }
-
-	// vertexarray->Bind();
-	// vertexarray->BindVertexBuffer(vertexbuffer, vertexarray->stride);
-	// vertexarray->BindIndexBuffer(GetQuadIndices(vertexarray, 4));
-
-	// DrawIndexed(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
-
-	// shader->SetUniformi("has_texture", 0);
+	if (debug) {
+		RenderCamera();
+	}
 }
 
-void lf::Renderer::RenderSprite(int vertexcount) {
-	if (!vertexcount) return;
-
+void lf::Renderer::RenderSprite() {
 	using namespace lf::Component;
+
+	int vertexcount = registry->view<Tag, Transform, SpriteRenderer>().size_hint() * 4;
+	if (!vertexcount) return;
 
 	uint32_t flags = POSITION_ATTRIB_BIT | COLOR_ATTRIB_BIT | UV0_ATTRIB_BIT;
 
@@ -183,7 +209,6 @@ void lf::Renderer::RenderSprite(int vertexcount) {
 	vertexarray->Bind();
 	vertexarray->BindVertexBuffer(vertexbuffer, vertexarray->stride);
 	vertexarray->BindIndexBuffer(GetQuadIndices(vertexarray, vertexcount));
-	
 
 	DrawIndexed(GL_TRIANGLES, vertexcount * 1.5, GL_UNSIGNED_INT, nullptr);
 	
@@ -198,28 +223,24 @@ void lf::Renderer::RenderSprite(int vertexcount) {
 	shader->SetUniformi("has_texture", 0);
 }
 
-void lf::Renderer::Render(FrameBuffer* framebuffer, Entity camera_entity, int width, int height) {
-	if ((uint32_t)camera_entity == 0) return;
-
-	auto [transform, camera] = registry->try_get<lf::Component::Transform, lf::Component::Camera>(camera_entity);
-
-	if (transform == nullptr || camera == nullptr) return;
-
-	SetProjection(camera->projection);
-	SetModel(glm::mat4(1.0));
-	SetView(camera->view);
-	SetViewPosition(transform->translation);
-
-	if (framebuffer != nullptr) {
-		framebuffer->Bind();
-
-		assert(framebuffer->width >= width && framebuffer->height >= height);
-	}
+void lf::Renderer::RenderMesh() {
 	
-	glClearColor(camera->clear_color.x, camera->clear_color.y, camera->clear_color.z, camera->clear_color.w);
-	Render(width, height);
+}
 
-	if (framebuffer != nullptr) framebuffer->UnBind();
+void lf::Renderer::RenderCamera() {
+	using namespace lf::Component;
+
+	shader->SetUniformi("has_texture", 1);
+
+	for (auto [entity, tag, transform, camera]: registry->view<Tag, Transform, Camera>().each()) {
+		float aspect_ratio = camera.width / camera.height;
+		float horizontal_fov = camera.fov;
+		float vertical_fov = camera.fov / aspect_ratio;
+
+		
+	}
+
+	shader->SetUniformi("has_texture", 0);
 }
 
 void lf::Renderer::SetLighting() {

@@ -20,7 +20,9 @@ namespace lf {
 		if ((uint32_t)editorwindow.camera == 0) {
 			editorwindow.camera = registry.create();
 			registry.emplace<Transform>(editorwindow.camera);
-			registry.emplace<Camera>(editorwindow.camera, lf::PERSPECTIVE, true, Default);
+			Camera camera(lf::PERSPECTIVE, true, Default);
+			camera.clear_color = glm::vec4(0, 0, 0, 0);
+			registry.emplace<Camera>(editorwindow.camera, camera);
 		}
 
 		auto& transform = registry.get_or_emplace<Transform>(editorwindow.camera);
@@ -122,34 +124,50 @@ namespace lf {
 		auto& engine = registry.store<Engine>();
 		auto& gamewindow = registry.store<GameWindow>();
 
-		if (!gamewindow.window_focus) return;
+		// if (!gamewindow.window_focus) return;
+		if (gamewindow.camera == (Entity)0) return;
+		if (!registry.valid(gamewindow.camera)) return;
 
-		for (auto [entity, tag, transform, camera]: registry.view<Tag, Transform, Camera>().each()) {
-			if (!camera.enable || camera.type == Default) continue;
+		auto& transform = registry.get<Transform>(gamewindow.camera);
+		auto& camera = registry.get<Camera>(gamewindow.camera);
 
-			if (camera.width != gamewindow.width || camera.height != gamewindow.height) {
-				camera.width = gamewindow.width;
-				camera.height = gamewindow.height;
+		static Projection projection_mode;
+		static Entity entity;
 
-				camera.lastX = camera.width / 2;
-				camera.lastY = camera.height / 2;
+		if (camera.width != gamewindow.width || camera.height != gamewindow.height || projection_mode != camera.mode || entity != gamewindow.camera) {
+			projection_mode = camera.mode;
+			entity = gamewindow.camera;
 
-				camera.first_mouse = true;
+			camera.width = gamewindow.width;
+			camera.height = gamewindow.height;
 
-				if (camera.mode == PERSPECTIVE)
-					camera.projection = glm::perspective(glm::radians(camera.fov), (float)camera.width / camera.height, camera.camera_near, camera.camera_far);
-				if (camera.mode == ORTHOGRAPHIC) {
-					int widen = std::tan(glm::radians(camera.fov/2.0)) * camera.camera_far;
-					int highten = std::tan(glm::radians((float)(camera.fov / 2.0) / (float)(camera.width/camera.height))) * camera.camera_far;
+			camera.lastX = camera.width / 2;
+			camera.lastY = camera.height / 2;
 
-					// std::cout << highten << ' ' << widen << ' ' << camera.width / camera.height << '\n';
+			camera.first_mouse = true;
 
-					camera.projection = glm::ortho<float>(-10, 10, -10, 10, -1, 1);
-					// camera.projection = glm::ortho<float>(-gamewindow.width, gamewindow.width, -gamewindow.height, gamewindow.height, -1, 1);
-				}
-				if (!camera.init) camera.Position = glm::vec3(0, 0, 10);
-				camera.init = true;
+			if (camera.mode == PERSPECTIVE)
+				camera.projection = glm::perspective(glm::radians(camera.fov), (float)camera.width / camera.height, camera.camera_near, camera.camera_far);
+			if (camera.mode == ORTHOGRAPHIC) {
+				int widen = std::tan(glm::radians(camera.fov/2.0)) * 10;
+				int highten = std::tan(glm::radians((float)(camera.fov / 2.0) / (float)(camera.width/camera.height))) * 10;
+
+				camera.projection = glm::ortho<float>(-camera.width/camera.height, camera.width/camera.height, -1, 1, -1000, 1000);
 			}
+			
+			camera.init = true;
+		}
+
+		if (camera.mode == ORTHOGRAPHIC) {
+			camera.view = transform.GetModel();
+		}
+		if (camera.mode == PERSPECTIVE) {
+			const auto& quaternion = transform.GetRotationQuat();
+
+			camera.Front = glm::normalize(quaternion * camera.WorldFront);
+			camera.Up = glm::normalize(quaternion * camera.WorldUp);
+			
+			camera.view = glm::lookAt(transform.translation, transform.translation + camera.Front, camera.Up);
 		}
 	}
 }

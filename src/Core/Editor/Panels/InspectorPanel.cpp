@@ -24,18 +24,32 @@ void lf::ComponentHeader<Transform>::Render(Registry& registry, Entity entity) {
 template <>
 void lf::ComponentHeader<Camera>::Render(Registry& registry, Entity entity) {
 	auto& camera = registry.get<Camera>(entity);
+	auto& gamewindow = registry.store<GameWindow>();
+
+	camera.enable = (gamewindow.camera == entity || camera.enable);
 
 	ImGui::Checkbox("Enable", &camera.enable);
+	
+	if (camera.enable && gamewindow.camera != entity) {
+		gamewindow.camera = entity;
+	}
+	if (!camera.enable && gamewindow.camera == entity) {
+		gamewindow.camera = (Entity)0;
+	}
 
-	ImGui::Spacing();
+	if (camera.mode == ORTHOGRAPHIC) {
+		
+	}
+	if (camera.mode == PERSPECTIVE) {
+		ImGui::DragFloat("Near", &camera.camera_near, 0.1);
+		ImGui::DragFloat("Far", &camera.camera_far, 0.1);
+		ImGui::DragFloat("Fov", &camera.fov, 0.1, 0.0, 180.0);
+	}
 
-	ImGui::DragFloat("Sensitivity", &camera.sensitivity, 0.001);
-	ImGui::DragFloat("Speed", &camera.speed, 0.001);
-	ImGui::DragFloat("ScrollSpeed", &camera.scrollspeed, 0.001);
-
-	ImGui::Spacing();
+	ImGui::ColorEdit4("ClearColor", &camera.clear_color[0], ImGuiColorEditFlags_NoInputs);
 
 	EnumComboLogic("Projection", { "ORTHOGRAPHIC", "PERSPECTIVE" }, camera.mode);
+	EnumComboLogic("Type", { "FPS", "TPS", "Default", "None" }, camera.type);
 }
 
 template <>

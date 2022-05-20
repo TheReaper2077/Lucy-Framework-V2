@@ -1,3 +1,4 @@
+#include "../Window.h"
 #include "Serializer.h"
 #include "ToYAML.h"
 #include "FileIO.h"
@@ -249,6 +250,7 @@ struct YAML::convert<lf::Component::Camera> {
 		node["WorldFront"] = rhs.WorldFront;
 		node["Projection"] = (uint32_t)rhs.mode;
 		node["CameraType"] = (uint32_t)rhs.type;
+		node["enable"] = rhs.enable;
 		return node;
 	}
 
@@ -264,6 +266,7 @@ struct YAML::convert<lf::Component::Camera> {
 		rhs.WorldFront = node["WorldFront"].as<glm::vec3>();
 		rhs.mode = (lf::Projection)node["Projection"].as<uint32_t>();
 		rhs.type = (lf::CameraType)node["CameraType"].as<uint32_t>();
+		rhs.enable = node["enable"].as<bool>();
 
 		return true;
 	}
@@ -371,7 +374,10 @@ void lf::Util::Deserializer(Registry* registry, const std::string& filename) {
 			registry->emplace<Transform>(entity, scene[i]["Transform"].as<Transform>());
 		}
 		if (scene[i]["Camera"]) {
-			registry->emplace<Camera>(entity, scene[i]["Camera"].as<Camera>());
+			auto camera = scene[i]["Camera"].as<Camera>();
+			registry->emplace<Camera>(entity, camera);
+			if (camera.enable)
+				registry->store<GameWindow>().camera = entity;
 		}
 		if (scene[i]["Light"]) {
 			registry->emplace<Light>(entity, scene[i]["Light"].as<Light>());

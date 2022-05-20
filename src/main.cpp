@@ -92,7 +92,7 @@ int main(int ArgCount, char **Args) {
 
 		#ifdef ENABLE_EDITOR
 			// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			renderer.Render(editorwindow);
+			renderer.Render(editorwindow, true);
 			// glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 			{
@@ -104,6 +104,7 @@ int main(int ArgCount, char **Args) {
 				
 				glm::vec4 pixel;
 				glReadPixels(pos.x, pos.y, 1, 1, GL_RGBA, GL_FLOAT, &pixel[0]);
+				static bool toggle;
 
 				if (pixel.w) {
 					int idx = pixel.x / 2;
@@ -112,13 +113,15 @@ int main(int ArgCount, char **Args) {
 					}
 					idx /= 2;
 
-					if (eventhandler.mouse_pressed.contains(SDL_BUTTON_LEFT))
+					if (eventhandler.mouse_pressed.contains(SDL_BUTTON_LEFT) && toggle)
 						registry.store<lf::Editor>().selected_entity = renderer.drawn_sprite_entities[int(pixel.z)][idx];
 				}
 
 				glReadBuffer(GL_NONE);
 
 				editorwindow.framebuffer->UnBind();
+
+				toggle = !eventhandler.mouse_pressed.contains(SDL_BUTTON_LEFT);
 			}
 
 			if (eventhandler.key_pressed.contains(SDL_SCANCODE_LCTRL) && eventhandler.key_pressed.contains(SDL_SCANCODE_S))

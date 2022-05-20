@@ -4,7 +4,7 @@ project(Test VERSION 0.1.0)
 include(CTest)
 enable_testing()
 
-file(GLOB TARGET_SRC "src/*.cpp" "src/Core/Util/*.cpp" "src/Core/Renderer/*.cpp" "src/Core/Registries/*.cpp" "src/Core/*.cpp" "src/Core/Renderer/API/*.cpp" "src/Core/Editor/Panels/*.cpp" "src/Core/System/*.cpp")
+file(GLOB_RECURSE TARGET_SRC "src/*.cpp")
 
 set (CMAKE_CXX_STANDARD 20)
 

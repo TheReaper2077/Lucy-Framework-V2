@@ -26,5 +26,8 @@ namespace lf {
 
 		void SaveEntities();
 		void LoadEntities();
+
+		void SetMainCamera(Entity camera);
+		Entity GetMainCamera();
 	};
 }
