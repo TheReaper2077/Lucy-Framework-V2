@@ -31,7 +31,7 @@ void EnumComboLogic(const char* name, const std::vector<std::string>& total_mode
 }
 
 namespace lf {
-	class EditorPropeties {
+	class Editor {
 	public:
 		Entity selected_entity;
 	};

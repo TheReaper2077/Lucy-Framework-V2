@@ -1,5 +1,6 @@
 #include "GamePanel.h"
-void lf::Editor::GamePanel(Registry& registry) {
+
+void lf::Panel::GamePanel(Registry& registry) {
 	auto& window = registry.store<Window>();
 	auto& gamewindow = registry.store<GameWindow>();
 	

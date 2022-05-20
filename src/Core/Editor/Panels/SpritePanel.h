@@ -3,9 +3,12 @@
 #include "Import.h"
 
 namespace lf {
-	namespace Editor {
-		void SpritePanel() {
-			
+	namespace Panel {
+		void SpritePanel(Registry& registry) {
+			if (ImGui::Begin("Sprite Registry")) {
+				
+			}
+			ImGui::End();
 		}
 	}
 }

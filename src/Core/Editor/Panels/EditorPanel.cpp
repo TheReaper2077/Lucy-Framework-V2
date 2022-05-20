@@ -1,6 +1,6 @@
 #include "EditorPanel.h"
 
-void lf::Editor::EditorPanel(Registry& registry) {
+void lf::Panel::EditorPanel(Registry& registry) {
 	auto& window = registry.store<Window>();
 	auto& editorwindow = registry.store<EditorWindow>();
 

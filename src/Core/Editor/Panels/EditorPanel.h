@@ -3,7 +3,7 @@
 #include "Import.h"
 
 namespace lf {
-	namespace Editor {
+	namespace Panel {
 		void EditorPanel(Registry& registry);
 	}
 }

@@ -26,9 +26,13 @@ namespace lf {
 		std::vector<SDL_Scancode> key_chord;
 		std::set<SDL_Scancode> key_toggled;
 
+		bool dragging = false;
+		bool relative = false;
+
 		glm::vec3 mousepos_normalized;
 		glm::vec2 mousepos;
 		glm::vec2 window_mousepos;
+		glm::vec2 drag_mousepos;
 
 		std::set<unsigned int> mouse_pressed;
 

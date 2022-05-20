@@ -110,7 +110,7 @@ int main(int ArgCount, char **Args) {
 					idx /= 2;
 
 					if (eventhandler.mouse_pressed.contains(SDL_BUTTON_LEFT))
-						registry.store<lf::EditorPropeties>().selected_entity = renderer.drawn_sprite_entities[int(pixel.z)][idx];
+						registry.store<lf::Editor>().selected_entity = renderer.drawn_sprite_entities[int(pixel.z)][idx];
 				}
 
 				glReadBuffer(GL_NONE);
@@ -151,11 +151,12 @@ int main(int ArgCount, char **Args) {
 			static bool show_demo = true;
 			ImGui::ShowDemoWindow(&show_demo);
 			
-			lf::Editor::ScenePanel(registry);
-			lf::Editor::InspectorPanel(registry);
+			lf::Panel::SpritePanel(registry);
+			lf::Panel::ScenePanel(registry);
+			lf::Panel::InspectorPanel(registry);
 
-			lf::Editor::GamePanel(registry);
-			lf::Editor::EditorPanel(registry);
+			lf::Panel::GamePanel(registry);
+			lf::Panel::EditorPanel(registry);
 
 			ImGui::EndFrame();
 			ImGui::Render();

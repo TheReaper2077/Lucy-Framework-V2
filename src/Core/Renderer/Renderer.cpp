@@ -94,10 +94,6 @@ void lf::Renderer::RenderSprite(int vertexcount) {
 
 	uint32_t flags = POSITION_ATTRIB_BIT | COLOR_ATTRIB_BIT | UV0_ATTRIB_BIT;
 
-	// auto& context = registry->store<SpriteRendererRegistry>().GetSpriteRendererContext(flags);
-
-	// context.vertexcount = vertexcount;
-	// std::cout << vertexcount << '\n';
 	SetModel(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0)));
 
 	VertexArray* vertexarray = registry->store<VertexArrayRegistry>().GetVertexArray(flags);

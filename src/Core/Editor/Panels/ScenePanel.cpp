@@ -56,84 +56,83 @@
 // 	}
 // };
 
-void lf::Editor::ScenePanel(Registry& registry) {
+void lf::Panel::ScenePanel(Registry& registry) {
 	auto& events = registry.store<Events>();
 
-	ImGui::Begin("Scene");
+	if (ImGui::Begin("Scene")) {
+		static bool open, toggle;
+		// std::unordered_map<Entity, Node> scene_tree;
+		auto& selected_entity = registry.store<Editor>().selected_entity;
+		
+		PopupOpenLogic(registry, open, toggle);
 
-	static bool open, toggle;
-	// std::unordered_map<Entity, Node> scene_tree;
-	auto& selected_entity = registry.store<EditorPropeties>().selected_entity;
-	
-	PopupOpenLogic(registry, open, toggle);
+		for (auto [entity, tag]: registry.view<lf::Component::Tag>().each()) {
+			auto parent = registry.try_get<lf::Component::ParentEntity>(entity);
 
-	for (auto [entity, tag]: registry.view<lf::Component::Tag>().each()) {
-		auto parent = registry.try_get<lf::Component::ParentEntity>(entity);
+			// if (scene_tree.find(entity) == scene_tree.end())
+			// 	scene_tree[entity] = Node{};
 
-		// if (scene_tree.find(entity) == scene_tree.end())
-		// 	scene_tree[entity] = Node{};
+			// if (parent != nullptr) {
+			// 	scene_tree[entity].parent = *parent;
 
-		// if (parent != nullptr) {
-		// 	scene_tree[entity].parent = *parent;
+			// 	if (scene_tree.find(*parent) == scene_tree.end())
+			// 		scene_tree[*parent] = Node{};
 
-		// 	if (scene_tree.find(*parent) == scene_tree.end())
-		// 		scene_tree[*parent] = Node{};
-
-		// 	scene_tree[*parent].children.push_back(entity);
-		// }
-		if (ImGui::TreeNodeEx(tag.name.c_str(), ImGuiTreeNodeFlags_Leaf)) {
-			if (ImGui::IsItemClicked()) {
-				selected_entity = entity;
-			}
-
-			if (ImGui::IsItemHovered() && registry.store<Events>().mouse_pressed.contains(SDL_BUTTON_RIGHT)) {
-				ImGui::OpenPopup("Entity SHMenu");
-				open = false;
-			}
-
-			if (ImGui::BeginPopup("Entity SHMenu")) {
-				auto& functions = registry.store<Functions>();
-
-				if (ImGui::Selectable("Delete")) {
-					if (selected_entity == entity) {
-						selected_entity = (Entity)0;
-					}
-					registry.destroy(entity);
+			// 	scene_tree[*parent].children.push_back(entity);
+			// }
+			if (ImGui::TreeNodeEx(tag.name.c_str(), ImGuiTreeNodeFlags_Leaf)) {
+				if (ImGui::IsItemClicked()) {
+					selected_entity = entity;
 				}
-				ImGui::EndPopup();
+
+				if (ImGui::IsItemHovered() && registry.store<Events>().mouse_pressed.contains(SDL_BUTTON_RIGHT)) {
+					ImGui::OpenPopup("Entity SHMenu");
+					open = false;
+				}
+
+				if (ImGui::BeginPopup("Entity SHMenu")) {
+					auto& functions = registry.store<Functions>();
+
+					if (ImGui::Selectable("Delete")) {
+						if (selected_entity == entity) {
+							selected_entity = (Entity)0;
+						}
+						registry.destroy(entity);
+					}
+					ImGui::EndPopup();
+				}
+				
+				ImGui::TreePop();
 			}
-			
-			ImGui::TreePop();
+		}
+
+		if (open) {
+			ImGui::OpenPopup("Scene Shortcut");
+		}
+
+		// for (auto& pair: scene_tree) {
+		// 	if ((uint32_t)pair.second.parent == 0)
+		// 		RenderTree(pair.first, registry, scene_tree, scene_tree[pair.first]);
+		// }
+
+		if (ImGui::BeginPopup("Scene Shortcut")) {
+			auto& functions = registry.store<Functions>();
+
+			if (ImGui::Selectable("New Entity")) {
+				selected_entity = functions.CreateEmptyEntity();
+			}
+			if (ImGui::Selectable("New Camera")) {
+				selected_entity = functions.CreateCameraEntity();
+			}
+			if (ImGui::Selectable("New Sprite")) {
+				selected_entity = functions.CreateSpriteEntity();
+			}
+			if (ImGui::Selectable("New Light")) {
+				selected_entity = functions.CreateLightEntity();
+			}
+			ImGui::EndPopup();
 		}
 	}
-
-	if (open) {
-		ImGui::OpenPopup("Scene Shortcut");
-	}
-
-	// for (auto& pair: scene_tree) {
-	// 	if ((uint32_t)pair.second.parent == 0)
-	// 		RenderTree(pair.first, registry, scene_tree, scene_tree[pair.first]);
-	// }
-
-	if (ImGui::BeginPopup("Scene Shortcut")) {
-		auto& functions = registry.store<Functions>();
-
-		if (ImGui::Selectable("New Entity")) {
-			selected_entity = functions.CreateEmptyEntity();
-		}
-		if (ImGui::Selectable("New Camera")) {
-			selected_entity = functions.CreateCameraEntity();
-		}
-		if (ImGui::Selectable("New Sprite")) {
-			selected_entity = functions.CreateSpriteEntity();
-		}
-		if (ImGui::Selectable("New Light")) {
-			selected_entity = functions.CreateLightEntity();
-		}
-		ImGui::EndPopup();
-	}
-
 	ImGui::End();
 }
 

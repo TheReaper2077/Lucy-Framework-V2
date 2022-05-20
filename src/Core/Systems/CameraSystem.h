@@ -43,8 +43,8 @@ namespace lf {
 		}
 
 		// if (!editorwindow.window_focus) return;
-		if (registry.store<GameWindow>().window_focus) return;
-		if (!editorwindow.mouse_hover) return;
+		// if ( return;
+		if (!editorwindow.mouse_hover && registry.store<GameWindow>().window_focus) return;
 
 		if (eventhandler.mouse_pressed.contains(SDL_BUTTON_MIDDLE)) {
 			if (camera.first_mouse) {

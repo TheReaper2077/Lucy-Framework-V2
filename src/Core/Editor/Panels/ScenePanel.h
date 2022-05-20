@@ -13,7 +13,7 @@ namespace lf {
 
 	void RenderTree(const Entity& entity, Registry& registry, std::unordered_map<Entity, Node>& scene_tree, Node& node);
 
-	namespace Editor {
+	namespace Panel {
 		void ScenePanel(Registry& registry);
 	}
 }

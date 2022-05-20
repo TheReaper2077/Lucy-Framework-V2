@@ -1,4 +1,5 @@
 #include "Events.h"
+#include <iostream>
 
 glm::vec3 lf::Events::GetMousePos(const Window* window, bool normalized) {
 	auto norm = glm::vec3(((window_mousepos.x - window->posx) / (window->width * 0.5)) - 1.0, ((window_mousepos.y - window->posy) / (window->height * 0.5)) - 1.0, 0);
@@ -20,10 +21,6 @@ void lf::Events::Update(Registry& registry) {
 	auto& engine = registry.store<Engine>();
 
 	while (SDL_PollEvent(&engine.event)) {
-		#ifdef ENABLE_EDITOR
-			ImGui_ImplSDL2_ProcessEvent(&engine.event);
-		#endif
-
 		if (engine.event.type == SDL_QUIT) {
 			engine.quit = true;
 		}
@@ -37,8 +34,8 @@ void lf::Events::Update(Registry& registry) {
 			window_mousepos.x = engine.event.motion.x;
 			window_mousepos.y = engine.event.motion.y;
 
-			mousepos_normalized.x = ((engine.event.motion.x - window.posx) / (window.width * 0.5)) - 1.0;
-			mousepos_normalized.y = 1.0 - ((engine.event.motion.y - window.posy) / (window.height * 0.5));
+			mousepos_normalized.x = ((window_mousepos.x - window.posx) / (window.width * 0.5)) - 1.0;
+			mousepos_normalized.y = 1.0 - ((window_mousepos.y - window.posy) / (window.height * 0.5));
 			mousepos_normalized.z = 0;
 
 			mousepos.x = (1 + mousepos_normalized.x) * window.width / 2.0;
@@ -71,5 +68,19 @@ void lf::Events::Update(Registry& registry) {
 			mouse_scrollup = (engine.event.wheel.y > 0);
 			mouse_scrolldown = (engine.event.wheel.y < 0);
 		}
+		if (engine.event.type == SDL_DROPFILE) {
+			std::cout << engine.event.drop.file << '\n';
+		}
+		
+		#ifdef ENABLE_EDITOR
+			ImGui_ImplSDL2_ProcessEvent(&engine.event);
+		#endif
+	}
+	
+	if (engine.event.type == SDL_MOUSEMOTION && dragging) {
+		engine.event.motion.x = drag_mousepos.x;
+		engine.event.motion.y = drag_mousepos.y;
+		
+		dragging = false;
 	}
 }

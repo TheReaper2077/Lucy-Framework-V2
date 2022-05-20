@@ -40,7 +40,7 @@ namespace lf {
 		}
 	};
 
-	namespace Editor {
+	namespace Panel {
 		void InspectorPanel(Registry& registry);
 	}
 }

@@ -34,14 +34,14 @@ void lf::ComponentHeader<Camera>::Render(Registry& registry, Entity entity) {
 
 	ImGui::Spacing();
 
-	EnumComboLogic("projection", { "ORTHOGRAPHIC", "PERSPECTIVE" }, camera.mode);
+	EnumComboLogic("Projection", { "ORTHOGRAPHIC", "PERSPECTIVE" }, camera.mode);
 }
 
 template <>
 void lf::ComponentHeader<Light>::Render(Registry& registry, Entity entity) {
 	auto& light = registry.get<Light>(entity);
 
-	EnumComboLogic("mode", { "Point", "Spot", "Area", "Directional" }, light.mode);
+	EnumComboLogic("Mode", { "Point", "Spot", "Area", "Directional" }, light.mode);
 
 	ImGui::Spacing();
 
@@ -70,9 +70,9 @@ void lf::ComponentHeader<MeshRenderer>::Render(Registry& registry, Entity entity
 	auto& meshrenderer = registry.get<MeshRenderer>(entity);
 }
 
-void lf::Editor::InspectorPanel(Registry& registry) {
+void lf::Panel::InspectorPanel(Registry& registry) {
 	if (ImGui::Begin("Inspector")) {
-		Entity entity = registry.store<EditorPropeties>().selected_entity;
+		Entity entity = registry.store<Editor>().selected_entity;
 
 		if (entity != (Entity)0) {
 			static ComponentHeader<Tag> tag("Tag", true);
@@ -119,6 +119,6 @@ void lf::Editor::InspectorPanel(Registry& registry) {
 				ImGui::EndPopup();
 			}
 		}
-		ImGui::End();
 	}
+	ImGui::End();
 }
