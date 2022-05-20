@@ -79,7 +79,7 @@ void lf::Renderer::Render(int width, int height, bool debug) {
 	// vertexarray->BindVertexBuffer(vertexbuffer, vertexarray->stride);
 	// vertexarray->BindIndexBuffer(GetQuadIndices(vertexarray, 4));
 
-	// glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+	// DrawIndexed(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
 	// shader->SetUniformi("has_texture", 0);
 }
@@ -188,7 +188,7 @@ void lf::Renderer::RenderSprite(int vertexcount) {
 	vertexarray->BindIndexBuffer(GetQuadIndices(vertexarray, vertexcount));
 	shader->SetUniformi("drawcount", drawcount);
 
-	glDrawElements(GL_TRIANGLES, vertexcount * 1.5, GL_UNSIGNED_INT, nullptr);
+	DrawIndexed(GL_TRIANGLES, vertexcount * 1.5, GL_UNSIGNED_INT, nullptr);
 	
 	auto& engine = registry->store<Engine>();
 	engine.drawcalls++;

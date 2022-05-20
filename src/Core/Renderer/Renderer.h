@@ -26,6 +26,8 @@ namespace lf {
 	public:
 		std::vector<Entity> drawn_sprite_entities;
 		int drawcount = 0;
+		int vertexcount = 0;
+		int indexcount = 0;
 
 		void SetModel(const glm::mat4& model);
 		void SetView(const glm::mat4& view);
@@ -46,22 +48,70 @@ namespace lf {
 		void Render(Window& window) {
 			Render(window, window.camera);
 		}
+
+		bool DrawIndexed(GLenum mode, int count, GLenum type, void* indices) {
+			return DrawCmd(INDEXED, mode, type, 0, 0, 0, 0, count, 0, 0, 0, 0, 0, indices, nullptr, nullptr);
+		}
+
+		bool Draw(GLenum mode, int first, int count) {
+			return DrawCmd(NONE, mode, 0, 0, first, 0, 0, count, 0, 0, 0, 0, 0, nullptr, nullptr, nullptr);
+		}
 		
-		void DrawCall(DrawMode drawmode, GLenum mode, int first, int count, int instancecount, int baseinstance, GLenum type, void* indices, void* indirect) {
+		bool DrawCmd(DrawMode drawmode, GLenum mode, GLenum type, GLenum format, int first, int start, int end, int count, int basevertex, int baseinstance, int instancecount, int width, int height, void* indices, void* indirect, void* pixels) {
 			switch (drawmode) {
 				case NONE:
 					glDrawArrays(mode, first, count);
+					break;
 				case INDIRECT:
 					glDrawArraysIndirect(mode, indirect);
+					break;
 				case INSTANCED:
 					glDrawArraysInstanced(mode, first, count, instancecount);
-				case INSTANCED_BASE:
+					break;
+				case INSTANCED_BASEINSTANCE:
 					glDrawArraysInstancedBaseInstance(mode, first, count, instancecount, baseinstance);
+					break;
 					
 				case INDEXED:
 					glDrawElements(mode, count, type, indices);
+					break;
+				case INDEXED_INDIRECT:
+					glDrawElementsIndirect(mode, type, indirect);
+					break;
+				case INDEXED_INSTANCED:
+					glDrawElementsInstanced(mode, count, type, indices, instancecount);
+					break;
+				case INDEXED_BASEVERTEX:
+					glDrawElementsBaseVertex(mode, count, type, indices, basevertex);
+					break;
+				case INDEXED_INSTANCED_BASEINSTANCE:
+					glDrawElementsInstancedBaseVertex(mode, count, type, indices, instancecount, basevertex);
+					break;
+				case INDEXED_INSTANCED_BASEVERTEX:
+					glDrawElementsInstancedBaseVertex(mode, count,  type, indices, instancecount, basevertex);
+					break;
+				case INDEXED_INSTANCED_BASEVERTEX_BASEINSTANCE:
+					glDrawElementsInstancedBaseVertexBaseInstance(mode, count, type, indices, instancecount, basevertex, baseinstance);
+					break;
 				
+				case RANGE_INDEXED:
+					glDrawRangeElements(mode, start, end, count, type, indices);
+					break;
+				case RANGE_INDEXED_BASEVERTEX:
+					glDrawRangeElementsBaseVertex(mode, start, end, count, type, indices, basevertex);
+					break;
+
+				case PIXELS:
+					glDrawPixels(width, height, format, type, pixels);
+					break;
+				
+				default:
+					return false;
 			}
+
+			drawcount++;
+
+			return true;
 		}
 
 		void Render(FrameBuffer* framebuffer, Entity camera_entity, int width, int height);
