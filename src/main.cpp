@@ -87,7 +87,6 @@ int main(int ArgCount, char **Args) {
 
 		renderer.Render(gamewindow);
 
-
 		#ifdef ENABLE_EDITOR
 			// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			renderer.Render(editorwindow);
@@ -111,7 +110,7 @@ int main(int ArgCount, char **Args) {
 					idx /= 2;
 
 					if (eventhandler.mouse_pressed.contains(SDL_BUTTON_LEFT))
-						registry.store<lf::EditorPropeties>().selected_entity = renderer.drawn_sprite_entities[idx];
+						registry.store<lf::EditorPropeties>().selected_entity = renderer.drawn_sprite_entities[int(pixel.z)][idx];
 				}
 
 				glReadBuffer(GL_NONE);

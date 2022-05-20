@@ -34,30 +34,14 @@ void lf::ComponentHeader<Camera>::Render(Registry& registry, Entity entity) {
 
 	ImGui::Spacing();
 
-	static const char* total_modes[] = { "ORTHOGRAPHIC", "PERSPECTIVE" };
-	if (ImGui::BeginCombo("ProjectionMode", total_modes[camera.mode], ImGuiComboFlags_NoArrowButton)) {
-		for (int i = 0; i < Projection_COUNT; i++) {
-			if (total_modes[i] != total_modes[camera.mode])
-				if (ImGui::Selectable(total_modes[i]))
-					camera.mode = (Projection)i;
-		}
-		ImGui::EndCombo();
-	}
+	EnumComboLogic("projection", { "ORTHOGRAPHIC", "PERSPECTIVE" }, camera.mode);
 }
 
 template <>
 void lf::ComponentHeader<Light>::Render(Registry& registry, Entity entity) {
 	auto& light = registry.get<Light>(entity);
 
-	static std::string total_modes[] = { "Point", "Spot", "Area", "Directional" };
-	if (ImGui::BeginCombo("mode", total_modes[light.mode].c_str(), ImGuiComboFlags_NoArrowButton)) {
-		for (int i = 0; i < LightMode_COUNT; i++) {
-			if (total_modes[i] != total_modes[light.mode])
-				if (ImGui::Selectable(total_modes[i].c_str(), true))
-					light.mode = (LightMode)i;
-		}
-		ImGui::EndCombo();
-	}
+	EnumComboLogic("mode", { "Point", "Spot", "Area", "Directional" }, light.mode);
 
 	ImGui::Spacing();
 
@@ -65,7 +49,7 @@ void lf::ComponentHeader<Light>::Render(Registry& registry, Entity entity) {
 
 	ImGui::Spacing();
 
-	ImGui::ColorPicker3("Color", &light.color[0]);
+	ImGui::ColorEdit3("Color", &light.color[0], ImGuiColorEditFlags_NoInputs);
 }
 
 template <>
@@ -78,7 +62,7 @@ void lf::ComponentHeader<SpriteRenderer>::Render(Registry& registry, Entity enti
 
 	ImGui::Spacing();
 
-	ImGui::ColorPicker4("Color", &spriterenderer.color[0]);
+	ImGui::ColorEdit4("Color", &spriterenderer.color[0], ImGuiColorEditFlags_NoInputs);
 }
 
 template <>

@@ -160,9 +160,10 @@ uniform int wireframe_mode;
 uniform sampler2D texture_map;
 
 uniform vec4 wireframe_color;
+uniform int drawcount;
 
 void main() {
-	gl_FragData[1] = vec4(float(vertexid), float(gl_FragCoord.x), float(gl_FragCoord.y), 1);
+	gl_FragData[1] = vec4(float(vertexid), float(instanceid), float(drawcount), 1);
 	
 	if (wireframe_mode > 0) {
 		gl_FragData[0] = wireframe_color;

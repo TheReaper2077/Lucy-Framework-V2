@@ -24,7 +24,8 @@ namespace lf {
 		glm::vec3 view_position;
 
 	public:
-		std::vector<Entity> drawn_sprite_entities;
+		std::vector<std::vector<Entity>> drawn_sprite_entities;
+
 		int drawcount = 0;
 		int vertexcount = 0;
 		int indexcount = 0;
@@ -58,6 +59,8 @@ namespace lf {
 		}
 		
 		bool DrawCmd(DrawMode drawmode, GLenum mode, GLenum type, GLenum format, int first, int start, int end, int count, int basevertex, int baseinstance, int instancecount, int width, int height, void* indices, void* indirect, void* pixels) {
+			shader->SetUniformi("drawcount", drawcount);
+
 			switch (drawmode) {
 				case NONE:
 					glDrawArrays(mode, first, count);
@@ -110,6 +113,7 @@ namespace lf {
 			}
 
 			drawcount++;
+			drawn_sprite_entities.push_back(std::vector<Entity>());
 
 			return true;
 		}

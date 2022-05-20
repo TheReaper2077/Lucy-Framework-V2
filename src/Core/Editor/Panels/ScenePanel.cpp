@@ -63,6 +63,7 @@ void lf::Editor::ScenePanel(Registry& registry) {
 
 	static bool open, toggle;
 	// std::unordered_map<Entity, Node> scene_tree;
+	auto& selected_entity = registry.store<EditorPropeties>().selected_entity;
 	
 	PopupOpenLogic(registry, open, toggle);
 
@@ -82,7 +83,7 @@ void lf::Editor::ScenePanel(Registry& registry) {
 		// }
 		if (ImGui::TreeNodeEx(tag.name.c_str(), ImGuiTreeNodeFlags_Leaf)) {
 			if (ImGui::IsItemClicked()) {
-				registry.store<EditorPropeties>().selected_entity = entity;
+				selected_entity = entity;
 			}
 
 			if (ImGui::IsItemHovered() && registry.store<Events>().mouse_pressed.contains(SDL_BUTTON_RIGHT)) {
@@ -94,8 +95,8 @@ void lf::Editor::ScenePanel(Registry& registry) {
 				auto& functions = registry.store<Functions>();
 
 				if (ImGui::Selectable("Delete")) {
-					if (registry.store<EditorPropeties>().selected_entity == entity) {
-						registry.store<EditorPropeties>().selected_entity = (Entity)0;
+					if (selected_entity == entity) {
+						selected_entity = (Entity)0;
 					}
 					registry.destroy(entity);
 				}
@@ -119,16 +120,16 @@ void lf::Editor::ScenePanel(Registry& registry) {
 		auto& functions = registry.store<Functions>();
 
 		if (ImGui::Selectable("New Entity")) {
-			functions.CreateEmptyEntity();
+			selected_entity = functions.CreateEmptyEntity();
 		}
 		if (ImGui::Selectable("New Camera")) {
-			functions.CreateCameraEntity();
+			selected_entity = functions.CreateCameraEntity();
 		}
 		if (ImGui::Selectable("New Sprite")) {
-			functions.CreateSpriteEntity();
+			selected_entity = functions.CreateSpriteEntity();
 		}
 		if (ImGui::Selectable("New Light")) {
-			functions.CreateLightEntity();
+			selected_entity = functions.CreateLightEntity();
 		}
 		ImGui::EndPopup();
 	}
