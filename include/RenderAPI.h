@@ -34,7 +34,6 @@ typedef unsigned int FrameBufferId;
 typedef unsigned int TextureColorBufferId;
 typedef unsigned int RenderBufferId;
 
-struct OpenGLContext;
 struct VertexArrayAttribDescriptor;
 struct VertexArray;
 struct VertexBuffer;
@@ -45,30 +44,10 @@ struct Texture;
 struct TextureArray2D;
 struct FrameBuffer;
 
-struct OpenGLContext {
-	std::vector<std::shared_ptr<VertexArray>> vertex_array_store;
-	std::vector<std::shared_ptr<IndexBuffer>> index_buffer_store;
-	std::vector<std::shared_ptr<VertexBuffer>> vertex_buffer_store;
-	std::vector<std::shared_ptr<UniformBuffer>> uniform_buffer_store;
-	std::vector<std::shared_ptr<FrameBuffer>> frame_buffer_store;
-	std::vector<std::shared_ptr<Shader>> shader_store;
-	std::vector<std::shared_ptr<Texture>> texture_store;
-	std::vector<std::shared_ptr<TextureArray2D>> sprite_atlas_store;
-
-	VertexArrayId binding_vertexarray;
-	VertexBufferId binding_vertexbuffer;
-	IndexBufferId binding_indexbuffer;
-	UniformBufferId binding_uniformbuffer;
-	FrameBufferId binding_framebuffer;
-	ShaderId binding_shader;
-
-	int MAX_TEXTURES = 0;
-
-	OpenGLContext() {}
-};
-
-
 struct FrameBuffer {
+	FrameBuffer(int width, int height, bool picking = false);
+	~FrameBuffer();
+
 	FrameBufferId id;
 	int index;
 	int width, height;
@@ -78,7 +57,6 @@ struct FrameBuffer {
 
 	void Bind();
 	void UnBind();
-	void Destroy();
 };
 
 enum VertexArrayAttrib {
@@ -109,13 +87,6 @@ struct VertexArrayAttribDescriptor {
 		this->type = type;
 		this->attr_type = attr_type;
 	}
-
-	// VertexArrayAttribDescriptor(VertexArrayAttrib attr_type, unsigned int idx, uint32_t type) {
-	// 	// this->idx = idx;
-	// 	// this->size = size;
-	// 	this->type = type;
-	// 	this->attr_type = attr_type;
-	// }
 };
 
 struct VertexArray {
@@ -146,11 +117,13 @@ struct VertexArray {
 	uint32_t uv7_offset = 0;
 	bool has_uv7 = false;
 	
+	VertexArray(std::vector<VertexArrayAttribDescriptor> layouts);
+	~VertexArray();
+
 	void Bind();
 	void BindVertexBuffer(VertexBuffer* vertexbuffer, std::size_t stride = 0, std::size_t offset = 0);
 	void BindIndexBuffer(IndexBuffer* indexbuffer);
 	void UnBind();
-	void Destroy();
 };
 
 enum BufferType {
@@ -163,12 +136,14 @@ struct VertexBuffer {
 	BufferType type;
 	std::size_t size = 0;
 
+	VertexBuffer();
+	~VertexBuffer();
+
 	void Bind();
 	void UnBind();
 	void Allocate(std::size_t size);
 	void AddDataDynamic(void* data, std::size_t size, std::size_t offset = 0);
 	void AddDataStatic(void* data, std::size_t size);
-	void Destroy();
 };
 
 struct IndexBuffer {
@@ -176,17 +151,22 @@ struct IndexBuffer {
 	std::size_t size = 0;
 	VertexArray* vertexarray;
 	
+	IndexBuffer(VertexArray* vertexarray);
+	~IndexBuffer();
+
 	void Bind();
 	void UnBind();
 	void Allocate(std::size_t size);
 	void AddData(unsigned int* data, std::size_t size, std::size_t offset = 0);
-	void Destroy();
 };
 
 struct UniformBuffer {
 	UniformBufferId id;
 	std::size_t size = 0;
 	
+	UniformBuffer();
+	~UniformBuffer();
+
 	void Allocate(std::size_t size);
 	void AddDataDynamic(void* data, std::size_t size, std::size_t offset = 0);
 	void BindRange(unsigned int index, std::size_t size, std::size_t offset = 0);
@@ -195,7 +175,7 @@ struct UniformBuffer {
 };
 
 struct Shader {
-	ShaderId id;
+	ShaderId program;
 	std::unordered_map<std::string, unsigned int> uniform_location_map;
 
 	std::string name;
@@ -205,6 +185,9 @@ struct Shader {
 	bool material = false;
 	bool light = false;
 	
+	Shader(std::string name, const std::string &vs_filename, const std::string &fs_filename, bool file = true);
+	~Shader();
+
 	void Bind();
 	void UnBind();
 
@@ -225,38 +208,26 @@ struct Texture {
 	std::string filename;
 	uint32_t width, height, channels;
 
+	Texture();
+	~Texture();
+	Texture(const char* filename);
+
 	void Bind();
 	void BindUnit(uint32_t unit);
 	void UnBind();
 };
 
 struct TextureArray2D {
-	Texture* texture = nullptr;
+	Texture texture;
 
 	int tilecount;
 	int tileheight;
 	int tilewidth;
 	int columns;
 	
+	TextureArray2D(int tilew, int tileh, const char* filename);
+	~TextureArray2D();
+
 	void Bind();
 	void UnBind();
 };
-
-void OpenGL_CreateContext();
-void OpenGL_DestroyContext();
-
-FrameBuffer* FrameBuffer_Create(int width, int height, bool picking = false);
-
-VertexArray* VertexArray_Create(std::vector<VertexArrayAttribDescriptor> layouts);
-
-VertexBuffer* VertexBuffer_Create();
-
-IndexBuffer* IndexBuffer_Create(VertexArray* vertexarray);
-
-UniformBuffer* UniformBuffer_Create();
-
-Shader* Shader_Create(std::string name, const std::string &vs_filename, const std::string &fs_filename, bool file = true);
-
-Texture* Texture_Create();
-Texture* Texture_LoadFile(const char* filename);
-TextureArray2D* TextureArray_LoadFile(int tilew, int tileh, const char* filename);

@@ -31,11 +31,11 @@ void lf::Renderer::SetViewPosition(const glm::vec3& view_position) {
 void lf::Renderer::Init(lf::Registry* registry) {
 	this->registry = registry;
 
-	uniformbuffer = UniformBuffer_Create();
+	uniformbuffer = new UniformBuffer();
 	uniformbuffer->Allocate(sizeof(glm::mat4)*4);
 	uniformbuffer->BindRange(0, sizeof(glm::mat4)*4, 0);
 
-	shader = Shader_Create("test1", "D:\\C++\\Lucy Framework V2\\src\\Core\\Renderer\\Shaders\\default.vs", "D:\\C++\\Lucy Framework V2\\src\\Core\\Renderer\\Shaders\\color.fs");
+	// shader = Shader("test1", "D:\\C++\\Lucy Framework V2\\src\\Core\\Renderer\\Shaders\\default.vs", "D:\\C++\\Lucy Framework V2\\src\\Core\\Renderer\\Shaders\\color.fs");
 }
 
 void lf::Renderer::RenderIndexed(VertexArray* vertexarray, VertexBuffer* vertexbuffer, IndexBuffer* indexbuffer, std::size_t size, std::size_t offset, std::size_t basevertex) {
@@ -73,7 +73,7 @@ void lf::Renderer::Render(int width, int height, bool debug) {
 	// shader->SetUniformi("has_texture", 1);
 
 	// if (vertexbuffer == nullptr) {
-	// 	vertexbuffer = VertexBuffer_Create();
+	// 	vertexbuffer = new VertexBuffer();
 
 	// 	vertexbuffer->AddDataStatic(vertices.data(), vertices.size()*vertexarray->stride);
 	// }
@@ -100,7 +100,7 @@ void lf::Renderer::RenderSprite(int vertexcount) {
 	static VertexBuffer* vertexbuffer;
 
 	if (vertexbuffer == nullptr)
-		vertexbuffer = VertexBuffer_Create();
+		vertexbuffer = new VertexBuffer();
 
 	float* vertices = (float*)malloc(sizeof(float) * (3 + 4 + 2) * vertexcount);
 
@@ -256,7 +256,7 @@ IndexBuffer* lf::Renderer::GetQuadIndices(VertexArray* vertexarray, int vertexco
 	static int indexcount;
 
 	if (indexbuffer == nullptr)
-		indexbuffer = IndexBuffer_Create(vertexarray);
+		indexbuffer = new IndexBuffer(vertexarray);
 
 	if (vertexcount*1.5 > indexcount) {
 		std::vector<uint32_t> indices;

@@ -48,7 +48,7 @@ Shader* lf::ShaderRegistry::RegisterShader(uint32_t shader_flags, int point_ligh
 
 		// std::cout << fragmentshader << '\n';
 
-		registry[id] = Shader_Create(id, vertexshader, fragmentshader, false);
+		registry[id] = new Shader(id, vertexshader, fragmentshader, false);
 	}
 
 	return registry[id];

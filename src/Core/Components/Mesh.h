@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-#include <OpenGL.h>
+#include <RenderAPI.h>
 #include "../Enumerations.h"
 
 namespace lf {

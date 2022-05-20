@@ -1,34 +1,25 @@
-#include <OpenGL.h>
+#include <RenderAPI.h>
 
-#include <stb_image.h>
-
-extern std::shared_ptr<OpenGLContext> gl_context;
-
-Texture *Texture_Create() {
-	assert(gl_context != nullptr);
-
-	auto texture = std::make_shared<Texture>();
-	glGenTextures(1, &texture->id);
-	
-	gl_context->texture_store.push_back(texture);
-
-	return texture.get();
+Texture::Texture() {
+	glGenTextures(1, &id);
 }
 
-Texture *Texture_LoadFile(const char* filename) {
-	assert(gl_context != nullptr);
+Texture::~Texture() {
+	glDeleteTextures(1, &id);
+}
 
-	auto* texture = Texture_Create();
+Texture::Texture(const char* filename) {
+	glGenTextures(1, &id);
 	
-	texture->Bind();
-	texture->filename = std::string(filename);
+	this->Bind();
+	this->filename = std::string(filename);
 	
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-	glGenerateMipmap(texture->id);
+	glGenerateMipmap(this->id);
 
 	int width, height, channels;
 	unsigned char* data = stbi_load(filename, &width, &height, &channels, 0);
@@ -42,13 +33,11 @@ Texture *Texture_LoadFile(const char* filename) {
 	
 	stbi_image_free(data);
 
-	texture->UnBind();
+	this->UnBind();
 
-	texture->channels = channels;
-	texture->width = width;
-	texture->height = height;
-
-	return texture;
+	this->channels = channels;
+	this->width = width;
+	this->height = height;
 }
 
 void Texture::Bind() {

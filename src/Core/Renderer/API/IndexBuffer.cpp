@@ -1,38 +1,26 @@
-#include <OpenGL.h>
+#include <RenderAPI.h>
 
-extern std::shared_ptr<OpenGLContext> gl_context;
+// extern std::shared_ptr<OpenGLContext> gl_context;
 
-IndexBuffer *IndexBuffer_Create(VertexArray *vertexarray) {
-	assert(gl_context != nullptr);
+IndexBuffer::IndexBuffer(VertexArray* vertexarray) {
+	glGenBuffers(1, &id);
+	size = 0;
 
-	auto indexbuffer = std::make_shared<IndexBuffer>();
-
-	glGenBuffers(1, &indexbuffer->id);
-	indexbuffer->size = 0;
-	indexbuffer->vertexarray = vertexarray;
-
-	gl_context->index_buffer_store.push_back(indexbuffer);
-
-	return indexbuffer.get();
+	this->vertexarray = vertexarray;
 }
 
 void IndexBuffer::Bind() {
-	this->vertexarray->Bind();
-	if (gl_context->binding_indexbuffer == this->id) return;
-	gl_context->binding_indexbuffer = this->id;
+	vertexarray->Bind();
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->id);
 }
 
 void IndexBuffer::UnBind() {
-	gl_context->binding_indexbuffer = 0;
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 
-void IndexBuffer::Destroy() {
-	glDeleteBuffers(1, &this->id);
-	// free(indexbuffer);
-	// indexbuffer = nullptr;
+IndexBuffer::~IndexBuffer() {
+	glDeleteBuffers(1, &id);
 }
 
 void IndexBuffer::Allocate(std::size_t size) {

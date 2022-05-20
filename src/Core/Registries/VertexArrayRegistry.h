@@ -1,6 +1,6 @@
 #pragma once
 
-#include <OpenGL.h>
+#include <RenderAPI.h>
 #include <unordered_map>
 
 namespace lf {
@@ -12,7 +12,7 @@ namespace lf {
 
 		template <typename T>
 		void SetVertexArray(std::vector<VertexArrayAttribDescriptor> descriptor) {
-			custom_layout[typeid(T).hash_code()] = VertexArray_Create(descriptor);
+			custom_layout[typeid(T).hash_code()] = new VertexArray(descriptor);
 		}
 
 		template <typename T>

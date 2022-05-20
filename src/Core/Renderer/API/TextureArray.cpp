@@ -1,25 +1,18 @@
-#include <OpenGL.h>
+#include <RenderAPI.h>
 
-extern std::shared_ptr<OpenGLContext> gl_context;
-
-// experimental Haven't Tested
-TextureArray2D *TextureArray_LoadFile(int tilew, int tileh, const char* filename) {
-	assert(gl_context != nullptr);
-
-	auto spriteatlas = std::make_shared<TextureArray2D>();
-
-	spriteatlas->texture = Texture_Create();
-	spriteatlas->texture->Bind();
+TextureArray2D::TextureArray2D(int tilew, int tileh, const char* filename) {
+	texture = Texture();
+	texture.Bind();
 	
 	int width, height, channels;
 	auto* data = stbi_load(filename, &width, &height, &channels, 0);
 
-	spriteatlas->texture->width = width;
-	spriteatlas->texture->height = height;
-	spriteatlas->texture->channels = channels;
+	texture.width = width;
+	texture.height = height;
+	texture.channels = channels;
 	
-	int tilex = spriteatlas->texture->width/tilew;
-	int tiley = spriteatlas->texture->height/tileh;
+	int tilex = texture.width/tilew;
+	int tiley = texture.height/tileh;
 
 	glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA, tilew, tileh, tilex * tiley, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 
@@ -62,21 +55,21 @@ TextureArray2D *TextureArray_LoadFile(int tilew, int tileh, const char* filename
 
 	stbi_image_free(data);
 
-	spriteatlas->texture->channels = channels;
-	spriteatlas->tilecount = offset;
-	spriteatlas->tileheight = tileh;
-	spriteatlas->tilewidth = tilew;
-	spriteatlas->columns = tilex;
-
-	gl_context->sprite_atlas_store.push_back(spriteatlas);
-
-	return spriteatlas.get();
+	texture.channels = channels;
+	tilecount = offset;
+	tileheight = tileh;
+	tilewidth = tilew;
+	columns = tilex;
 }
 
 void TextureArray2D::Bind() {
-	glBindTexture(GL_TEXTURE_2D_ARRAY, this->texture->id);
+	glBindTexture(GL_TEXTURE_2D_ARRAY, texture.id);
 }
 
 void TextureArray2D::UnBind() {
 	glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
+}
+
+TextureArray2D::~TextureArray2D() {
+	
 }

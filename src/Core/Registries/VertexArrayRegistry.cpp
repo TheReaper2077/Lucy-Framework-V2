@@ -38,7 +38,7 @@ VertexArray* lf::VertexArrayRegistry::GetVertexArray(uint32_t flags) {
 			descriptor.push_back({ uv7, 10, 2, GL_FLOAT });
 		}
 
-		bit_layout[flags] = VertexArray_Create(descriptor);
+		bit_layout[flags] = new VertexArray(descriptor);
 	}
 
 	return bit_layout[flags];

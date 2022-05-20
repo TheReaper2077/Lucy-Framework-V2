@@ -1,4 +1,4 @@
-#include <OpenGL.h>
+#include <RenderAPI.h>
 
 #ifndef SHADER_TEXTUREARRAY
 #define SHADER_TEXTUREARRAY "u_texturearray"
@@ -26,7 +26,7 @@ static std::string read_file(const std::string &filename) {
 	return text;
 }
 
-extern std::shared_ptr<OpenGLContext> gl_context;
+// extern std::shared_ptr<OpenGLContext> gl_context;
 
 void Compile(unsigned int &program, const std::string &filename, unsigned int target, bool file) {
 	unsigned int shader = glCreateShader(target);
@@ -54,75 +54,65 @@ void Compile(unsigned int &program, const std::string &filename, unsigned int ta
 	glDeleteShader(shader);
 };
 
-Shader *Shader_Create(std::string name, const std::string &vs_filename, const std::string &fs_filename, bool file) {
-	GL_ASSERT(gl_context != nullptr);
+Shader::~Shader() {
+	glDeleteProgram(program);
+}
 
-	unsigned int program = glCreateProgram();
+Shader::Shader(std::string name, const std::string &vs_filename, const std::string &fs_filename, bool file) {
+	program = glCreateProgram();
 
 	Compile(program, vs_filename, GL_VERTEX_SHADER, file);
 	Compile(program, fs_filename, GL_FRAGMENT_SHADER, file);
 
 	glLinkProgram(program);
 
-	auto shader = std::make_shared<Shader>();
+	this->name = name;
 
-	shader->id = program;
-	shader->name = name;
+	this->Bind();
 
-	gl_context->shader_store.push_back(shader);
-	
-	auto* shader_ptr = shader.get();
-
-	shader_ptr->Bind();
-
-	if (shader_ptr->GetUniformLoc(SHADER_TEXTUREARRAY)) {
-		shader_ptr->texture_array = true;
+	if (this->GetUniformLoc(SHADER_TEXTUREARRAY)) {
+		this->texture_array = true;
 
 		// for (int i = 0; i < 32; i++) {
 		// 	glActiveTexture(GL_TEXTURE0 + i);
 		// 	auto tmp = std::string(SHADER_TEXTUREARRAY) + std::to_string(i);
-		// 	Shader_SetUniformi(shader_ptr, tmp, i);
+		// 	Shader_SetUniformi(this, tmp, i);
 		// }
 		glActiveTexture(GL_TEXTURE0);
-		shader_ptr->SetUniformi(SHADER_TEXTUREARRAY, 0);
+		this->SetUniformi(SHADER_TEXTUREARRAY, 0);
 	}
-	if (shader_ptr->GetUniformLoc(SHADER_TEXTURES)) {
-		shader_ptr->textures = true;
+	if (this->GetUniformLoc(SHADER_TEXTURES)) {
+		this->textures = true;
 		
 		for (int i = 0; i < 32; i++) {
 			glActiveTexture(GL_TEXTURE0 + i);
 			auto tmp = std::string(SHADER_TEXTURES) + std::to_string(i);
-			shader_ptr->SetUniformi(tmp, i);
+			this->SetUniformi(tmp, i);
 		}
 	}
-	if (shader_ptr->GetUniformLoc("light")) {
-		shader_ptr->light = true;
+	if (this->GetUniformLoc("light")) {
+		this->light = true;
 	}
-	if (shader_ptr->GetUniformLoc("material")) {
-		shader_ptr->material = true;
+	if (this->GetUniformLoc("material")) {
+		this->material = true;
 	}
-
-	return shader_ptr;
 }
 
 void Shader::Bind() {
-	if (gl_context->binding_shader == this->id) return;
-	gl_context->binding_shader = this->id;
-	glUseProgram(this->id);
+	glUseProgram(program);
 }
 
 void Shader::UnBind() {
-	gl_context->binding_vertexarray = 0;
 	glUseProgram(0);
 }
 
 void Shader::BindUniformBlock(std::string name, unsigned int index) {
-	glUniformBlockBinding(this->id, glGetUniformBlockIndex(this->id, name.c_str()), index);
+	glUniformBlockBinding(program, glGetUniformBlockIndex(program, name.c_str()), index);
 }
 
 unsigned int Shader::GetUniformLoc(std::string name) {
 	if (this->uniform_location_map.find(name) == this->uniform_location_map.end())
-		this->uniform_location_map[name] = glGetUniformLocation(this->id, name.c_str());
+		this->uniform_location_map[name] = glGetUniformLocation(program, name.c_str());
 		
 	return this->uniform_location_map[name];
 }

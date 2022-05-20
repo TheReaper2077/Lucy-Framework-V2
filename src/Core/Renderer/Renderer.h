@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../ECS.h"
-#include <OpenGL.h>
+#include <RenderAPI.h>
 
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>

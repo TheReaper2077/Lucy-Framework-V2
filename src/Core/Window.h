@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ECS.h"
-#include <OpenGL.h>
+#include <RenderAPI.h>
 
 namespace lf {
 	struct Window {

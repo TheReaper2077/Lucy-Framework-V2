@@ -1,38 +1,23 @@
 #pragma once
 
-#include <OpenGL.h>
+#include <RenderAPI.h>
 
-extern std::shared_ptr<OpenGLContext> gl_context;
-
-VertexBuffer *VertexBuffer_Create() {
-	assert(gl_context != nullptr);
-
-	auto vertexbuffer = std::make_shared<VertexBuffer>();
-
-	glGenBuffers(1, &vertexbuffer->id);
-	vertexbuffer->type = DYNAMIC;
-	vertexbuffer->size = 0;
-
-	gl_context->vertex_buffer_store.push_back(vertexbuffer);
-
-	return vertexbuffer.get();
+VertexBuffer::VertexBuffer() {
+	glGenBuffers(1, &id);
+	type = DYNAMIC;
+	size = 0;
 }
 
 void VertexBuffer::Bind() {
-	if (gl_context->binding_vertexbuffer == this->id) return;
-	gl_context->binding_vertexbuffer = this->id;
 	glBindBuffer(GL_ARRAY_BUFFER, this->id);
 }
 
 void VertexBuffer::UnBind() {
-	gl_context->binding_vertexbuffer = 0;
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void VertexBuffer::Destroy() {
-	glDeleteBuffers(1, &this->id);
-	// free(vertexbuffer);
-	// vertexbuffer = nullptr;
+VertexBuffer::~VertexBuffer() {
+	glDeleteBuffers(1, &id);
 }
 
 void VertexBuffer::Allocate(std::size_t size) {

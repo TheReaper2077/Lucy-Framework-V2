@@ -1,3 +1,7 @@
+#ifndef STB_IMAGE_IMPLEMENTATION
+	#define STB_IMAGE_IMPLEMENTATION
+#endif
+
 #include <iostream>
 
 #include <chrono>
@@ -39,7 +43,6 @@ int main(int ArgCount, char **Args) {
 	engine.context = SDL_GL_CreateContext(engine.window);
 
 	gladLoadGLLoader(SDL_GL_GetProcAddress);
-	OpenGL_CreateContext();
 
 	auto& gamewindow = registry.store<lf::GameWindow>();
 
@@ -63,8 +66,8 @@ int main(int ArgCount, char **Args) {
 		
 		auto& editorwindow = registry.store<lf::EditorWindow>();
 
-		editorwindow.framebuffer = FrameBuffer_Create(editorwindow.width, editorwindow.height, true);
-		gamewindow.framebuffer = FrameBuffer_Create(gamewindow.width, gamewindow.height, true);
+		editorwindow.framebuffer = new FrameBuffer(editorwindow.width, editorwindow.height, true);
+		gamewindow.framebuffer = new FrameBuffer(gamewindow.width, gamewindow.height, true);
 	#endif
 
 	renderer.Init(&registry);

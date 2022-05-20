@@ -1,18 +1,10 @@
 #pragma once
 
-#include <iostream>
-#include <OpenGL.h>
+#include <RenderAPI.h>
 
-extern std::shared_ptr<OpenGLContext> gl_context;
-
-VertexArray* VertexArray_Create(std::vector<VertexArrayAttribDescriptor> layouts) {
-	GL_ASSERT(gl_context != nullptr);
-
-	auto vertexarray = std::make_shared<VertexArray>();
-	gl_context->vertex_array_store.push_back(vertexarray);
-
-	glGenVertexArrays(1, &vertexarray->id);
-	vertexarray->Bind();
+VertexArray::VertexArray(std::vector<VertexArrayAttribDescriptor> layouts) {
+	glGenVertexArrays(1, &this->id);
+	this->Bind();
 
 	uint32_t relativeoffset = 0;
 	uint32_t elem_relativeoffset = 0;
@@ -21,64 +13,64 @@ VertexArray* VertexArray_Create(std::vector<VertexArrayAttribDescriptor> layouts
 		GL_ASSERT(attrib.attr_type < VertexArrayAttrib_COUNT);
 
 		if (attrib.attr_type == position) {
-			vertexarray->position_offset = elem_relativeoffset;
-			GL_ASSERT(!vertexarray->has_position);
-			vertexarray->has_position = true;
+			this->position_offset = elem_relativeoffset;
+			GL_ASSERT(!this->has_position);
+			this->has_position = true;
 		}
 		if (attrib.attr_type == normal) {
-			vertexarray->normal_offset = elem_relativeoffset;
-			GL_ASSERT(!vertexarray->has_normal);
-			vertexarray->has_normal = true;
+			this->normal_offset = elem_relativeoffset;
+			GL_ASSERT(!this->has_normal);
+			this->has_normal = true;
 		}
 		if (attrib.attr_type == color) {
-			vertexarray->color_offset = elem_relativeoffset;
-			GL_ASSERT(!vertexarray->has_color);
-			vertexarray->has_color = true;
+			this->color_offset = elem_relativeoffset;
+			GL_ASSERT(!this->has_color);
+			this->has_color = true;
 		}
 		if (attrib.attr_type == uv0) {
-			vertexarray->uv0_offset = elem_relativeoffset;
-			GL_ASSERT(!vertexarray->has_uv0);
-			vertexarray->has_uv0 = true;
+			this->uv0_offset = elem_relativeoffset;
+			GL_ASSERT(!this->has_uv0);
+			this->has_uv0 = true;
 		}
 		if (attrib.attr_type == uv1) {
-			vertexarray->uv1_offset = elem_relativeoffset;
-			GL_ASSERT(!vertexarray->has_uv1);
-			vertexarray->has_uv1 = true;
+			this->uv1_offset = elem_relativeoffset;
+			GL_ASSERT(!this->has_uv1);
+			this->has_uv1 = true;
 		}
 		if (attrib.attr_type == uv2) {
-			vertexarray->uv2_offset = elem_relativeoffset;
-			GL_ASSERT(!vertexarray->has_uv2);
-			vertexarray->has_uv2 = true;
+			this->uv2_offset = elem_relativeoffset;
+			GL_ASSERT(!this->has_uv2);
+			this->has_uv2 = true;
 		}
 		if (attrib.attr_type == uv3) {
-			vertexarray->uv3_offset = elem_relativeoffset;
-			GL_ASSERT(!vertexarray->has_uv3);
-			vertexarray->has_uv3 = true;
+			this->uv3_offset = elem_relativeoffset;
+			GL_ASSERT(!this->has_uv3);
+			this->has_uv3 = true;
 		}
 		if (attrib.attr_type == uv4) {
-			vertexarray->uv4_offset = elem_relativeoffset;
-			GL_ASSERT(!vertexarray->has_uv4);
-			vertexarray->has_uv4 = true;
+			this->uv4_offset = elem_relativeoffset;
+			GL_ASSERT(!this->has_uv4);
+			this->has_uv4 = true;
 		}
 		if (attrib.attr_type == uv5) {
-			vertexarray->uv5_offset = elem_relativeoffset;
-			GL_ASSERT(!vertexarray->has_uv5);
-			vertexarray->has_uv5 = true;
+			this->uv5_offset = elem_relativeoffset;
+			GL_ASSERT(!this->has_uv5);
+			this->has_uv5 = true;
 		}
 		if (attrib.attr_type == uv6) {
-			vertexarray->uv6_offset = elem_relativeoffset;
-			GL_ASSERT(!vertexarray->has_uv6);
-			vertexarray->has_uv6 = true;
+			this->uv6_offset = elem_relativeoffset;
+			GL_ASSERT(!this->has_uv6);
+			this->has_uv6 = true;
 		}
 		if (attrib.attr_type == uv7) {
-			vertexarray->uv7_offset = elem_relativeoffset;
-			GL_ASSERT(!vertexarray->has_uv7);
-			vertexarray->has_uv7 = true;
+			this->uv7_offset = elem_relativeoffset;
+			GL_ASSERT(!this->has_uv7);
+			this->has_uv7 = true;
 		}
 
-		glVertexArrayAttribFormat(vertexarray->id, attrib.idx, attrib.size, attrib.type, false, relativeoffset);
-		glVertexArrayAttribBinding(vertexarray->id, attrib.idx, 0);
-		glEnableVertexArrayAttrib(vertexarray->id, attrib.idx);
+		glVertexArrayAttribFormat(this->id, attrib.idx, attrib.size, attrib.type, false, relativeoffset);
+		glVertexArrayAttribBinding(this->id, attrib.idx, 0);
+		glEnableVertexArrayAttrib(this->id, attrib.idx);
 
 		switch(attrib.type) {
 			case GL_FLOAT:
@@ -104,20 +96,15 @@ VertexArray* VertexArray_Create(std::vector<VertexArrayAttribDescriptor> layouts
 		elem_relativeoffset += attrib.size;
 	}
 
-	vertexarray->stride = relativeoffset;
-	vertexarray->elem_stride = elem_relativeoffset;
-
-	return vertexarray.get();
+	this->stride = relativeoffset;
+	this->elem_stride = elem_relativeoffset;
 }
 
 void VertexArray::Bind() {
-	if (gl_context->binding_vertexarray == id) return;
-	gl_context->binding_vertexarray = id;
 	glBindVertexArray(id);
 }
 
 void VertexArray::UnBind() {
-	gl_context->binding_vertexarray = 0;
 	glBindVertexArray(0);
 }
 

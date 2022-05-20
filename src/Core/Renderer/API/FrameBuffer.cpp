@@ -1,21 +1,17 @@
 #pragma once
 
-#include <OpenGL.h>
+#include <RenderAPI.h>
 
-extern std::shared_ptr<OpenGLContext> gl_context;
+FrameBuffer::FrameBuffer(int width, int height, bool picking) {
+	this->width = width;
+	this->height = height;
 
-FrameBuffer* FrameBuffer_Create(int width, int height, bool picking) {
-	auto framebuffer = std::make_shared<FrameBuffer>();
+	glGenFramebuffers(1, &this->id);
 
-	framebuffer->width = width;
-	framebuffer->height = height;
+	this->Bind();
 
-	glGenFramebuffers(1, &framebuffer->id);
-
-	framebuffer->Bind();
-
-	glGenTextures(1, &framebuffer->texture);
-	glBindTexture(GL_TEXTURE_2D, framebuffer->texture);
+	glGenTextures(1, &this->texture);
+	glBindTexture(GL_TEXTURE_2D, this->texture);
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 	
@@ -27,8 +23,8 @@ FrameBuffer* FrameBuffer_Create(int width, int height, bool picking) {
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	if (picking) {
-		glGenTextures(1, &framebuffer->picking);
-		glBindTexture(GL_TEXTURE_2D, framebuffer->picking);
+		glGenTextures(1, &this->picking);
+		glBindTexture(GL_TEXTURE_2D, this->picking);
 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 		
@@ -38,7 +34,7 @@ FrameBuffer* FrameBuffer_Create(int width, int height, bool picking) {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 		glBindTexture(GL_TEXTURE_2D, 0);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, framebuffer->picking, 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, this->picking, 0);
 	}
 
 	unsigned int depth_stencil;
@@ -49,7 +45,7 @@ FrameBuffer* FrameBuffer_Create(int width, int height, bool picking) {
 	
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, framebuffer->texture, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->texture, 0);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, depth_stencil, 0);
 
 	if (picking) {
@@ -62,20 +58,17 @@ FrameBuffer* FrameBuffer_Create(int width, int height, bool picking) {
 
 	GL_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
 
-	framebuffer->UnBind();
-
-	gl_context->frame_buffer_store.push_back(framebuffer);
-
-	return framebuffer.get();
+	this->UnBind();
 }
 
 void FrameBuffer::Bind() {
-	// if (gl_context->binding_framebuffer == this->id) return;
-	// gl_context->binding_framebuffer = this->id;
 	glBindFramebuffer(GL_FRAMEBUFFER, this->id);
 }
 
 void FrameBuffer::UnBind() {
-	gl_context->binding_framebuffer = 0;
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+FrameBuffer::~FrameBuffer() {
+	glDeleteFramebuffers(1, &id);
 }

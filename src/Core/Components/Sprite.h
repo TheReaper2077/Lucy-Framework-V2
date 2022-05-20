@@ -3,7 +3,7 @@
 #include <string>
 #include <glm/vec2.hpp>
 
-#include <OpenGL.h>
+#include <RenderAPI.h>
 
 namespace lf {
 	namespace Component {
