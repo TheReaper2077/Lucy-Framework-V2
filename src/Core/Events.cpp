@@ -20,6 +20,8 @@ void lf::Events::Update(Registry& registry) {
 	auto& window = registry.store<Window>();
 	auto& engine = registry.store<Engine>();
 
+	dropped_file = "";
+
 	while (SDL_PollEvent(&engine.event)) {
 		if (engine.event.type == SDL_QUIT) {
 			engine.quit = true;
@@ -69,7 +71,7 @@ void lf::Events::Update(Registry& registry) {
 			mouse_scrolldown = (engine.event.wheel.y < 0);
 		}
 		if (engine.event.type == SDL_DROPFILE) {
-			std::cout << engine.event.drop.file << '\n';
+			dropped_file = std::string(engine.event.drop.file);
 		}
 		
 		#ifdef ENABLE_EDITOR

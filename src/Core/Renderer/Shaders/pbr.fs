@@ -154,12 +154,15 @@ uniform Material material;
 
 #define SET_UNIFORMS
 
+uniform sampler2D textures[32];
+
 uniform int has_texture;
+
 uniform int wireframe_mode;
+uniform vec4 wireframe_color;
 
 uniform sampler2D texture_map;
 
-uniform vec4 wireframe_color;
 uniform int drawcount;
 
 void main() {

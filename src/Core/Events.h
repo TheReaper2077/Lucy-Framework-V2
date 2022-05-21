@@ -34,6 +34,8 @@ namespace lf {
 		glm::vec2 window_mousepos;
 		glm::vec2 drag_mousepos;
 
+		std::string dropped_file;
+
 		std::set<unsigned int> mouse_pressed;
 
 		Events() {}

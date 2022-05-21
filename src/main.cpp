@@ -19,14 +19,17 @@
 
 #include "Core/Registries/ShaderRegistry.h"
 #include "Core/Registries/VertexArrayRegistry.h"
+#include "Core/Registries/SpriteRegistry.h"
 
 #include <glm/gtx/string_cast.hpp>
+
+#include <format>
 
 int main(int ArgCount, char **Args) {
 	lf::Registry registry;
 
 	auto& engine = registry.store<lf::Engine>();
-	auto& eventhandler = registry.store<lf::Events>();
+	auto& events = registry.store<lf::Events>();
 	auto& window = registry.store<lf::Window>();
 
 	auto& renderer = registry.store<lf::Renderer>();
@@ -81,7 +84,7 @@ int main(int ArgCount, char **Args) {
 	while (!engine.quit) {
 		const auto& start_time = std::chrono::high_resolution_clock::now();
 
-		eventhandler.Update(registry);
+		events.Update(registry);
 
 		lf::CameraSystem(registry);
 
@@ -100,7 +103,7 @@ int main(int ArgCount, char **Args) {
 
 				glReadBuffer(GL_COLOR_ATTACHMENT1);
 
-				glm::vec3 pos = eventhandler.GetMousePos(editorwindow);
+				glm::vec3 pos = events.GetMousePos(editorwindow);
 				
 				glm::vec4 pixel;
 				glReadPixels(pos.x, pos.y, 1, 1, GL_RGBA, GL_FLOAT, &pixel[0]);
@@ -113,18 +116,28 @@ int main(int ArgCount, char **Args) {
 					}
 					idx /= 2;
 
-					if (eventhandler.mouse_pressed.contains(SDL_BUTTON_LEFT) && toggle)
-						registry.store<lf::Editor>().selected_entity = renderer.drawn_sprite_entities[int(pixel.z)][idx];
+					if (events.mouse_pressed.contains(SDL_BUTTON_LEFT) && toggle) {
+						auto& selected_entity = registry.store<lf::Editor>().selected_entity;
+
+						if (events.dropped_file != "") {
+							selected_entity = renderer.drawn_sprite_entities[int(pixel.z)][idx];
+							
+							auto& spriterenderer = registry.get_or_emplace<lf::Component::SpriteRenderer>(selected_entity);
+							auto& sprite = registry.get_or_emplace<lf::Component::Sprite>(selected_entity);
+
+							sprite.texture = new Texture(events.dropped_file.c_str());
+						}
+					}
 				}
 
 				glReadBuffer(GL_NONE);
 
 				editorwindow.framebuffer->UnBind();
 
-				toggle = !eventhandler.mouse_pressed.contains(SDL_BUTTON_LEFT);
+				toggle = !events.mouse_pressed.contains(SDL_BUTTON_LEFT);
 			}
 
-			if (eventhandler.key_pressed.contains(SDL_SCANCODE_LCTRL) && eventhandler.key_pressed.contains(SDL_SCANCODE_S))
+			if (events.key_pressed.contains(SDL_SCANCODE_LCTRL) && events.key_pressed.contains(SDL_SCANCODE_S))
 				functions.SaveEntities();
 			
 			ImGui_ImplOpenGL3_NewFrame();

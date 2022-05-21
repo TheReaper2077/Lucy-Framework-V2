@@ -2,7 +2,8 @@
 
 #include <SDL2/SDL.h>
 
-// #define ENABLE_EDITOR
+#define ENABLE_EDITOR
+// https://us02web.zoom.us/j/83303389400?pwd=UnRDK3NuOWFveHZ1OHhTUTJGL3I0dz09
 
 namespace lf {
 	struct Engine {

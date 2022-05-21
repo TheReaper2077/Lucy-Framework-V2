@@ -136,6 +136,8 @@ void lf::Renderer::RenderSprite() {
 		auto& spriterenderer = registry->get<SpriteRenderer>(entity);
 		auto quaternion = transform.GetRotationQuat();
 
+		auto* sprite = registry->try_get<Sprite>(entity);
+
 		if (!spriterenderer.visible) {
 			vertexcount -= 4;
 			continue;
@@ -230,17 +232,27 @@ void lf::Renderer::RenderMesh() {
 void lf::Renderer::RenderCamera() {
 	using namespace lf::Component;
 
-	shader->SetUniformi("has_texture", 1);
+	shader->SetUniformi("wireframe_mode", 1);
+
+	shader->SetUniformVec4("wireframe_color", &glm::vec4(1, 1, 0, 1)[0]);
+
+	VertexArray* vertexarray = registry->store<VertexArrayRegistry>().GetVertexArray(POSITION_ATTRIB_BIT);
 
 	for (auto [entity, tag, transform, camera]: registry->view<Tag, Transform, Camera>().each()) {
 		float aspect_ratio = camera.width / camera.height;
 		float horizontal_fov = camera.fov;
 		float vertical_fov = camera.fov / aspect_ratio;
 
+		float far_highten = (std::tan(glm::radians(vertical_fov / 2)) * camera.camera_far) / (camera.camera_far - camera.camera_near);
+		float far_widen = (std::tan(glm::radians(horizontal_fov / 2)) * camera.camera_far) / (camera.camera_far - camera.camera_near);
+
+		float near_highten = (std::tan(glm::radians(vertical_fov / 2)) * camera.camera_near) / (camera.camera_far - camera.camera_near);
+		float near_widen = (std::tan(glm::radians(horizontal_fov / 2)) * camera.camera_near) / (camera.camera_far - camera.camera_near);
+
 		
 	}
 
-	shader->SetUniformi("has_texture", 0);
+	shader->SetUniformi("wireframe_mode", 0);
 }
 
 void lf::Renderer::SetLighting() {
