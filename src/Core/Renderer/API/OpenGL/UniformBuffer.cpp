@@ -3,16 +3,16 @@
 #include <glad/glad.h>
 #include <assert.h>
 
-UniformBuffer::UniformBuffer() {
+lfal::UniformBuffer::UniformBuffer() {
 	glGenBuffers(1, &id);
 	size = 0;
 }
 
-UniformBuffer::~UniformBuffer() {
+lfal::UniformBuffer::~UniformBuffer() {
 	glDeleteBuffers(1, &id);
 }
 
-void UniformBuffer::Allocate(size_t size) {
+void lfal::UniformBuffer::Allocate(size_t size) {
 	if (this->size > size) return;
 
 	Bind();
@@ -20,25 +20,25 @@ void UniformBuffer::Allocate(size_t size) {
 	this->size = size;
 };
 
-void UniformBuffer::AddDataDynamic(void* data, size_t size, size_t offset) {
+void lfal::UniformBuffer::AddDataDynamic(void* data, size_t size, size_t offset) {
 	assert(offset + size <= this->size);
 
 	Bind();
 	glBufferSubData(GL_UNIFORM_BUFFER, offset, size, data);
 }
 
-void UniformBuffer::BindRange(unsigned int index, size_t size, size_t offset) {
+void lfal::UniformBuffer::BindRange(unsigned int index, size_t size, size_t offset) {
 	Bind();
 	glBindBufferRange(GL_UNIFORM_BUFFER, index, this->id, offset, size);
 }
 
-void UniformBuffer::Bind() {
+void lfal::UniformBuffer::Bind() {
 	// if (gl_context->binding_uniformbuffer == this->id) return;
 	// gl_context->binding_uniformbuffer = this->id;
 	glBindBuffer(GL_UNIFORM_BUFFER, this->id);
 }
 
-void UniformBuffer::UnBind() {
+void lfal::UniformBuffer::UnBind() {
 	// gl_context->binding_uniformbuffer = 0;
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }

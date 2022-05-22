@@ -25,17 +25,17 @@ static std::string read_file(const std::string &filename) {
 
 namespace lf {
 	struct ShaderRegistry {
-		std::unordered_map<std::string, Shader*> registry;
+		std::unordered_map<std::string, lfal::Shader*> registry;
 
 		ShaderRegistry() {}
 
-		Shader* GetShader(uint32_t flags, Registry* registry);
+		lfal::Shader* GetShader(uint32_t flags, Registry* registry);
 
-		void AddShader(Shader* shader);
+		void AddShader(lfal::Shader* shader);
 
-		Shader* GetShader(std::string name);
+		lfal::Shader* GetShader(std::string name);
 
-		Shader* RegisterShader(uint32_t shader_flags, int point_light, int dir_light);
+		lfal::Shader* RegisterShader(uint32_t shader_flags, int point_light, int dir_light);
 
 		std::string SetUniforms(int point_light, int dir_light);
 

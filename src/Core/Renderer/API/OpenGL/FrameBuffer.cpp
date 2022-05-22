@@ -5,7 +5,7 @@
 #include <glad/glad.h>
 #include <assert.h>
 
-FrameBuffer::FrameBuffer(int width, int height, bool picking) {
+lfal::FrameBuffer::FrameBuffer(int width, int height, bool picking) {
 	this->width = width;
 	this->height = height;
 
@@ -64,14 +64,14 @@ FrameBuffer::FrameBuffer(int width, int height, bool picking) {
 	this->UnBind();
 }
 
-void FrameBuffer::Bind() {
+void lfal::FrameBuffer::Bind() {
 	glBindFramebuffer(GL_FRAMEBUFFER, this->id);
 }
 
-void FrameBuffer::UnBind() {
+void lfal::FrameBuffer::UnBind() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-FrameBuffer::~FrameBuffer() {
+lfal::FrameBuffer::~FrameBuffer() {
 	glDeleteFramebuffers(1, &id);
 }

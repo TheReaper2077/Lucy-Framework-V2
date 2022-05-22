@@ -1,23 +1,25 @@
 #pragma once
 
-typedef unsigned int VertexBufferId;
+namespace lfal {
+	typedef unsigned int VertexBufferId;
+	
+	enum BufferType_ {
+		BufferType_STATIC,
+		BufferType_DYNAMIC
+	};
 
-enum BufferType_ {
-	BufferType_STATIC,
-	BufferType_DYNAMIC
-};
+	struct VertexBuffer {
+		VertexBufferId id;
+		BufferType_ type;
+		size_t size = 0;
 
-struct VertexBuffer {
-	VertexBufferId id;
-	BufferType_ type;
-	size_t size = 0;
+		VertexBuffer();
+		~VertexBuffer();
 
-	VertexBuffer();
-	~VertexBuffer();
-
-	void Bind();
-	void UnBind();
-	void Allocate(size_t size);
-	void AddDataDynamic(void* data, size_t size, size_t offset = 0);
-	void AddDataStatic(void* data, size_t size);
-};
+		void Bind();
+		void UnBind();
+		void Allocate(size_t size);
+		void AddDataDynamic(void* data, size_t size, size_t offset = 0);
+		void AddDataStatic(void* data, size_t size);
+	};
+}

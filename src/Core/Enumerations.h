@@ -8,17 +8,6 @@ namespace lf {
 		Projection_COUNT
 	};
 
-	enum Primitive {
-		POINT,
-		LINE,
-		LINE_STRIP,
-		TRIANGLE,
-		TRIANGLE_FAN,
-		TRIANGLE_STRIP,
-
-		Primitive_COUNT
-	};
-
 	enum CameraType {
 		FPS,
 		TPS,
@@ -56,27 +45,5 @@ namespace lf {
 		Shininess_Float,
 
 		MaterialAttrib_COUNT
-	};
-
-	enum DrawMode {
-		NONE = 0,
-		INDIRECT,
-		INSTANCED,
-		INSTANCED_BASEINSTANCE,
-		
-		INDEXED,
-		INDEXED_INDIRECT,
-		INDEXED_INSTANCED,
-		INDEXED_BASEVERTEX,
-		INDEXED_INSTANCED_BASEINSTANCE,
-		INDEXED_INSTANCED_BASEVERTEX,
-		INDEXED_INSTANCED_BASEVERTEX_BASEINSTANCE,
-
-		RANGE_INDEXED,
-		RANGE_INDEXED_BASEVERTEX,
-
-		PIXELS,
-
-		DrawMode_COUNT
 	};
 }

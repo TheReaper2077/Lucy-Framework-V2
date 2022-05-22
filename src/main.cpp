@@ -23,7 +23,7 @@
 
 #include <glm/gtx/string_cast.hpp>
 
-#include <format>
+#include <glad/glad.h>
 
 int main(int ArgCount, char **Args) {
 	lf::Registry registry;
@@ -69,8 +69,8 @@ int main(int ArgCount, char **Args) {
 		
 		auto& editorwindow = registry.store<lf::EditorWindow>();
 
-		editorwindow.framebuffer = new FrameBuffer(editorwindow.width, editorwindow.height, true);
-		gamewindow.framebuffer = new FrameBuffer(gamewindow.width, gamewindow.height, true);
+		editorwindow.framebuffer = new lfal::FrameBuffer(editorwindow.width, editorwindow.height, true);
+		gamewindow.framebuffer = new lfal::FrameBuffer(gamewindow.width, gamewindow.height, true);
 	#endif
 
 	renderer.Init(&registry);

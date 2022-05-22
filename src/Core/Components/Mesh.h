@@ -28,10 +28,10 @@ namespace lf {
 
 			std::vector<uint32_t> indices;
 
-			Primitive primitive = TRIANGLE;
+			// lfal::Primitive primitive = Primitive;
 
-			VertexBuffer* vertexbuffer = nullptr;
-			IndexBuffer* indexbuffer = nullptr;
+			lfal::VertexBuffer* vertexbuffer = nullptr;
+			lfal::IndexBuffer* indexbuffer = nullptr;
 
 			uint32_t vertexcount = 0;
 			uint32_t indexcount = 0;

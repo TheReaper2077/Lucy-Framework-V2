@@ -7,7 +7,7 @@
 #include <glad/glad.h>
 #include <assert.h>
 
-VertexArray::VertexArray(std::vector<VertexArrayAttribDescriptor> layouts) {
+lfal::VertexArray::VertexArray(std::vector<VertexArrayAttribDescriptor> layouts) {
 	glGenVertexArrays(1, &this->id);
 	this->Bind();
 
@@ -15,11 +15,11 @@ VertexArray::VertexArray(std::vector<VertexArrayAttribDescriptor> layouts) {
 	uint32_t elem_relativeoffset = 0;
 
 	for (auto& attrib: layouts) {
-		glVertexArrayAttribFormat(this->id, attrib.idx, attrib.size, attrib.type, false, relativeoffset);
+		glVertexArrayAttribFormat(this->id, attrib.idx, attrib.size, GetTypeMap(attrib.type), false, relativeoffset);
 		glVertexArrayAttribBinding(this->id, attrib.idx, 0);
 		glEnableVertexArrayAttrib(this->id, attrib.idx);
 
-		switch(attrib.type) {
+		switch(GetTypeMap(attrib.type)) {
 			case GL_FLOAT:
 				relativeoffset += sizeof(GLfloat)*attrib.size;
 				break;
@@ -47,18 +47,18 @@ VertexArray::VertexArray(std::vector<VertexArrayAttribDescriptor> layouts) {
 	this->elem_stride = elem_relativeoffset;
 }
 
-void VertexArray::Bind() {
+void lfal::VertexArray::Bind() {
 	glBindVertexArray(id);
 }
 
-void VertexArray::UnBind() {
+void lfal::VertexArray::UnBind() {
 	glBindVertexArray(0);
 }
 
-void VertexArray::BindVertexBuffer(VertexBuffer *vertexbuffer, std::size_t stride, std::size_t offset) {
+void lfal::VertexArray::BindVertexBuffer(VertexBuffer *vertexbuffer, std::size_t stride, std::size_t offset) {
 	glVertexArrayVertexBuffer(id, 0, vertexbuffer->id, offset, (stride == 0) ? stride : stride);
 }
 
-void VertexArray::BindIndexBuffer(IndexBuffer *indexbuffer) {
+void lfal::VertexArray::BindIndexBuffer(IndexBuffer *indexbuffer) {
 	glVertexArrayElementBuffer(id, indexbuffer->id);
 }

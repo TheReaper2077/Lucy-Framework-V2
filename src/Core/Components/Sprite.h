@@ -10,7 +10,7 @@ namespace lf {
 		struct Sprite {
 			std::string id;
 
-			Texture* texture = nullptr;
+			lfal::Texture* texture = nullptr;
 			glm::vec2 uv0 = glm::vec2(0, 0);
 			glm::vec2 uv1 = glm::vec2(0, 0);
 		};

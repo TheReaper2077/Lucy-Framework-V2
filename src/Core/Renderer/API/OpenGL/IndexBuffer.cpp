@@ -4,28 +4,28 @@
 #include <glad/glad.h>
 #include <assert.h>
 
-IndexBuffer::IndexBuffer(VertexArray* vertexarray) {
+lfal::IndexBuffer::IndexBuffer(VertexArray* vertexarray) {
 	glGenBuffers(1, &id);
 	size = 0;
 
 	this->vertexarray = vertexarray;
 }
 
-void IndexBuffer::Bind() {
+void lfal::IndexBuffer::Bind() {
 	vertexarray->Bind();
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->id);
 }
 
-void IndexBuffer::UnBind() {
+void lfal::IndexBuffer::UnBind() {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 
-IndexBuffer::~IndexBuffer() {
+lfal::IndexBuffer::~IndexBuffer() {
 	glDeleteBuffers(1, &id);
 }
 
-void IndexBuffer::Allocate(std::size_t size) {
+void lfal::IndexBuffer::Allocate(std::size_t size) {
 	if (this->size > size) return;
 
 	this->Bind();
@@ -33,7 +33,7 @@ void IndexBuffer::Allocate(std::size_t size) {
 	this->size = size;
 };
 
-void IndexBuffer::AddData(void* data, std::size_t size, std::size_t offset) {
+void lfal::IndexBuffer::AddData(void* data, std::size_t size, std::size_t offset) {
 	if (size == 0) return;
 
 	if (offset == 0 && size > this->size) {

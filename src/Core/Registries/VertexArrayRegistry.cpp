@@ -2,9 +2,9 @@
 #include <iostream>
 #include <bitset>
        
-VertexArray* lf::VertexArrayRegistry::GetVertexArray(uint32_t flags) {
+lfal::VertexArray* lf::VertexArrayRegistry::GetVertexArray(uint32_t flags) {
 	if (bit_layout.find(flags) == bit_layout.end()) {
-		std::vector<VertexArrayAttribDescriptor> descriptor;
+		std::vector<lfal::VertexArrayAttribDescriptor> descriptor;
 		std::array<bool, VertexArrayAttrib_COUNT> attrib_present;
 		std::array<uint32_t, VertexArrayAttrib_COUNT> attrib_offset;
 
@@ -15,14 +15,14 @@ VertexArray* lf::VertexArrayRegistry::GetVertexArray(uint32_t flags) {
 				attrib_offset[i] = offset;
 				attrib_present[i] = true;
 
-				descriptor.push_back({ i, (uint32_t)VertexArrayAttribSizeMap_[i], GL_FLOAT });				
+				descriptor.push_back({ i, (uint32_t)VertexArrayAttribSizeMap_[i], lfal::FLOAT });
 				offset += VertexArrayAttribSizeMap_[i];
 			} else {
 				attrib_present[i] = false;
 			}
 		}
 
-		auto* vertexarray = new VertexArray(descriptor);
+		auto* vertexarray = new lfal::VertexArray(descriptor);
 		bit_layout[flags] = vertexarray;
 		this->offset[vertexarray] = attrib_offset;
 		this->is_present[vertexarray] = attrib_present;

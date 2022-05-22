@@ -86,34 +86,34 @@ namespace lf {
 		};
 		
 	public:
-		std::unordered_map<std::size_t, VertexArray*> bit_layout;
-		std::unordered_map<std::size_t, VertexArray*> custom_layout;
+		std::unordered_map<std::size_t, lfal::VertexArray*> bit_layout;
+		std::unordered_map<std::size_t, lfal::VertexArray*> custom_layout;
 
-		std::unordered_map<VertexArray*, std::array<uint32_t, VertexArrayAttrib_COUNT>> offset;
-		std::unordered_map<VertexArray*, std::array<bool, VertexArrayAttrib_COUNT>> is_present;
+		std::unordered_map<lfal::VertexArray*, std::array<uint32_t, VertexArrayAttrib_COUNT>> offset;
+		std::unordered_map<lfal::VertexArray*, std::array<bool, VertexArrayAttrib_COUNT>> is_present;
 
 		VertexArrayRegistry() {}
 
 		template <typename T>
-		void SetVertexArray(std::vector<VertexArrayAttribDescriptor> descriptor) {
-			custom_layout[typeid(T).hash_code()] = new VertexArray(descriptor);
+		void SetVertexArray(std::vector<lfal::VertexArrayAttribDescriptor> descriptor) {
+			custom_layout[typeid(T).hash_code()] = new lfal::VertexArray(descriptor);
 		}
 
 		template <typename T>
-		VertexArray* GetVertexArray() {
+		lfal::VertexArray* GetVertexArray() {
 			assert(custom_layout.find(typeid(T).hash_code()) != custom_layout.end());
 
 			return custom_layout[typeid(T).hash_code()];
 		}
 
-		VertexArray* GetVertexArray(uint32_t flags);
+		lfal::VertexArray* GetVertexArray(uint32_t flags);
 		
-		std::size_t GetOffset(VertexArray* vertexarray, VertexArrayAttrib_ attrib) {
+		std::size_t GetOffset(lfal::VertexArray* vertexarray, VertexArrayAttrib_ attrib) {
 			assert(attrib < VertexArrayAttrib_COUNT);
 
 			return offset[vertexarray][attrib];
 		}
-		bool IsAttribPresent(VertexArray* vertexarray, VertexArrayAttrib_ attrib) {
+		bool IsAttribPresent(lfal::VertexArray* vertexarray, VertexArrayAttrib_ attrib) {
 			assert(attrib < VertexArrayAttrib_COUNT);
 			
 			return is_present[vertexarray][attrib];
