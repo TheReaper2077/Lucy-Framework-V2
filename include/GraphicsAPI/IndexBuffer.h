@@ -1,6 +1,6 @@
 #pragma once
 
-namespace lfal {
+namespace lgl {
 	struct VertexArray;
 
 	typedef unsigned int IndexBufferId;

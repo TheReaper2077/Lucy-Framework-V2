@@ -1,6 +1,6 @@
 #pragma once
 
-namespace lfal {
+namespace lgl {
 	enum Type {
 		BYTE,
 		UNSIGNED_BYTE,

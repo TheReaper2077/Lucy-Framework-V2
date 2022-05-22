@@ -15,8 +15,8 @@ namespace lf {
 	class Renderer {
 		lf::Registry* registry = nullptr;
 
-		lfal::Shader* shader = nullptr;
-		lfal::UniformBuffer* uniformbuffer = nullptr;
+		lgl::Shader* shader = nullptr;
+		lgl::UniformBuffer* uniformbuffer = nullptr;
 
 		glm::mat4 model;
 		glm::mat4 view;
@@ -39,7 +39,7 @@ namespace lf {
 
 		void Render(int width, int height, bool debug = false);
 		
-		void Render(lfal::FrameBuffer* framebuffer, Entity camera_entity, int width, int height, bool debug = false);
+		void Render(lgl::FrameBuffer* framebuffer, Entity camera_entity, int width, int height, bool debug = false);
 		
 		void Render(Window& window, Entity camera_entity, bool debug = false) {
 			Render(window.framebuffer, camera_entity, window.width, window.height, debug);
@@ -54,7 +54,7 @@ namespace lf {
 		void RenderMesh();
 		void RenderCamera();
 
-		lfal::IndexBuffer* GetQuadIndices(lfal::VertexArray* vertexarray, int vertexcount);
+		lgl::IndexBuffer* GetQuadIndices(lgl::VertexArray* vertexarray, int vertexcount);
 	private:
 		void Test();
 	};

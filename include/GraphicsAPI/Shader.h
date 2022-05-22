@@ -3,7 +3,7 @@
 #include <string>
 #include <unordered_map>
 
-namespace lfal {
+namespace lgl {
 	typedef unsigned int ShaderId;
 
 	struct Shader {

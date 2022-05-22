@@ -1,6 +1,6 @@
 #include "ShaderRegistry.h"
 
-lfal::Shader* lf::ShaderRegistry::GetShader(uint32_t flags, lf::Registry* registry) {
+lgl::Shader* lf::ShaderRegistry::GetShader(uint32_t flags, lf::Registry* registry) {
 	using namespace lf::Component;
 
 	int point_light = 0;
@@ -20,11 +20,11 @@ lfal::Shader* lf::ShaderRegistry::GetShader(uint32_t flags, lf::Registry* regist
 	return RegisterShader(flags, point_light, dir_light);
 }
 
-void lf::ShaderRegistry::AddShader(lfal::Shader* shader) {
+void lf::ShaderRegistry::AddShader(lgl::Shader* shader) {
 	registry[shader->name] = shader;
 }
 
-lfal::Shader* lf::ShaderRegistry::GetShader(std::string name) {
+lgl::Shader* lf::ShaderRegistry::GetShader(std::string name) {
 	return registry[name];
 }
 
@@ -35,7 +35,7 @@ void replace_first(std::string& s, std::string const& toReplace, std::string con
     s.replace(pos, toReplace.length(), replaceWith);
 }
 
-lfal::Shader* lf::ShaderRegistry::RegisterShader(uint32_t shader_flags, int point_light, int dir_light) {
+lgl::Shader* lf::ShaderRegistry::RegisterShader(uint32_t shader_flags, int point_light, int dir_light) {
 	std::string id = std::to_string(shader_flags) + '_' + std::to_string(dir_light) + '_' + std::to_string(point_light);
 
 	if (registry.find(id) == registry.end()) {
@@ -48,7 +48,7 @@ lfal::Shader* lf::ShaderRegistry::RegisterShader(uint32_t shader_flags, int poin
 
 		// std::cout << fragmentshader << '\n';
 
-		registry[id] = new lfal::Shader(id, vertexshader, fragmentshader, false);
+		registry[id] = new lgl::Shader(id, vertexshader, fragmentshader, false);
 	}
 
 	return registry[id];

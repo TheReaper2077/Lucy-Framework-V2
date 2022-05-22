@@ -3,15 +3,15 @@
 #include <glad/glad.h>
 #include <assert.h>
 
-int& lfal::DrawIndexed(Primitive mode, int count, Type type, void* indices) {
+int& lgl::DrawIndexed(Primitive mode, int count, Type type, void* indices) {
 	return DrawCmd(INDEXED, mode, type, (Format)0, 0, 0, 0, count, 0, 0, 0, 0, 0, indices, nullptr, nullptr);
 }
 
-int& lfal::Draw(Primitive mode, int first, int count) {
+int& lgl::Draw(Primitive mode, int first, int count) {
 	return DrawCmd(NONE, mode, (Type)0, (Format)0, first, 0, 0, count, 0, 0, 0, 0, 0, nullptr, nullptr, nullptr);
 }
 
-int& lfal::DrawCmd(DrawMode drawmode, Primitive mode, Type type, Format format, int first, int start, int end, int count, int basevertex, int baseinstance, int instancecount, int width, int height, void* indices, void* indirect, void* pixels) {
+int& lgl::DrawCmd(DrawMode drawmode, Primitive mode, Type type, Format format, int first, int start, int end, int count, int basevertex, int baseinstance, int instancecount, int width, int height, void* indices, void* indirect, void* pixels) {
 	static int drawcount;
 	
 	switch (drawmode) {

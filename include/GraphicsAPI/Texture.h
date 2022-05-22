@@ -2,7 +2,7 @@
 
 #include "Types.h"
 
-namespace lfal {
+namespace lgl {
 	typedef unsigned int TextureId;
 	
 	struct Texture {

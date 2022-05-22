@@ -69,8 +69,8 @@ int main(int ArgCount, char **Args) {
 		
 		auto& editorwindow = registry.store<lf::EditorWindow>();
 
-		editorwindow.framebuffer = new lfal::FrameBuffer(editorwindow.width, editorwindow.height, true);
-		gamewindow.framebuffer = new lfal::FrameBuffer(gamewindow.width, gamewindow.height, true);
+		editorwindow.framebuffer = new lgl::FrameBuffer(editorwindow.width, editorwindow.height, true);
+		gamewindow.framebuffer = new lgl::FrameBuffer(gamewindow.width, gamewindow.height, true);
 	#endif
 
 	renderer.Init(&registry);

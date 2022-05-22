@@ -7,7 +7,7 @@
 #include <glad/glad.h>
 #include <assert.h>
 
-lfal::VertexArray::VertexArray(std::vector<VertexArrayAttribDescriptor> layouts) {
+lgl::VertexArray::VertexArray(std::vector<VertexArrayAttribDescriptor> layouts) {
 	glGenVertexArrays(1, &this->id);
 	this->Bind();
 
@@ -47,18 +47,18 @@ lfal::VertexArray::VertexArray(std::vector<VertexArrayAttribDescriptor> layouts)
 	this->elem_stride = elem_relativeoffset;
 }
 
-void lfal::VertexArray::Bind() {
+void lgl::VertexArray::Bind() {
 	glBindVertexArray(id);
 }
 
-void lfal::VertexArray::UnBind() {
+void lgl::VertexArray::UnBind() {
 	glBindVertexArray(0);
 }
 
-void lfal::VertexArray::BindVertexBuffer(VertexBuffer *vertexbuffer, std::size_t stride, std::size_t offset) {
+void lgl::VertexArray::BindVertexBuffer(VertexBuffer *vertexbuffer, std::size_t stride, std::size_t offset) {
 	glVertexArrayVertexBuffer(id, 0, vertexbuffer->id, offset, (stride == 0) ? stride : stride);
 }
 
-void lfal::VertexArray::BindIndexBuffer(IndexBuffer *indexbuffer) {
+void lgl::VertexArray::BindIndexBuffer(IndexBuffer *indexbuffer) {
 	glVertexArrayElementBuffer(id, indexbuffer->id);
 }

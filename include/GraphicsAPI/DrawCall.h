@@ -2,7 +2,7 @@
 
 #include "Types.h"
 
-namespace lfal {
+namespace lgl {
 	enum DrawMode {
 		NONE,
 		INDIRECT,

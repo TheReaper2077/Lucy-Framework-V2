@@ -8,7 +8,7 @@ namespace lf {
 		std::string title = "Lucy V2";
 		int width = 1280, height = 640, posx = 50, posy = 50;
 
-		lfal::FrameBuffer* framebuffer = nullptr;
+		lgl::FrameBuffer* framebuffer = nullptr;
 		Entity camera = (Entity)0;
 
 		bool window_focus = true;

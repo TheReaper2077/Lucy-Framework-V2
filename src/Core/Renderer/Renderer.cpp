@@ -32,14 +32,14 @@ void lf::Renderer::SetViewPosition(const glm::vec3& view_position) {
 void lf::Renderer::Init(lf::Registry* registry) {
 	this->registry = registry;
 
-	uniformbuffer = new lfal::UniformBuffer();
+	uniformbuffer = new lgl::UniformBuffer();
 	uniformbuffer->Allocate(sizeof(glm::mat4)*4);
 	uniformbuffer->BindRange(0, sizeof(glm::mat4)*4, 0);
 
 	// shader = Shader("test1", "D:\\C++\\Lucy Framework V2\\src\\Core\\Renderer\\Shaders\\default.vs", "D:\\C++\\Lucy Framework V2\\src\\Core\\Renderer\\Shaders\\color.fs");
 }
 
-void lf::Renderer::Render(lfal::FrameBuffer* framebuffer, Entity camera_entity, int width, int height, bool debug) {
+void lf::Renderer::Render(lgl::FrameBuffer* framebuffer, Entity camera_entity, int width, int height, bool debug) {
 	if (camera_entity == (Entity)0) return;
 	if (!registry->valid(camera_entity)) return;
 
@@ -71,13 +71,13 @@ void lf::Renderer::Test() {
 		{0.0, 0.0, 0.0},
 		{0.0, 1.0, 0.0},
 	};
-	static lfal::VertexBuffer* vertexbuffer;
-	lfal::VertexArray* vertexarray = registry->store<VertexArrayRegistry>().GetVertexArray(VertexArrayAttribFlag_POSITION);
+	static lgl::VertexBuffer* vertexbuffer;
+	lgl::VertexArray* vertexarray = registry->store<VertexArrayRegistry>().GetVertexArray(VertexArrayAttribFlag_POSITION);
 
 	shader->SetUniformi("has_texture", 1);
 
 	if (vertexbuffer == nullptr) {
-		vertexbuffer = new lfal::VertexBuffer();
+		vertexbuffer = new lgl::VertexBuffer();
 
 		vertexbuffer->AddDataStatic(vertices.data(), vertices.size()*vertexarray->stride);
 	}
@@ -86,7 +86,7 @@ void lf::Renderer::Test() {
 	vertexarray->BindVertexBuffer(vertexbuffer, vertexarray->stride);
 	vertexarray->BindIndexBuffer(GetQuadIndices(vertexarray, 4));
 
-	lfal::DrawIndexed(lfal::TRIANGLES, 6, lfal::UNSIGNED_INT, nullptr);
+	lgl::DrawIndexed(lgl::TRIANGLES, 6, lgl::UNSIGNED_INT, nullptr);
 
 	shader->SetUniformi("has_texture", 0);
 }
@@ -125,16 +125,16 @@ void lf::Renderer::RenderSprite() {
 
 	auto& vertexarrayregistry = registry->store<VertexArrayRegistry>();
 
-	lfal::VertexArray* vertexarray = vertexarrayregistry.GetVertexArray(flags);
+	lgl::VertexArray* vertexarray = vertexarrayregistry.GetVertexArray(flags);
 
 	auto position_offset = vertexarrayregistry.GetOffset(vertexarray, VertexArrayAttrib_POSITION);
 	auto color_offset = vertexarrayregistry.GetOffset(vertexarray, VertexArrayAttrib_COLOR);
 	auto uv0_offset = vertexarrayregistry.GetOffset(vertexarray, VertexArrayAttrib_UV0);
 
-	static lfal::VertexBuffer* vertexbuffer;
+	static lgl::VertexBuffer* vertexbuffer;
 
 	if (vertexbuffer == nullptr)
-		vertexbuffer = new lfal::VertexBuffer();
+		vertexbuffer = new lgl::VertexBuffer();
 
 	float* vertices = (float*)malloc(sizeof(float) * (3 + 4 + 2) * vertexcount);
 
@@ -220,7 +220,7 @@ void lf::Renderer::RenderSprite() {
 	vertexarray->BindVertexBuffer(vertexbuffer, vertexarray->stride);
 	vertexarray->BindIndexBuffer(GetQuadIndices(vertexarray, vertexcount));
 
-	lfal::DrawIndexed(lfal::TRIANGLES, vertexcount * 1.5, lfal::UNSIGNED_INT, nullptr);
+	lgl::DrawIndexed(lgl::TRIANGLES, vertexcount * 1.5, lgl::UNSIGNED_INT, nullptr);
 	
 	auto& engine = registry->store<Engine>();
 	engine.drawcalls++;
@@ -244,7 +244,7 @@ void lf::Renderer::RenderCamera() {
 
 	shader->SetUniformVec4("wireframe_color", &glm::vec4(1, 1, 0, 1)[0]);
 
-	lfal::VertexArray* vertexarray = registry->store<VertexArrayRegistry>().GetVertexArray(VertexArrayAttribFlag_POSITION);
+	lgl::VertexArray* vertexarray = registry->store<VertexArrayRegistry>().GetVertexArray(VertexArrayAttribFlag_POSITION);
 
 	for (auto [entity, tag, transform, camera]: registry->view<Tag, Transform, Camera>().each()) {
 		float aspect_ratio = camera.width / camera.height;
@@ -292,12 +292,12 @@ void lf::Renderer::SetLighting() {
 	}
 }
 
-lfal::IndexBuffer* lf::Renderer::GetQuadIndices(lfal::VertexArray* vertexarray, int vertexcount) {
-	static lfal::IndexBuffer* indexbuffer;
+lgl::IndexBuffer* lf::Renderer::GetQuadIndices(lgl::VertexArray* vertexarray, int vertexcount) {
+	static lgl::IndexBuffer* indexbuffer;
 	static int indexcount;
 
 	if (indexbuffer == nullptr)
-		indexbuffer = new lfal::IndexBuffer(vertexarray);
+		indexbuffer = new lgl::IndexBuffer(vertexarray);
 
 	if (vertexcount*1.5 > indexcount) {
 		std::vector<uint32_t> indices;

@@ -1,6 +1,6 @@
 #pragma once
 
-namespace lfal {
+namespace lgl {
 	typedef unsigned int UniformBufferId;
 
 	struct UniformBuffer {

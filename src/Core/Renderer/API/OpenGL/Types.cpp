@@ -2,7 +2,7 @@
 #include <glad/glad.h>
 #include <unordered_map>
 
-unsigned int lfal::GetTypeMap(const Type type) {
+unsigned int lgl::GetTypeMap(const Type type) {
 	static std::unordered_map<Type, unsigned int> TypeMap_ = {
 		{ BYTE, GL_BYTE },
 		{ UNSIGNED_BYTE, GL_UNSIGNED_BYTE },
@@ -16,7 +16,7 @@ unsigned int lfal::GetTypeMap(const Type type) {
 	return TypeMap_[type];
 }
 
-unsigned int lfal::GetMap(const Format format) {
+unsigned int lgl::GetMap(const Format format) {
 	static std::unordered_map<Format, unsigned int> FormatMap_ = {
 		{ RGB, GL_RGB },
 		{ RGBA, GL_RGBA },
@@ -25,7 +25,7 @@ unsigned int lfal::GetMap(const Format format) {
 	return FormatMap_[format];
 }
 
-unsigned int lfal::GetMap(const Primitive primitive) {
+unsigned int lgl::GetMap(const Primitive primitive) {
 	static std::unordered_map<Primitive, unsigned int> PrimitiveMap_ = {
 		{ POINT, GL_POINT },
 		{ POINTS, GL_POINTS },
@@ -40,7 +40,7 @@ unsigned int lfal::GetMap(const Primitive primitive) {
 	return PrimitiveMap_[primitive];
 }
 
-unsigned int lfal::GetMap(const TextureFilteringMode texturefilteringmode) {
+unsigned int lgl::GetMap(const TextureFilteringMode texturefilteringmode) {
 	static std::unordered_map<TextureFilteringMode, unsigned int> TextureFilteringModeMap_ = {
 		{ FilterMode_LINEAR, GL_LINEAR },
 		{ FilterMode_NEAREST, GL_NEAREST },
@@ -49,7 +49,7 @@ unsigned int lfal::GetMap(const TextureFilteringMode texturefilteringmode) {
 	return TextureFilteringModeMap_[texturefilteringmode];
 }
 
-unsigned int lfal::GetMap(const TextureWrapMode texturewrapmode) {
+unsigned int lgl::GetMap(const TextureWrapMode texturewrapmode) {
 	static std::unordered_map<TextureWrapMode, unsigned int> TextureWrapModeMap_ = {
 		{ WrapMode_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE },
 		{ WrapMode_CLAMP_TO_BORDER, GL_CLAMP_TO_BORDER },
@@ -61,7 +61,7 @@ unsigned int lfal::GetMap(const TextureWrapMode texturewrapmode) {
 	return TextureWrapModeMap_[texturewrapmode];
 }
 
-unsigned int lfal::GetMap(const TextureMode texturemode) {
+unsigned int lgl::GetMap(const TextureMode texturemode) {
 	static std::unordered_map<TextureMode, unsigned int> TextureModeMap_ = {
 		{ TEXTURE_1D, GL_TEXTURE_1D },
 		{ TEXTURE_2D, GL_TEXTURE_2D },

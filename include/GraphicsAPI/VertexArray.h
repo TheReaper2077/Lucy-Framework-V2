@@ -3,7 +3,7 @@
 #include <vector>
 #include "Types.h"
 
-namespace lfal {
+namespace lgl {
 	struct IndexBuffer;
 	struct VertexBuffer;
 

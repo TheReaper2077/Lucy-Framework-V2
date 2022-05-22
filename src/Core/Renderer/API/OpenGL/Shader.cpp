@@ -57,11 +57,11 @@ void Compile(unsigned int &program, const std::string &filename, unsigned int ta
 	glDeleteShader(shader);
 };
 
-lfal::Shader::~Shader() {
+lgl::Shader::~Shader() {
 	glDeleteProgram(program);
 }
 
-lfal::Shader::Shader(std::string name, const std::string &vs_filename, const std::string &fs_filename, bool file) {
+lgl::Shader::Shader(std::string name, const std::string &vs_filename, const std::string &fs_filename, bool file) {
 	program = glCreateProgram();
 
 	Compile(program, vs_filename, GL_VERTEX_SHADER, file);
@@ -101,26 +101,26 @@ lfal::Shader::Shader(std::string name, const std::string &vs_filename, const std
 	}
 }
 
-void lfal::Shader::Bind() {
+void lgl::Shader::Bind() {
 	glUseProgram(program);
 }
 
-void lfal::Shader::UnBind() {
+void lgl::Shader::UnBind() {
 	glUseProgram(0);
 }
 
-void lfal::Shader::BindUniformBlock(std::string name, unsigned int index) {
+void lgl::Shader::BindUniformBlock(std::string name, unsigned int index) {
 	glUniformBlockBinding(program, glGetUniformBlockIndex(program, name.c_str()), index);
 }
 
-unsigned int lfal::Shader::GetUniformLoc(std::string name) {
+unsigned int lgl::Shader::GetUniformLoc(std::string name) {
 	if (this->uniform_location_map.find(name) == this->uniform_location_map.end())
 		this->uniform_location_map[name] = glGetUniformLocation(program, name.c_str());
 		
 	return this->uniform_location_map[name];
 }
 
-bool lfal::Shader::SetUniformMat4(std::string uniform, const float* matrix) {
+bool lgl::Shader::SetUniformMat4(std::string uniform, const float* matrix) {
 	this->Bind();
 	auto location = this->GetUniformLoc(uniform);
 	glUniformMatrix4fv(location, 1, GL_FALSE, matrix);
@@ -128,7 +128,7 @@ bool lfal::Shader::SetUniformMat4(std::string uniform, const float* matrix) {
 	return (location > 0);
 }
 
-bool lfal::Shader::SetUniformi(std::string uniform, int v0) {
+bool lgl::Shader::SetUniformi(std::string uniform, int v0) {
 	this->Bind();
 	auto location = this->GetUniformLoc(uniform);
 	glUniform1i(location, v0);
@@ -136,7 +136,7 @@ bool lfal::Shader::SetUniformi(std::string uniform, int v0) {
 	return (location > 0);
 }
 
-bool lfal::Shader::SetUniformf(std::string uniform, float v0) {
+bool lgl::Shader::SetUniformf(std::string uniform, float v0) {
 	this->Bind();
 	auto location = this->GetUniformLoc(uniform);
 	glUniform1f(location, v0);
@@ -144,7 +144,7 @@ bool lfal::Shader::SetUniformf(std::string uniform, float v0) {
 	return (location > 0);
 }
 
-bool lfal::Shader::SetUniformVec3(std::string uniform, const float *v) {
+bool lgl::Shader::SetUniformVec3(std::string uniform, const float *v) {
 	this->Bind();
 	auto location = this->GetUniformLoc(uniform);
 	glUniform3fv(location, 1, v);
@@ -152,7 +152,7 @@ bool lfal::Shader::SetUniformVec3(std::string uniform, const float *v) {
 	return (location > 0);
 }
 
-bool lfal::Shader::SetUniformVec4(std::string uniform, const float *v) {
+bool lgl::Shader::SetUniformVec4(std::string uniform, const float *v) {
 	this->Bind();
 	auto location = this->GetUniformLoc(uniform);
 	glUniform4fv(location, 1, v);
@@ -160,7 +160,7 @@ bool lfal::Shader::SetUniformVec4(std::string uniform, const float *v) {
 	return (location > 0);
 }
 
-bool lfal::Shader::SetUniformArray(std::string uniform, std::size_t count, const float *v) {
+bool lgl::Shader::SetUniformArray(std::string uniform, std::size_t count, const float *v) {
 	this->Bind();
 	auto location = this->GetUniformLoc(uniform);
 	glUniform1fv(location, count, v);
