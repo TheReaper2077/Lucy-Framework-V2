@@ -1,10 +1,13 @@
 #pragma once
 
-#include <RenderAPI.h>
+#include <GraphicsAPI/VertexBuffer.h>
+
+#include <glad/glad.h>
+#include <assert.h>
 
 VertexBuffer::VertexBuffer() {
 	glGenBuffers(1, &id);
-	type = DYNAMIC;
+	type = BufferType_DYNAMIC;
 	size = 0;
 }
 
@@ -20,24 +23,24 @@ VertexBuffer::~VertexBuffer() {
 	glDeleteBuffers(1, &id);
 }
 
-void VertexBuffer::Allocate(std::size_t size) {
+void VertexBuffer::Allocate(size_t size) {
 	if (this->size > size && size == 0) return;
 
 	Bind();
-	if (this->type == DYNAMIC) glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
-	if (this->type == STATIC) glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_STATIC_DRAW);
+	if (this->type == BufferType_DYNAMIC) glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
+	if (this->type == BufferType_STATIC) glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_STATIC_DRAW);
 	this->size = size;
 };
 
-void VertexBuffer::AddDataStatic(void* data, std::size_t size) {
+void VertexBuffer::AddDataStatic(void* data, size_t size) {
 	if (size == 0) return;
 	Bind();
-	if (this->type == DYNAMIC) glBufferData(GL_ARRAY_BUFFER, size, data, GL_DYNAMIC_DRAW);
-	if (this->type == STATIC) glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+	if (this->type == BufferType_DYNAMIC) glBufferData(GL_ARRAY_BUFFER, size, data, GL_DYNAMIC_DRAW);
+	if (this->type == BufferType_STATIC) glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
 	this->size = size;
 }
 
-void VertexBuffer::AddDataDynamic(void* data, std::size_t size, std::size_t offset) {
+void VertexBuffer::AddDataDynamic(void* data, size_t size, size_t offset) {
 	if (size == 0) return;
 	assert(offset + size <= this->size);
 

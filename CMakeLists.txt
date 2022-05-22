@@ -6,11 +6,17 @@ enable_testing()
 
 file(GLOB_RECURSE TARGET_SRC "src/*.cpp")
 
-set (CMAKE_CXX_STANDARD 20)
-
 include_directories(C:/Users/krishnadev/vcpkg/installed/x64-windows/include src include)
+if (MSVC_VERSION GREATER_EQUAL "1900")
+include(CheckCXXCompilerFlag)
+CHECK_CXX_COMPILER_FLAG("/std:c++20" _cpp_latest_flag_supported)
+if (_cpp_latest_flag_supported)
+add_compile_options("/std:c++20")
+endif()
+endif()
 
 add_executable(main ${TARGET_SRC})
+target_compile_features(main PUBLIC cxx_std_20)
 
 find_package(glad CONFIG REQUIRED)
 target_link_libraries(main PRIVATE glad::glad)

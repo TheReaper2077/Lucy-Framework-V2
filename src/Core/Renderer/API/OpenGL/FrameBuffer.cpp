@@ -1,6 +1,9 @@
 #pragma once
 
-#include <RenderAPI.h>
+#include <GraphicsAPI/FrameBuffer.h>
+
+#include <glad/glad.h>
+#include <assert.h>
 
 FrameBuffer::FrameBuffer(int width, int height, bool picking) {
 	this->width = width;
@@ -56,7 +59,7 @@ FrameBuffer::FrameBuffer(int width, int height, bool picking) {
 		glDrawBuffers(1, attachments);
 	}
 
-	GL_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
+	assert(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
 
 	this->UnBind();
 }

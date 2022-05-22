@@ -1,4 +1,7 @@
-#include <RenderAPI.h>
+#include <GraphicsAPI/Shader.h>
+
+#include <glad/glad.h>
+#include <assert.h>
 
 #ifndef SHADER_TEXTUREARRAY
 #define SHADER_TEXTUREARRAY "u_texturearray"
@@ -48,7 +51,7 @@ void Compile(unsigned int &program, const std::string &filename, unsigned int ta
 		std::cout << message << std::endl;
 	}
 
-	GL_ASSERT(result);
+	assert(result);
 
 	glAttachShader(program, shader);
 	glDeleteShader(shader);

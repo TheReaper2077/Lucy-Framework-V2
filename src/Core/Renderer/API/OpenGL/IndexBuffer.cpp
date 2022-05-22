@@ -1,6 +1,8 @@
-#include <RenderAPI.h>
+#include <GraphicsAPI/VertexArray.h>
+#include <GraphicsAPI/IndexBuffer.h>
 
-// extern std::shared_ptr<OpenGLContext> gl_context;
+#include <glad/glad.h>
+#include <assert.h>
 
 IndexBuffer::IndexBuffer(VertexArray* vertexarray) {
 	glGenBuffers(1, &id);
@@ -31,7 +33,7 @@ void IndexBuffer::Allocate(std::size_t size) {
 	this->size = size;
 };
 
-void IndexBuffer::AddData(unsigned int* data, std::size_t size, std::size_t offset) {
+void IndexBuffer::AddData(void* data, std::size_t size, std::size_t offset) {
 	if (size == 0) return;
 
 	if (offset == 0 && size > this->size) {

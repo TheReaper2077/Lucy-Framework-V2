@@ -125,7 +125,7 @@ int main(int ArgCount, char **Args) {
 							auto& spriterenderer = registry.get_or_emplace<lf::Component::SpriteRenderer>(selected_entity);
 							auto& sprite = registry.get_or_emplace<lf::Component::Sprite>(selected_entity);
 
-							sprite.texture = new Texture(events.dropped_file.c_str());
+							// sprite.texture = new Texture(events.dropped_file.c_str());
 						}
 					}
 				}

@@ -1,6 +1,7 @@
-#include <RenderAPI.h>
+#include <GraphicsAPI/UniformBuffer.h>
 
-// extern std::shared_ptr<OpenGLContext> gl_context;
+#include <glad/glad.h>
+#include <assert.h>
 
 UniformBuffer::UniformBuffer() {
 	glGenBuffers(1, &id);
@@ -11,7 +12,7 @@ UniformBuffer::~UniformBuffer() {
 	glDeleteBuffers(1, &id);
 }
 
-void UniformBuffer::Allocate(std::size_t size) {
+void UniformBuffer::Allocate(size_t size) {
 	if (this->size > size) return;
 
 	Bind();
@@ -19,14 +20,14 @@ void UniformBuffer::Allocate(std::size_t size) {
 	this->size = size;
 };
 
-void UniformBuffer::AddDataDynamic(void* data, std::size_t size, std::size_t offset) {
+void UniformBuffer::AddDataDynamic(void* data, size_t size, size_t offset) {
 	assert(offset + size <= this->size);
 
 	Bind();
 	glBufferSubData(GL_UNIFORM_BUFFER, offset, size, data);
 }
 
-void UniformBuffer::BindRange(unsigned int index, std::size_t size, std::size_t offset) {
+void UniformBuffer::BindRange(unsigned int index, size_t size, size_t offset) {
 	Bind();
 	glBindBufferRange(GL_UNIFORM_BUFFER, index, this->id, offset, size);
 }

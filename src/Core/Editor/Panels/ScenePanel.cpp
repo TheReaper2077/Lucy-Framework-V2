@@ -86,6 +86,7 @@ void lf::Panel::ScenePanel(Registry& registry) {
 				}
 
 				if (ImGui::IsItemHovered() && registry.store<Events>().mouse_pressed.contains(SDL_BUTTON_RIGHT)) {
+					// registry.store<Events>().mouse_pressed.c
 					ImGui::OpenPopup("Entity SHMenu");
 					open = false;
 				}
