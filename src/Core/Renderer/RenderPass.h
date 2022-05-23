@@ -4,9 +4,10 @@
 
 namespace lf {
 	class RenderPass {
-		Registry *registry = nullptr;
-
 	public:
+		Registry *registry = nullptr;
+		bool init = false;
+
 		virtual void Init() = 0;
 		virtual void Render() = 0;
 	};

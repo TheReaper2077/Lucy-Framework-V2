@@ -95,8 +95,11 @@ namespace lf {
 		VertexArrayRegistry() {}
 
 		template <typename T>
-		void SetVertexArray(std::vector<lgl::VertexArrayAttribDescriptor> descriptor) {
-			custom_layout[typeid(T).hash_code()] = new lgl::VertexArray(descriptor);
+		lgl::VertexArray* SetVertexArray(std::vector<lgl::VertexArrayAttribDescriptor> descriptor) {
+			if (custom_layout.find(typeid(T).hash_code()) == custom_layout.end())
+				custom_layout[typeid(T).hash_code()] = new lgl::VertexArray(descriptor);
+
+			return custom_layout[typeid(T).hash_code()];
 		}
 
 		template <typename T>

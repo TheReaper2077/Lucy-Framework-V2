@@ -15,8 +15,6 @@ lgl::VertexArray* lf::VertexArrayRegistry::GetVertexArray(uint32_t flags) {
 				attrib_offset[i] = offset;
 				attrib_present[i] = true;
 
-				std::cout << offset << '\n';
-
 				descriptor.push_back({ i, (unsigned int)VertexArrayAttribSizeMap_[(VertexArrayAttrib_)i], lgl::FLOAT });
 				offset += VertexArrayAttribSizeMap_[(VertexArrayAttrib_)i];
 			} else {

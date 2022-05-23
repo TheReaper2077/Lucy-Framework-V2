@@ -32,7 +32,7 @@ int main(int ArgCount, char **Args) {
 	auto& events = registry.store<lf::Events>();
 	auto& window = registry.store<lf::Window>();
 
-	auto& renderer = registry.store<lf::Renderer>();
+	auto& renderer = registry.store<lf::RenderContext>();
 
 	engine.quit = false;
 

@@ -5,18 +5,20 @@
 
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
+#include <memory>
 
 #include "../Window.h"
 #include "../Components/Components.h"
 
 #include "../Registries/VertexArrayRegistry.h"
-
+#include "RenderPass.h"
 #include "assert.h"
 
 namespace lf {
-	class Renderer {
+	class RenderContext {
 		lf::Registry* registry = nullptr;
 
+	public:
 		lgl::Shader* shader = nullptr;
 		lgl::UniformBuffer* uniformbuffer = nullptr;
 
@@ -25,10 +27,11 @@ namespace lf {
 		glm::mat4 projection;
 		glm::vec3 view_position;
 
-	public:
 		std::vector<std::vector<Entity>> drawn_sprite_entities;
 
 		glm::vec4 wireframe_color = glm::vec4(1, 1, 0, 1);
+
+		std::vector<std::shared_ptr<RenderPass>> renderpass;
 
 		int drawcount = 0;
 		int vertexcount = 0;
@@ -52,7 +55,18 @@ namespace lf {
 		void Render(Window& window, bool debug = false) {
 			Render(window, window.camera, debug);
 		}
+		
+		void SetLighting();
+		void RenderMesh();
+		void RenderCamera();
 
+		template <typename T>
+		void InsertRenderPass() {
+			auto ptr = std::make_shared<T>();
+			ptr->registry = registry;
+			renderpass.push_back(std::static_pointer_cast<RenderPass>(ptr));
+		}
+		
 		void RenderLines(const std::vector<glm::vec3>& vertices, const glm::vec4& color) {
 			shader->Bind();
 
@@ -74,13 +88,6 @@ namespace lf {
 
 			shader->SetUniformi("wireframe_mode", 0);
 		}
-		
-		void SetLighting();
-		void RenderSprite();
-		void RenderMesh();
-		void RenderCamera();
-
-		lgl::IndexBuffer* GetQuadIndices(lgl::VertexArray* vertexarray, int vertexcount);
 	private:
 		void Test();
 	};

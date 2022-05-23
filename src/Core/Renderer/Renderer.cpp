@@ -5,41 +5,46 @@
 #include "../Registries/ShaderRegistry.h"
 #include "../Registries/VertexArrayRegistry.h"
 
+#include "SpriteRenderPass.h"
+#include "RenderUtil.h"
+
 #include <iostream>
 #include <glad/glad.h>
 
-void lf::Renderer::SetModel(const glm::mat4& model) {
+void lf::RenderContext::SetModel(const glm::mat4& model) {
 	if (this->model == model) return;
 	this->model = model;
 	uniformbuffer->AddDataDynamic(&this->model[0][0], sizeof(glm::mat4), sizeof(glm::mat4) * 0);
 }
-void lf::Renderer::SetView(const glm::mat4& view) {
+void lf::RenderContext::SetView(const glm::mat4& view) {
 	if (this->view == view) return;
 	this->view = view;
 	uniformbuffer->AddDataDynamic(&this->view[0][0], sizeof(glm::mat4), sizeof(glm::mat4) * 1);
 }
-void lf::Renderer::SetProjection(const glm::mat4& projection) {
+void lf::RenderContext::SetProjection(const glm::mat4& projection) {
 	if (this->projection == projection) return;
 	this->projection = projection;
 	uniformbuffer->AddDataDynamic(&this->projection[0][0], sizeof(glm::mat4), sizeof(glm::mat4) * 2);
 }
-void lf::Renderer::SetViewPosition(const glm::vec3& view_position) {
+void lf::RenderContext::SetViewPosition(const glm::vec3& view_position) {
 	if (this->view_position == view_position) return;
 	this->view_position = view_position;
 	uniformbuffer->AddDataDynamic(&this->view_position[0], sizeof(glm::vec3), sizeof(glm::mat4) * 3);
 }
 
-void lf::Renderer::Init(lf::Registry* registry) {
+void lf::RenderContext::Init(lf::Registry* registry) {
 	this->registry = registry;
 
 	uniformbuffer = new lgl::UniformBuffer();
 	uniformbuffer->Allocate(sizeof(glm::mat4)*4);
 	uniformbuffer->BindRange(0, sizeof(glm::mat4)*4, 0);
 
+	InsertRenderPass<SpriteRenderPass>();
+
 	// shader = Shader("test1", "D:\\C++\\Lucy Framework V2\\src\\Core\\Renderer\\Shaders\\default.vs", "D:\\C++\\Lucy Framework V2\\src\\Core\\Renderer\\Shaders\\color.fs");
 }
 
-void lf::Renderer::Render(lgl::FrameBuffer* framebuffer, Entity camera_entity, int width, int height, bool debug) {
+void lf::RenderContext::Render(lgl::FrameBuffer* framebuffer, Entity camera_entity, int width, int height, bool debug) {
 	if (camera_entity == (Entity)0) return;
 	if (!registry->valid(camera_entity)) return;
 
@@ -64,7 +69,7 @@ void lf::Renderer::Render(lgl::FrameBuffer* framebuffer, Entity camera_entity, i
 	if (framebuffer != nullptr) framebuffer->UnBind();
 }
 
-void lf::Renderer::Test() {
+void lf::RenderContext::Test() {
 	static std::vector<glm::vec3> vertices = {
 		{1.0, 1.0, 0.0},
 		{1.0, 0.0, 0.0},
@@ -91,7 +96,7 @@ void lf::Renderer::Test() {
 	shader->SetUniformi("wireframe_mode", 0);
 }
 
-void lf::Renderer::Render(int width, int height, bool debug) {
+void lf::RenderContext::Render(int width, int height, bool debug) {
 	using namespace lf::Component;
 
 	drawcount = 0;
@@ -105,7 +110,15 @@ void lf::Renderer::Render(int width, int height, bool debug) {
 	shader = registry->store<ShaderRegistry>().GetShader(0, registry);
 	shader->Bind();
 
-	RenderSprite();
+	for (auto& ptr: renderpass) {
+		if (!ptr->init) {
+			ptr->Init();
+			ptr->init = true;
+		}
+		
+		ptr->Render();
+	}
+
 	RenderMesh();
 
 	if (debug) {
@@ -113,108 +126,11 @@ void lf::Renderer::Render(int width, int height, bool debug) {
 	}
 }
 
-void lf::Renderer::RenderSprite() {
-	using namespace lf::Component;
-
-	int vertexcount = registry->view<Tag, Transform, SpriteRenderer>().size_hint() * 4;
-	if (!vertexcount) return;
-
-	uint32_t flags = VertexArrayAttribFlag_POSITION | VertexArrayAttribFlag_COLOR | VertexArrayAttribFlag_UV0;	
-
-	SetModel(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0)));
-
-	auto& vertexarrayregistry = registry->store<VertexArrayRegistry>();
-
-	lgl::VertexArray* vertexarray = vertexarrayregistry.GetVertexArray(flags);
-
-	auto position_offset = vertexarrayregistry.GetOffset(vertexarray, VertexArrayAttrib_POSITION);
-	auto color_offset = vertexarrayregistry.GetOffset(vertexarray, VertexArrayAttrib_COLOR);
-	auto uvw_offset = vertexarrayregistry.GetOffset(vertexarray, VertexArrayAttrib_UV0);
-
-	static lgl::VertexBuffer* vertexbuffer;
-
-	if (vertexbuffer == nullptr)
-		vertexbuffer = new lgl::VertexBuffer();
-
-	float* vertices = (float*)malloc(sizeof(float) * vertexarray->elem_stride * vertexcount);
-	static glm::vec3 pos[4];
-
-	for (auto entity: registry->view<Tag, Transform, SpriteRenderer>()) {
-		auto& transform = registry->get<Transform>(entity);
-		auto& spriterenderer = registry->get<SpriteRenderer>(entity);
-		auto quaternion = transform.GetRotationQuat();
-
-		auto* sprite = registry->try_get<Sprite>(entity);
-
-		if (!spriterenderer.visible) {
-			vertexcount -= 4;
-			continue;
-		}
-
-		drawn_sprite_entities[drawcount].push_back(entity);
-
-		pos[0] = (quaternion * glm::vec3(-transform.scale.x / 2.0, -transform.scale.y / 2.0, 0)) + transform.translation;
-		pos[1] = (quaternion * glm::vec3(+transform.scale.x / 2.0, -transform.scale.y / 2.0, 0)) + transform.translation;
-		pos[2] = (quaternion * glm::vec3(+transform.scale.x / 2.0, +transform.scale.y / 2.0, 0)) + transform.translation;
-		pos[3] = (quaternion * glm::vec3(-transform.scale.x / 2.0, +transform.scale.y / 2.0, 0)) + transform.translation;
-
-		for (int i = 0; i < 4; i++) {
-			vertices[i * vertexarray->elem_stride + position_offset + 0] = pos[i].x;
-			vertices[i * vertexarray->elem_stride + position_offset + 1] = pos[i].y;
-			vertices[i * vertexarray->elem_stride + position_offset + 2] = pos[i].z;
-
-			vertices[i * vertexarray->elem_stride + color_offset + 0] = spriterenderer.color.x;
-			vertices[i * vertexarray->elem_stride + color_offset + 1] = spriterenderer.color.y;
-			vertices[i * vertexarray->elem_stride + color_offset + 2] = spriterenderer.color.z;
-			vertices[i * vertexarray->elem_stride + color_offset + 3] = spriterenderer.color.w;
-
-			// vertices[i * vertexarray->elem_stride + uvw_offset + 2] = 0;
-
-			// if (i == 0) {
-			// 	vertices[i * vertexarray->elem_stride + uvw_offset + 0] = 0;
-			// 	vertices[i * vertexarray->elem_stride + uvw_offset + 1] = 0;
-			// } else  if (i == 1) {
-			// 	vertices[i * vertexarray->elem_stride + uvw_offset + 0] = 0;
-			// 	vertices[i * vertexarray->elem_stride + uvw_offset + 1] = 1;
-			// } else if (i == 2) {
-			// 	vertices[i * vertexarray->elem_stride + uvw_offset + 0] = 1;
-			// 	vertices[i * vertexarray->elem_stride + uvw_offset + 1] = 0;
-			// } else if (i == 3) {
-			// 	vertices[i * vertexarray->elem_stride + uvw_offset + 0] = 1;
-			// 	vertices[i * vertexarray->elem_stride + uvw_offset + 1] = 1;
-			// }
-		}
-	}
-
-	shader->SetUniformi("has_texture", 1);
-
-	vertexbuffer->Allocate(sizeof(float) * (3 + 4 + 2) * vertexcount);
-	vertexbuffer->AddDataDynamic(vertices, sizeof(float) * (3 + 4 + 2) * vertexcount);
-
-	vertexarray->Bind();
-	vertexarray->BindVertexBuffer(vertexbuffer, vertexarray->stride);
-	vertexarray->BindIndexBuffer(GetQuadIndices(vertexarray, vertexcount));
-
-	shader->SetUniformi("drawcount", drawcount);
-	lgl::DrawIndexed(lgl::TRIANGLES, vertexcount * 1.5, lgl::UNSIGNED_INT, nullptr);
-	drawn_sprite_entities.push_back(std::vector<Entity>());
-	
-	auto& engine = registry->store<Engine>();
-	engine.drawcalls++;
-	engine.vertexcount += vertexcount;
-	engine.indexcount += vertexcount * 1.5;
-
-	free(vertices);
-	vertices = nullptr;
-
-	shader->SetUniformi("has_texture", 0);
-}
-
-void lf::Renderer::RenderMesh() {
+void lf::RenderContext::RenderMesh() {
 	
 }
 
-void lf::Renderer::RenderCamera() {
+void lf::RenderContext::RenderCamera() {
 	using namespace lf::Component;
 
 	std::vector<glm::vec3> vertices;
@@ -275,7 +191,7 @@ void lf::Renderer::RenderCamera() {
 	RenderLines(vertices, wireframe_color);
 }
 
-void lf::Renderer::SetLighting() {
+void lf::RenderContext::SetLighting() {
 	using namespace lf::Component;
 
 	int point_light = 0;
@@ -302,34 +218,4 @@ void lf::Renderer::SetLighting() {
 			point_light++;
 		}
 	}
-}
-
-lgl::IndexBuffer* lf::Renderer::GetQuadIndices(lgl::VertexArray* vertexarray, int vertexcount) {
-	static lgl::IndexBuffer* indexbuffer;
-	static int indexcount;
-
-	if (indexbuffer == nullptr)
-		indexbuffer = new lgl::IndexBuffer(vertexarray);
-
-	if (vertexcount*1.5 > indexcount) {
-		std::vector<uint32_t> indices;
-
-		indices.reserve(vertexcount*1.5);
-
-		for (int i = 0; i < vertexcount; i++) {
-			indices.emplace_back(0 + i*4);
-			indices.emplace_back(1 + i*4);
-			indices.emplace_back(2 + i*4);
-			indices.emplace_back(2 + i*4);
-			indices.emplace_back(3 + i*4);
-			indices.emplace_back(0 + i*4);
-		}
-
-		indexbuffer->AddData(indices.data(), indices.size()*sizeof(uint32_t));
-
-		indices.clear();
-		indexcount = vertexcount*1.5;
-	}
-
-	return indexbuffer;
 }
