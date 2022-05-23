@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GraphicsAPI/VertexBuffer.h>
+#include <LucyGL/VertexBuffer.h>
 
 #include <glad/glad.h>
 #include <assert.h>

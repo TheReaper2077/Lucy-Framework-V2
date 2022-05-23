@@ -80,6 +80,14 @@ int main(int ArgCount, char **Args) {
 	auto& functions = registry.store<lf::Functions>(&registry);
 
 	functions.LoadEntities();
+
+	int fps = 0;
+	float frametime = 0;
+	int ups = 0;
+	float updatetime = 0;
+
+	const int MAX_UPS = 60;
+
 	
 	while (!engine.quit) {
 		const auto& start_time = std::chrono::high_resolution_clock::now();
@@ -95,10 +103,10 @@ int main(int ArgCount, char **Args) {
 
 		#ifdef ENABLE_EDITOR
 			// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			renderer.Render(editorwindow, true);
+			if (editorwindow.framebuffer != nullptr) renderer.Render(editorwindow, true);
 			// glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-			{
+			if (editorwindow.framebuffer != nullptr) {
 				editorwindow.framebuffer->Bind();
 
 				glReadBuffer(GL_COLOR_ATTACHMENT1);
@@ -119,13 +127,14 @@ int main(int ArgCount, char **Args) {
 					if (events.mouse_pressed.contains(SDL_BUTTON_LEFT) && toggle) {
 						auto& selected_entity = registry.store<lf::Editor>().selected_entity;
 
-						if (events.dropped_file != "") {
-							selected_entity = renderer.drawn_sprite_entities[int(pixel.z)][idx];
+						selected_entity = renderer.drawn_sprite_entities[int(pixel.z)][idx];
 							
-							auto& spriterenderer = registry.get_or_emplace<lf::Component::SpriteRenderer>(selected_entity);
-							auto& sprite = registry.get_or_emplace<lf::Component::Sprite>(selected_entity);
+						if (events.dropped_file != "") {
+							// auto& spriterenderer = registry.get_or_emplace<lf::Component::SpriteRenderer>(selected_entity);
+							// auto& sprite = registry.get_or_emplace<lf::Component::Sprite>(selected_entity);
 
-							// sprite.texture = new Texture(events.dropped_file.c_str());
+							// sprite.texture = new lgl::Texture();
+							// sprite.texture->LoadFile("")
 						}
 					}
 				}
@@ -174,8 +183,8 @@ int main(int ArgCount, char **Args) {
 			lf::Panel::ScenePanel(registry);
 			lf::Panel::InspectorPanel(registry);
 
-			lf::Panel::GamePanel(registry);
-			lf::Panel::EditorPanel(registry);
+			if (gamewindow.framebuffer != nullptr )lf::Panel::GamePanel(registry);
+			if (editorwindow.framebuffer != nullptr) lf::Panel::EditorPanel(registry);
 
 			ImGui::EndFrame();
 			ImGui::Render();
@@ -185,7 +194,7 @@ int main(int ArgCount, char **Args) {
 		SDL_GL_SwapWindow(engine.window);
 
 		const auto& end_time = std::chrono::high_resolution_clock::now();
-		engine.dt = std::chrono::duration<double, std::ratio<1, 60>>(end_time - start_time).count();
+		engine.dt = std::chrono::duration<double, std::ratio<1, MAX_UPS>>(end_time - start_time).count();
 	}
 
 	return 0;

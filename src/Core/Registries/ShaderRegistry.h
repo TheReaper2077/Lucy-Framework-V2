@@ -3,7 +3,7 @@
 #include "../Components/Components.h"
 #include "../ECS.h"
 
-#include <GraphicsAPI/API.h>
+#include <LucyGL/API.h>
 #include <regex>
 #include <string>
 #include <fstream>

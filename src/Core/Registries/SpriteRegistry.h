@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GraphicsAPI/API.h>
+#include <LucyGL/API.h>
 #include <unordered_map>
 #include <string>
 #include "../Components/Components.h"

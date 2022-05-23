@@ -74,7 +74,7 @@ void lf::Renderer::Test() {
 	static lgl::VertexBuffer* vertexbuffer;
 	lgl::VertexArray* vertexarray = registry->store<VertexArrayRegistry>().GetVertexArray(VertexArrayAttribFlag_POSITION);
 
-	shader->SetUniformi("has_texture", 1);
+	shader->SetUniformi("wireframe_mode", 1);
 
 	if (vertexbuffer == nullptr) {
 		vertexbuffer = new lgl::VertexBuffer();
@@ -88,7 +88,7 @@ void lf::Renderer::Test() {
 
 	lgl::DrawIndexed(lgl::TRIANGLES, 6, lgl::UNSIGNED_INT, nullptr);
 
-	shader->SetUniformi("has_texture", 0);
+	shader->SetUniformi("wireframe_mode", 0);
 }
 
 void lf::Renderer::Render(int width, int height, bool debug) {
@@ -119,7 +119,7 @@ void lf::Renderer::RenderSprite() {
 	int vertexcount = registry->view<Tag, Transform, SpriteRenderer>().size_hint() * 4;
 	if (!vertexcount) return;
 
-	uint32_t flags = VertexArrayAttribFlag_POSITION | VertexArrayAttribFlag_COLOR | VertexArrayAttribFlag_UV0;
+	uint32_t flags = VertexArrayAttribFlag_POSITION | VertexArrayAttribFlag_COLOR | VertexArrayAttribFlag_UV0;	
 
 	SetModel(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0)));
 
@@ -129,16 +129,16 @@ void lf::Renderer::RenderSprite() {
 
 	auto position_offset = vertexarrayregistry.GetOffset(vertexarray, VertexArrayAttrib_POSITION);
 	auto color_offset = vertexarrayregistry.GetOffset(vertexarray, VertexArrayAttrib_COLOR);
-	auto uv0_offset = vertexarrayregistry.GetOffset(vertexarray, VertexArrayAttrib_UV0);
+	auto uvw_offset = vertexarrayregistry.GetOffset(vertexarray, VertexArrayAttrib_UV0);
 
 	static lgl::VertexBuffer* vertexbuffer;
 
 	if (vertexbuffer == nullptr)
 		vertexbuffer = new lgl::VertexBuffer();
 
-	float* vertices = (float*)malloc(sizeof(float) * (3 + 4 + 2) * vertexcount);
+	float* vertices = (float*)malloc(sizeof(float) * vertexarray->elem_stride * vertexcount);
+	static glm::vec3 pos[4];
 
-	int i = 0;
 	for (auto entity: registry->view<Tag, Transform, SpriteRenderer>()) {
 		auto& transform = registry->get<Transform>(entity);
 		auto& spriterenderer = registry->get<SpriteRenderer>(entity);
@@ -151,64 +151,39 @@ void lf::Renderer::RenderSprite() {
 			continue;
 		}
 
-		// drawn_sprite_entities[drawcount].push_back(entity);
+		drawn_sprite_entities[drawcount].push_back(entity);
 
-		glm::vec3 pos00 = (quaternion * glm::vec3(-transform.scale.x / 2.0, -transform.scale.y / 2.0, 0)) + transform.translation;
-		glm::vec3 pos01 = (quaternion * glm::vec3(+transform.scale.x / 2.0, -transform.scale.y / 2.0, 0)) + transform.translation;
-		glm::vec3 pos10 = (quaternion * glm::vec3(+transform.scale.x / 2.0, +transform.scale.y / 2.0, 0)) + transform.translation;
-		glm::vec3 pos11 = (quaternion * glm::vec3(-transform.scale.x / 2.0, +transform.scale.y / 2.0, 0)) + transform.translation;
+		pos[0] = (quaternion * glm::vec3(-transform.scale.x / 2.0, -transform.scale.y / 2.0, 0)) + transform.translation;
+		pos[1] = (quaternion * glm::vec3(+transform.scale.x / 2.0, -transform.scale.y / 2.0, 0)) + transform.translation;
+		pos[2] = (quaternion * glm::vec3(+transform.scale.x / 2.0, +transform.scale.y / 2.0, 0)) + transform.translation;
+		pos[3] = (quaternion * glm::vec3(-transform.scale.x / 2.0, +transform.scale.y / 2.0, 0)) + transform.translation;
 
-		vertices[i * vertexarray->elem_stride + position_offset + 0] = pos00.x;
-		vertices[i * vertexarray->elem_stride + position_offset + 1] = pos00.y;
-		vertices[i * vertexarray->elem_stride + position_offset + 2] = pos00.z;
+		for (int i = 0; i < 4; i++) {
+			vertices[i * vertexarray->elem_stride + position_offset + 0] = pos[i].x;
+			vertices[i * vertexarray->elem_stride + position_offset + 1] = pos[i].y;
+			vertices[i * vertexarray->elem_stride + position_offset + 2] = pos[i].z;
 
-		vertices[i * vertexarray->elem_stride + color_offset + 0] = spriterenderer.color.x;
-		vertices[i * vertexarray->elem_stride + color_offset + 1] = spriterenderer.color.y;
-		vertices[i * vertexarray->elem_stride + color_offset + 2] = spriterenderer.color.z;
-		vertices[i * vertexarray->elem_stride + color_offset + 3] = spriterenderer.color.w;
+			vertices[i * vertexarray->elem_stride + color_offset + 0] = spriterenderer.color.x;
+			vertices[i * vertexarray->elem_stride + color_offset + 1] = spriterenderer.color.y;
+			vertices[i * vertexarray->elem_stride + color_offset + 2] = spriterenderer.color.z;
+			vertices[i * vertexarray->elem_stride + color_offset + 3] = spriterenderer.color.w;
 
-		vertices[i * vertexarray->elem_stride + uv0_offset + 0] = 0;
-		vertices[i * vertexarray->elem_stride + uv0_offset + 1] = 0;
-		i++;
+			// vertices[i * vertexarray->elem_stride + uvw_offset + 2] = 0;
 
-		vertices[i * vertexarray->elem_stride + position_offset + 0] = pos01.x;
-		vertices[i * vertexarray->elem_stride + position_offset + 1] = pos01.y;
-		vertices[i * vertexarray->elem_stride + position_offset + 2] = pos01.z;
-
-		vertices[i * vertexarray->elem_stride + color_offset + 0] = spriterenderer.color.x;
-		vertices[i * vertexarray->elem_stride + color_offset + 1] = spriterenderer.color.y;
-		vertices[i * vertexarray->elem_stride + color_offset + 2] = spriterenderer.color.z;
-		vertices[i * vertexarray->elem_stride + color_offset + 3] = spriterenderer.color.w;
-
-		vertices[i * vertexarray->elem_stride + uv0_offset + 0] = 0;
-		vertices[i * vertexarray->elem_stride + uv0_offset + 1] = 1;
-		i++;
-
-		vertices[i * vertexarray->elem_stride + position_offset + 0] = pos10.x;
-		vertices[i * vertexarray->elem_stride + position_offset + 1] = pos10.y;
-		vertices[i * vertexarray->elem_stride + position_offset + 2] = pos10.z;
-
-		vertices[i * vertexarray->elem_stride + color_offset + 0] = spriterenderer.color.x;
-		vertices[i * vertexarray->elem_stride + color_offset + 1] = spriterenderer.color.y;
-		vertices[i * vertexarray->elem_stride + color_offset + 2] = spriterenderer.color.z;
-		vertices[i * vertexarray->elem_stride + color_offset + 3] = spriterenderer.color.w;
-
-		vertices[i * vertexarray->elem_stride + uv0_offset + 0] = 1;
-		vertices[i * vertexarray->elem_stride + uv0_offset + 1] = 0;
-		i++;
-
-		vertices[i * vertexarray->elem_stride + position_offset + 0] = pos11.x;
-		vertices[i * vertexarray->elem_stride + position_offset + 1] = pos11.y;
-		vertices[i * vertexarray->elem_stride + position_offset + 2] = pos11.z;
-
-		vertices[i * vertexarray->elem_stride + color_offset + 0] = spriterenderer.color.x;
-		vertices[i * vertexarray->elem_stride + color_offset + 1] = spriterenderer.color.y;
-		vertices[i * vertexarray->elem_stride + color_offset + 2] = spriterenderer.color.z;
-		vertices[i * vertexarray->elem_stride + color_offset + 3] = spriterenderer.color.w;
-
-		vertices[i * vertexarray->elem_stride + uv0_offset + 0] = 1;
-		vertices[i * vertexarray->elem_stride + uv0_offset + 1] = 1;
-		i++;
+			// if (i == 0) {
+			// 	vertices[i * vertexarray->elem_stride + uvw_offset + 0] = 0;
+			// 	vertices[i * vertexarray->elem_stride + uvw_offset + 1] = 0;
+			// } else  if (i == 1) {
+			// 	vertices[i * vertexarray->elem_stride + uvw_offset + 0] = 0;
+			// 	vertices[i * vertexarray->elem_stride + uvw_offset + 1] = 1;
+			// } else if (i == 2) {
+			// 	vertices[i * vertexarray->elem_stride + uvw_offset + 0] = 1;
+			// 	vertices[i * vertexarray->elem_stride + uvw_offset + 1] = 0;
+			// } else if (i == 3) {
+			// 	vertices[i * vertexarray->elem_stride + uvw_offset + 0] = 1;
+			// 	vertices[i * vertexarray->elem_stride + uvw_offset + 1] = 1;
+			// }
+		}
 	}
 
 	shader->SetUniformi("has_texture", 1);
@@ -220,7 +195,9 @@ void lf::Renderer::RenderSprite() {
 	vertexarray->BindVertexBuffer(vertexbuffer, vertexarray->stride);
 	vertexarray->BindIndexBuffer(GetQuadIndices(vertexarray, vertexcount));
 
+	shader->SetUniformi("drawcount", drawcount);
 	lgl::DrawIndexed(lgl::TRIANGLES, vertexcount * 1.5, lgl::UNSIGNED_INT, nullptr);
+	drawn_sprite_entities.push_back(std::vector<Entity>());
 	
 	auto& engine = registry->store<Engine>();
 	engine.drawcalls++;
@@ -240,13 +217,11 @@ void lf::Renderer::RenderMesh() {
 void lf::Renderer::RenderCamera() {
 	using namespace lf::Component;
 
-	shader->SetUniformi("wireframe_mode", 1);
-
-	shader->SetUniformVec4("wireframe_color", &glm::vec4(1, 1, 0, 1)[0]);
-
-	lgl::VertexArray* vertexarray = registry->store<VertexArrayRegistry>().GetVertexArray(VertexArrayAttribFlag_POSITION);
+	std::vector<glm::vec3> vertices;
 
 	for (auto [entity, tag, transform, camera]: registry->view<Tag, Transform, Camera>().each()) {
+		auto quaternion = transform.GetRotationQuat();
+
 		float aspect_ratio = camera.width / camera.height;
 		float horizontal_fov = camera.fov;
 		float vertical_fov = camera.fov / aspect_ratio;
@@ -257,10 +232,47 @@ void lf::Renderer::RenderCamera() {
 		float near_highten = (std::tan(glm::radians(vertical_fov / 2)) * camera.camera_near) / (camera.camera_far - camera.camera_near);
 		float near_widen = (std::tan(glm::radians(horizontal_fov / 2)) * camera.camera_near) / (camera.camera_far - camera.camera_near);
 
+		glm::vec3 near0 = quaternion * glm::vec3(-near_widen, -near_highten, 1) + transform.translation;
+		glm::vec3 near1 = quaternion * glm::vec3(+near_widen, -near_highten, 1) + transform.translation;
+		glm::vec3 near2 = quaternion * glm::vec3(+near_widen, +near_highten, 1) + transform.translation;
+		glm::vec3 near3 = quaternion * glm::vec3(-near_widen, +near_highten, 1) + transform.translation;
+
+		glm::vec3 far0 = quaternion * glm::vec3(-far_widen, -far_highten, 0) + transform.translation;
+		glm::vec3 far1 = quaternion * glm::vec3(+far_widen, -far_highten, 0) + transform.translation;
+		glm::vec3 far2 = quaternion * glm::vec3(+far_widen, +far_highten, 0) + transform.translation;
+		glm::vec3 far3 = quaternion * glm::vec3(-far_widen, +far_highten, 0) + transform.translation;
+
+		vertices.reserve(8 + 8 + 8 + vertices.size());
+
+		vertices.emplace_back(near0);
+		vertices.emplace_back(near1);
+		vertices.emplace_back(near1);
+		vertices.emplace_back(near2);
+		vertices.emplace_back(near2);
+		vertices.emplace_back(near3);
+		vertices.emplace_back(near3);
+		vertices.emplace_back(near0);
 		
+		vertices.emplace_back(far0);
+		vertices.emplace_back(far1);
+		vertices.emplace_back(far1);
+		vertices.emplace_back(far2);
+		vertices.emplace_back(far2);
+		vertices.emplace_back(far3);
+		vertices.emplace_back(far3);
+		vertices.emplace_back(far0);
+
+		vertices.emplace_back(far0);
+		vertices.emplace_back(near0);
+		vertices.emplace_back(far1);
+		vertices.emplace_back(near1);
+		vertices.emplace_back(far2);
+		vertices.emplace_back(near2);
+		vertices.emplace_back(far3);
+		vertices.emplace_back(near3);
 	}
 
-	shader->SetUniformi("wireframe_mode", 0);
+	RenderLines(vertices, wireframe_color);
 }
 
 void lf::Renderer::SetLighting() {

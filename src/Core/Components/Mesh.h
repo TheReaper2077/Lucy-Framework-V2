@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-#include <GraphicsAPI/API.h>
+#include <LucyGL/API.h>
 #include "../Enumerations.h"
 
 namespace lf {

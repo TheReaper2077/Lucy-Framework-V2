@@ -1,5 +1,5 @@
-#include <GraphicsAPI/VertexArray.h>
-#include <GraphicsAPI/IndexBuffer.h>
+#include <LucyGL/VertexArray.h>
+#include <LucyGL/IndexBuffer.h>
 
 #include <glad/glad.h>
 #include <assert.h>

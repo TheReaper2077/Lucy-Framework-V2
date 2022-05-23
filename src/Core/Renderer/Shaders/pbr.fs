@@ -9,6 +9,7 @@ in vec2 uv4;
 in vec2 uv5;
 in vec2 uv6;
 in vec2 uv7;
+in vec3 uvw;
 
 in vec3 frag_pos;
 in vec3 view_pos;
@@ -169,11 +170,12 @@ void main() {
 	gl_FragData[1] = vec4(float(vertexid), float(instanceid), float(drawcount), 1);
 	
 	if (wireframe_mode > 0) {
-		gl_FragData[0] = wireframe_color;
+		gl_FragData[0] = vec4(1, 1, 0, 1);
 		return;
 	}
 
 	if (has_texture > 0) {
+		// gl_FragData[0] = vec4(uvw, 1);
 		gl_FragData[0] = color;
 		return;
 	}

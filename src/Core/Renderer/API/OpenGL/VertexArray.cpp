@@ -1,8 +1,8 @@
 #pragma once
 
-#include <GraphicsAPI/VertexArray.h>
-#include <GraphicsAPI/VertexBuffer.h>
-#include <GraphicsAPI/IndexBuffer.h>
+#include <LucyGL/VertexArray.h>
+#include <LucyGL/VertexBuffer.h>
+#include <LucyGL/IndexBuffer.h>
 
 #include <glad/glad.h>
 #include <assert.h>
@@ -15,11 +15,11 @@ lgl::VertexArray::VertexArray(std::vector<VertexArrayAttribDescriptor> layouts) 
 	uint32_t elem_relativeoffset = 0;
 
 	for (auto& attrib: layouts) {
-		glVertexArrayAttribFormat(this->id, attrib.idx, attrib.size, GetTypeMap(attrib.type), false, relativeoffset);
+		glVertexArrayAttribFormat(this->id, attrib.idx, attrib.size, GetMap(attrib.type), false, relativeoffset);
 		glVertexArrayAttribBinding(this->id, attrib.idx, 0);
 		glEnableVertexArrayAttrib(this->id, attrib.idx);
 
-		switch(GetTypeMap(attrib.type)) {
+		switch(GetMap(attrib.type)) {
 			case GL_FLOAT:
 				relativeoffset += sizeof(GLfloat)*attrib.size;
 				break;
@@ -56,7 +56,7 @@ void lgl::VertexArray::UnBind() {
 }
 
 void lgl::VertexArray::BindVertexBuffer(VertexBuffer *vertexbuffer, std::size_t stride, std::size_t offset) {
-	glVertexArrayVertexBuffer(id, 0, vertexbuffer->id, offset, (stride == 0) ? stride : stride);
+	glVertexArrayVertexBuffer(id, 0, vertexbuffer->id, offset, (stride == 0) ? this->stride : stride);
 }
 
 void lgl::VertexArray::BindIndexBuffer(IndexBuffer *indexbuffer) {

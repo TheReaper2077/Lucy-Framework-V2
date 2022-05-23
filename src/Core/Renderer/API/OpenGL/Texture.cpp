@@ -3,7 +3,7 @@
 #endif
 
 #include <stb_image.h>
-#include <GraphicsAPI/Texture.h>
+#include <LucyGL/Texture.h>
 
 #include <glad/glad.h>
 

@@ -11,7 +11,7 @@ namespace lgl {
 		FLOAT,
 	};
 
-	unsigned int GetTypeMap(const Type type);
+	unsigned int GetMap(const Type type);
 
 	enum Format {
 		RGB,
@@ -21,9 +21,7 @@ namespace lgl {
 	unsigned int GetMap(const Format format);
 
 	enum Primitive {
-		POINT,
 		POINTS,
-		LINE,
 		LINES,
 		LINE_STRIP,
 		TRIANGLES,

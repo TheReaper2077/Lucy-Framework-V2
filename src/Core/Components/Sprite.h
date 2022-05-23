@@ -3,7 +3,7 @@
 #include <string>
 #include <glm/vec2.hpp>
 
-#include <GraphicsAPI/API.h>
+#include <LucyGL/API.h>
 
 namespace lf {
 	namespace Component {

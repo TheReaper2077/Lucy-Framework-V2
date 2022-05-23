@@ -11,6 +11,7 @@ layout (location = 7) in vec2 v_uv4;
 layout (location = 8) in vec2 v_uv5;
 layout (location = 9) in vec2 v_uv6;
 layout (location = 10) in vec2 v_uv7;
+layout (location = 11) in vec3 v_uvw;
 
 layout (std140, binding = 0) uniform ProjectionMatrix {
     mat4 model;
@@ -29,6 +30,7 @@ out vec2 uv4;
 out vec2 uv5;
 out vec2 uv6;
 out vec2 uv7;
+out vec3 uvw;
 
 uniform vec3 offset;
 
@@ -49,6 +51,7 @@ void main() {
 	uv5 = v_uv5;
 	uv6 = v_uv6;
 	uv7 = v_uv7;
+	uvw = v_uvw;
 
 	frag_pos = vec3(model * vec4(v_position + offset, 1.0));
 	view_pos = v_view_pos;

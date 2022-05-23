@@ -1,4 +1,4 @@
-#include <GraphicsAPI/Shader.h>
+#include <LucyGL/Shader.h>
 
 #include <glad/glad.h>
 #include <assert.h>

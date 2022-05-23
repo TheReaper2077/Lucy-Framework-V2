@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GraphicsAPI/FrameBuffer.h>
+#include <LucyGL/FrameBuffer.h>
 
 #include <glad/glad.h>
 #include <assert.h>

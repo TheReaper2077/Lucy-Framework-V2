@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ECS.h"
-#include <GraphicsAPI/API.h>
+#include <LucyGL/API.h>
 
 namespace lf {
 	struct Window {
