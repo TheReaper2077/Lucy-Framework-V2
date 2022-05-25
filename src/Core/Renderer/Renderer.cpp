@@ -91,7 +91,7 @@ void lf::RenderContext::Test() {
 	vertexarray->BindVertexBuffer(vertexbuffer, vertexarray->stride);
 	vertexarray->BindIndexBuffer(GetQuadIndices(vertexarray, 4));
 
-	lgl::DrawIndexed(lgl::TRIANGLES, 6, lgl::UNSIGNED_INT, nullptr);
+	lgl::DrawIndexed(lgl::TRIANGLE, 6, lgl::UNSIGNED_INT, nullptr);
 
 	shader->SetUniformi("wireframe_mode", 0);
 }
@@ -188,6 +188,7 @@ void lf::RenderContext::RenderCamera() {
 		vertices.emplace_back(near3);
 	}
 
+	shader->SetUniformVec4("wireframe_color", &glm::vec4(1, 1, 0, 1)[0]);
 	RenderLines(vertices, wireframe_color);
 }
 

@@ -11,25 +11,25 @@ namespace lgl {
 		FLOAT,
 	};
 
-	unsigned int GetMap(const Type type);
+	const unsigned int GetMap(const Type type);
 
 	enum Format {
 		RGB,
 		RGBA,
 	};
 
-	unsigned int GetMap(const Format format);
+	const unsigned int GetMap(const Format format);
 
 	enum Primitive {
-		POINTS,
-		LINES,
+		POINT,
+		LINE,
+		TRIANGLE,
 		LINE_STRIP,
-		TRIANGLES,
 		TRIANGLE_FAN,
 		TRIANGLE_STRIP,
 	};
 
-	unsigned int GetMap(const Primitive primitive);
+	const unsigned int GetMap(const Primitive primitive);
 
 	enum TextureFilteringMode {
 		FilterMode_None = 0,
@@ -37,7 +37,7 @@ namespace lgl {
 		FilterMode_NEAREST,
 	};
 
-	unsigned int GetMap(const TextureFilteringMode texturefilteringmode);
+	const unsigned int GetMap(const TextureFilteringMode texturefilteringmode);
 
 	enum TextureWrapMode {
 		WrapMode_None = 0,
@@ -48,7 +48,7 @@ namespace lgl {
 		WrapMode_MIRROR_CLAMP_TO_EDGE,
 	};
 
-	unsigned int GetMap(const TextureWrapMode texturewrapmode);
+	const unsigned int GetMap(const TextureWrapMode texturewrapmode);
 
 	enum TextureMode {
 		TEXTURE_1D,
@@ -64,5 +64,5 @@ namespace lgl {
 		TEXTURE_2D_MULTISAMPLE_ARRAY,
 	};
 
-	unsigned int GetMap(const TextureMode texturemode);
+	const unsigned int GetMap(const TextureMode texturemode);
 }

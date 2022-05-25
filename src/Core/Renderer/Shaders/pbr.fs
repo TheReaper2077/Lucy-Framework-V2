@@ -167,14 +167,15 @@ uniform sampler2D texture_map;
 uniform int drawcount;
 
 void main() {
-	gl_FragData[1] = vec4(float(vertexid), float(instanceid), float(drawcount), 1);
-	
+	gl_FragData[1] = vec4(float(vertexid), float(instanceid), float(drawcount), 0);
+
 	if (wireframe_mode > 0) {
-		gl_FragData[0] = vec4(1, 1, 0, 1);
+		gl_FragData[0] = wireframe_color;
 		return;
 	}
 
 	if (has_texture > 0) {
+		gl_FragData[1] = vec4(float(vertexid), float(instanceid), float(drawcount), 1);
 		// gl_FragData[0] = vec4(uvw, 1);
 		gl_FragData[0] = color;
 		return;

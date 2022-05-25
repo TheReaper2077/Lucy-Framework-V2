@@ -1,6 +1,6 @@
 #include "Components/Components.h"
 #include "Functions.h"
-#include "uuid.h"
+#include <uuid.h>
 #include "Util/Serializer.h"
 #include "Window.h"
 
@@ -67,11 +67,19 @@ lf::Entity lf::Functions::CreateLightEntity() {
 }
 
 void lf::Functions::SaveEntities() {
-	Util::Serializer(registry, "scene.yaml");
+	Util::SerializeEntities(registry, "scene.yaml");
 }
 
 void lf::Functions::LoadEntities() {
-	Util::Deserializer(registry, "scene.yaml");
+	Util::DeserializeEntities(registry, "scene.yaml");
+}
+
+void lf::Functions::SaveSprites() {
+	Util::SerializeSpriteRegistry(registry, "sprites.yaml");
+}
+
+void lf::Functions::LoadSprites() {
+	Util::DeserializeSpriteRegistry(registry, "sprites.yaml");
 }
 
 void lf::Functions::SetMainCamera(Entity camera) {

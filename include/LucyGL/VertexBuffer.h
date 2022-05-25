@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stddef.h>
+
 namespace lgl {
 	typedef unsigned int VertexBufferId;
 	

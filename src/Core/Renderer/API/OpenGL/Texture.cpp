@@ -6,6 +6,7 @@
 #include <LucyGL/Texture.h>
 
 #include <glad/glad.h>
+#include <iostream>
 
 lgl::Texture::Texture(TextureMode mode) {
 	texture_mode = GetMap(mode);
@@ -21,18 +22,28 @@ void lgl::Texture::LoadFile(const char* filename) {
 	Bind();
 
 	SetWrapMode(WrapMode_MIRRORED_REPEAT, WrapMode_MIRRORED_REPEAT);
-	SetFilteringMode(FilterMode_LINEAR, FilterMode_LINEAR);
-	GenerateMimmap();
-	
-	unsigned char* data = stbi_load(filename, &width, &height, &channels, 0);
+	SetFilteringMode(FilterMode_NEAREST, FilterMode_NEAREST);
 
-	assert(data);
+	auto* data = stbi_load(filename, &width, &height, &channels, 0);
+		
+	if (!data) {
+		static uint8_t default_data[] = {
+			255,   0, 255, 255,   0,   0,   0, 255,
+			  0,   0,   0, 255, 255,   0, 255, 255,
+			255,   0, 255, 255,   0,   0,   0, 255,
+			  0,   0,   0, 255, 255,   0, 255, 255,
+			255,   0, 255, 255,   0,   0,   0, 255,
+			  0,   0,   0, 255, 255,   0, 255, 255,
+			255,   0, 255, 255,   0,   0,   0, 255,
+			  0,   0,   0, 255, 255,   0, 255, 255,
+		};
 
-	if (channels == 4)
-		glTexImage2D(texture_mode, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-	if (channels == 3)
-		glTexImage2D(texture_mode, 0, GL_RGBA, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-	
+		glTexImage2D(texture_mode, 0, GL_RGBA, 2, 2, 0, GL_RGBA, GL_UNSIGNED_BYTE, default_data);
+	} else {
+		if (channels == 4) glTexImage2D(texture_mode, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		if (channels == 3) glTexImage2D(texture_mode, 0, GL_RGBA, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	}
+
 	stbi_image_free(data);
 
 	UnBind();
@@ -41,27 +52,34 @@ void lgl::Texture::LoadFile(const char* filename) {
 void lgl::Texture::GenerateMimmap() {
 	Bind();
 	glGenerateMipmap(id);
-	UnBind();
 }
 
 void lgl::Texture::SetWrapMode(TextureWrapMode wrap_s, TextureWrapMode wrap_t, TextureWrapMode wrap_r) {
 	Bind();
-	if (wrap_s != WrapMode_None)
+	if (this->wrap_s != wrap_s && wrap_s != WrapMode_None) {
+		this->wrap_s = wrap_s;
 		glTexParameteri(texture_mode, GL_TEXTURE_WRAP_S, GetMap(wrap_s));
-	if (wrap_t != WrapMode_None)
+	}
+	if (this->wrap_t != wrap_t && wrap_t != WrapMode_None) {
+		this->wrap_t = wrap_t;
 		glTexParameteri(texture_mode, GL_TEXTURE_WRAP_T, GetMap(wrap_t));
-	if (wrap_r != WrapMode_None)
+	}
+	if (this->wrap_r != wrap_r && wrap_r != WrapMode_None) {
+		this->wrap_r = wrap_r;
 		glTexParameteri(texture_mode, GL_TEXTURE_WRAP_R, GetMap(wrap_r));
-	UnBind();
+	}
 }
 
 void lgl::Texture::SetFilteringMode(TextureFilteringMode mag, TextureFilteringMode min) {
 	Bind();
-	if (mag != FilterMode_None)
+	if (this->mag != mag && mag != FilterMode_None) {
+		this->mag = mag;
 		glTexParameteri(texture_mode, GL_TEXTURE_MAG_FILTER, GetMap(mag));
-	if (min != FilterMode_None)
+	}
+	if (this->min != min && min != FilterMode_None) {
+		this->min = min;
 		glTexParameteri(texture_mode, GL_TEXTURE_MIN_FILTER, GetMap(min));
-	UnBind();
+	}
 }
 
 void lgl::Texture::Bind() {

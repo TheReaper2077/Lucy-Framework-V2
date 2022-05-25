@@ -48,15 +48,15 @@ void lf::ComponentHeader<Camera>::Render(Registry& registry, Entity entity) {
 
 	ImGui::ColorEdit4("ClearColor", &camera.clear_color[0], ImGuiColorEditFlags_NoInputs);
 
-	EnumComboLogic("Projection", { "ORTHOGRAPHIC", "PERSPECTIVE" }, camera.mode);
-	EnumComboLogic("Type", { "FPS", "TPS", "Default", "None" }, camera.type);
+	ImGui::EnumComboLogic("Projection", { "ORTHOGRAPHIC", "PERSPECTIVE" }, camera.mode);
+	ImGui::EnumComboLogic("Type", { "FPS", "TPS", "Default", "None" }, camera.type);
 }
 
 template <>
 void lf::ComponentHeader<Light>::Render(Registry& registry, Entity entity) {
 	auto& light = registry.get<Light>(entity);
 
-	EnumComboLogic("Mode", { "Point", "Spot", "Area", "Directional" }, light.mode);
+	ImGui::EnumComboLogic("Mode", { "Point", "Spot", "Area", "Directional" }, light.mode);
 
 	ImGui::Spacing();
 
@@ -88,6 +88,7 @@ void lf::ComponentHeader<MeshRenderer>::Render(Registry& registry, Entity entity
 void lf::Panel::InspectorPanel(Registry& registry) {
 	if (ImGui::Begin("Inspector")) {
 		Entity entity = registry.store<Editor>().selected_entity;
+		auto* texture_raw = registry.store<Editor>().selected_texture;
 
 		if (entity != (Entity)0) {
 			static ComponentHeader<Tag> tag("Tag", true);
@@ -132,6 +133,40 @@ void lf::Panel::InspectorPanel(Registry& registry) {
 				}
 
 				ImGui::EndPopup();
+			}
+		} else if (texture_raw != nullptr) {
+			static const std::vector<std::string> wrap_str_valid = { "None", "CLAMP_TO_EDGE", "CLAMP_TO_BORDER", "MIRRORED_REPEAT", "REPEAT", "MIRROR_CLAMP_TO_EDGE" };
+			static const std::vector<std::string> wrap_str_except = { "None" };
+			static const std::vector<std::string> filter_str_valid = { "None", "LINEAR", "NEAREST" };
+			static const std::vector<std::string> filter_str_except = { "None" };
+
+			ImGui::Spacing();
+
+			ImGui::InputText("Name", &texture_raw->name);
+
+			ImGui::Spacing();
+
+			auto min = texture_raw->texture->min;
+			auto mag = texture_raw->texture->mag;
+			ImGui::EnumComboLogic("Filter min", filter_str_valid, min, filter_str_except);
+			ImGui::EnumComboLogic("Filter mag", filter_str_valid, mag, filter_str_except);
+			
+			ImGui::Spacing();
+
+			auto wrap_s = texture_raw->texture->wrap_s;
+			auto wrap_t = texture_raw->texture->wrap_t;
+			auto wrap_r = texture_raw->texture->wrap_r;
+			ImGui::EnumComboLogic("Wrap s", wrap_str_valid, wrap_s, wrap_str_except);
+			ImGui::EnumComboLogic("Wrap t", wrap_str_valid, wrap_t, wrap_str_except);
+			ImGui::EnumComboLogic("Wrap r", wrap_str_valid, wrap_r, wrap_str_except);
+
+			ImGui::Spacing();
+
+			texture_raw->texture->SetFilteringMode(mag, min);
+			texture_raw->texture->SetWrapMode(wrap_s, wrap_t, wrap_r);
+
+			if (ImGui::Button("Generate Mipmap")) {
+				texture_raw->texture->GenerateMimmap();
 			}
 		}
 	}

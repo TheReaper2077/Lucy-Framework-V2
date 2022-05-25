@@ -84,7 +84,7 @@ namespace lf {
 			vertexarray->Bind();
 			vertexarray->BindVertexBuffer(vertexbuffer);
 
-			lgl::Draw(lgl::LINES, 0, vertices.size());
+			lgl::Draw(lgl::LINE, 0, vertices.size());
 
 			shader->SetUniformi("wireframe_mode", 0);
 		}

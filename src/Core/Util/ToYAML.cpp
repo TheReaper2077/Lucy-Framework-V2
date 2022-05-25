@@ -122,7 +122,14 @@ YAML::Emitter& operator<<(YAML::Emitter& out, const lf::Component::MeshRenderer*
 	return out;
 }
 
-
-
-
-
+YAML::Emitter& operator<<(YAML::Emitter& out, const lf::Component::TextureRaw* v) {
+	out << YAML::BeginMap;
+	out << YAML::Key << "filename";
+	out << YAML::Value << v->filename;
+	out << YAML::Key << "id";
+	out << YAML::Value << v->id;
+	out << YAML::Key << "name";
+	out << YAML::Value << v->name;
+	out << YAML::EndMap;
+	return out;
+}

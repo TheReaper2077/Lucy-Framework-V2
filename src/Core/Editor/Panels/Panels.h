@@ -5,3 +5,7 @@
 #include "ScenePanel.h"
 #include "GamePanel.h"
 #include "EditorPanel.h"
+
+namespace lf {
+	
+}

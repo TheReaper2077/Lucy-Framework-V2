@@ -4,7 +4,9 @@
 #include "FileIO.h"
 #include <iostream>
 
-bool lf::Util::Serializer(Registry* registry, const std::string& filename) {
+#include "../Registries/SpriteRegistry.h"
+
+bool lf::Util::SerializeEntities(Registry* registry, const std::string& filename) {
 	using namespace lf::Component;
 
 	YAML::Emitter out;
@@ -58,7 +60,7 @@ lf::Entity is_entity_present(const lf::Registry* registry, const std::string& id
 }
 
 
-void lf::Util::Deserializer(Registry* registry, const std::string& filename) {
+void lf::Util::DeserializeEntities(Registry* registry, const std::string& filename) {
 	using namespace lf::Component;
 
 	std::string src = ReadFile(filename);
@@ -83,21 +85,67 @@ void lf::Util::Deserializer(Registry* registry, const std::string& filename) {
 
 		if (scene[i]["Transform"]) {
 			registry->emplace<Transform>(entity, scene[i]["Transform"].as<Transform>());
+		} else if (registry->try_get<Transform>(entity) != nullptr) {
+			registry->remove<Transform>(entity);
 		}
 		if (scene[i]["Camera"]) {
 			auto camera = scene[i]["Camera"].as<Camera>();
 			registry->emplace<Camera>(entity, camera);
 			if (camera.enable)
 				registry->store<GameWindow>().camera = entity;
+		} else if (registry->try_get<Camera>(entity) != nullptr) {
+			registry->remove<Camera>(entity);
 		}
 		if (scene[i]["Light"]) {
 			registry->emplace<Light>(entity, scene[i]["Light"].as<Light>());
+		} else if (registry->try_get<Light>(entity) != nullptr) {
+			registry->remove<Light>(entity);
 		}
 		if (scene[i]["SpriteRenderer"]) {
 			registry->emplace<SpriteRenderer>(entity, scene[i]["SpriteRenderer"].as<SpriteRenderer>());
+		} else if (registry->try_get<SpriteRenderer>(entity) != nullptr) {
+			registry->remove<SpriteRenderer>(entity);
 		}
 		if (scene[i]["MeshRenderer"]) {
 			registry->emplace<MeshRenderer>(entity, scene[i]["MeshRenderer"].as<MeshRenderer>());
+		} else if (registry->try_get<MeshRenderer>(entity) != nullptr) {
+			registry->remove<MeshRenderer>(entity);
 		}
+	}
+}
+
+bool lf::Util::SerializeSpriteRegistry(Registry* registry, const std::string& filename) {
+	auto& spriteregistry = registry->store<SpriteRegistry>();
+
+	YAML::Emitter out;
+	out << YAML::BeginMap;
+	out << YAML::Key << "Textures";
+	out << YAML::Value;
+		out << YAML::BeginSeq;
+
+		for (auto& pair: spriteregistry.texture_store) {
+			out << pair.second;
+		}
+
+		out << YAML::EndSeq;
+	out << YAML::EndMap;
+
+	return WriteFile(filename, out.c_str());
+}
+
+void lf::Util::DeserializeSpriteRegistry(Registry* registry, const std::string& filename) {
+	auto& spriteregistry = registry->store<SpriteRegistry>();
+
+	std::string src = ReadFile(filename);
+
+	if (src == "") return;
+
+	YAML::Node scene = YAML::LoadFile(filename);
+
+	for (int i = 0; i != scene["Textures"].size(); i++) {
+		auto filename = scene["Textures"][i]["filename"].as<std::string>();
+		auto* texture_raw = spriteregistry.GetTexture(filename);
+		texture_raw->name = scene["Textures"][i]["name"].as<std::string>();
+		texture_raw->id = scene["Textures"][i]["id"].as<std::string>();
 	}
 }

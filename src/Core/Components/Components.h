@@ -11,3 +11,4 @@
 #include "MeshRenderer.h"
 #include "Material.h"
 #include "ParentEntity.h"
+#include "TextureRaw.h"

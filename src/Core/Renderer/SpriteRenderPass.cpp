@@ -50,7 +50,7 @@ void lf::SpriteRenderPass::Flush() {
 	vertexarray->BindVertexBuffer(vertexbuffer);
 	vertexarray->BindIndexBuffer(lf::GetQuadIndices(vertexarray, int(vertices.size() * 1.5)));
 
-	DrawIndexed(TRIANGLES, vertices.size() * 1.5, UNSIGNED_INT, nullptr);
+	DrawIndexed(TRIANGLE, vertices.size() * 1.5, UNSIGNED_INT, nullptr);
 	registry->store<lf::RenderContext>().drawn_sprite_entities.push_back(std::vector<Entity>());
 
 	vertices.clear();

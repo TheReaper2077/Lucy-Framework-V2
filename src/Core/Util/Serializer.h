@@ -4,7 +4,10 @@
 
 namespace lf {
 	namespace Util {
-		bool Serializer(Registry* registry, const std::string& filename);
-		void Deserializer(Registry* registry, const std::string& filename);
+		bool SerializeEntities(Registry* registry, const std::string& filename);
+		void DeserializeEntities(Registry* registry, const std::string& filename);
+		
+		bool SerializeSpriteRegistry(Registry* registry, const std::string& filename);
+		void DeserializeSpriteRegistry(Registry* registry, const std::string& filename);
 	}
 }

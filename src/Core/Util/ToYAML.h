@@ -17,6 +17,7 @@ YAML::Emitter& operator<<(YAML::Emitter& out, const lf::Component::Camera* v);
 YAML::Emitter& operator<<(YAML::Emitter& out, const lf::Component::Light* v);
 YAML::Emitter& operator<<(YAML::Emitter& out, const lf::Component::SpriteRenderer* v);
 YAML::Emitter& operator<<(YAML::Emitter& out, const lf::Component::MeshRenderer* v);
+YAML::Emitter& operator<<(YAML::Emitter& out, const lf::Component::TextureRaw* v);
 
 namespace YAML {
 	template<>

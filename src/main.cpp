@@ -25,8 +25,12 @@
 
 #include <glad/glad.h>
 
+#include "ImGuiStyles.h"
+
 int main(int ArgCount, char **Args) {
 	lf::Registry registry;
+
+	registry.create();
 
 	auto& engine = registry.store<lf::Engine>();
 	auto& events = registry.store<lf::Events>();
@@ -49,7 +53,7 @@ int main(int ArgCount, char **Args) {
 
 	auto& gamewindow = registry.store<lf::GameWindow>();
 
-	#ifdef ENABLE_EDITOR
+	#ifdef ENABLE_DEBUG
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO();
@@ -61,16 +65,14 @@ int main(int ArgCount, char **Args) {
 		ImGui_ImplOpenGL3_Init("#version 400");
 
 		ImGui::StyleColorsDark();
-		auto& style = ImGui::GetStyle();
-		style.TabRounding = 0;
-		style.WindowRounding = 0;
-		style.ScrollbarRounding = 0;
-		style.FrameBorderSize = 1;
+		VS_Theme();
 		
 		auto& editorwindow = registry.store<lf::EditorWindow>();
 
-		editorwindow.framebuffer = new lgl::FrameBuffer(editorwindow.width, editorwindow.height, true);
-		gamewindow.framebuffer = new lgl::FrameBuffer(gamewindow.width, gamewindow.height, true);
+		#ifdef ENABLE_EDITOR
+			editorwindow.framebuffer = new lgl::FrameBuffer(editorwindow.width, editorwindow.height, true);
+			gamewindow.framebuffer = new lgl::FrameBuffer(gamewindow.width, gamewindow.height, true);
+		#endif
 	#endif
 
 	renderer.Init(&registry);
@@ -80,6 +82,7 @@ int main(int ArgCount, char **Args) {
 	auto& functions = registry.store<lf::Functions>(&registry);
 
 	functions.LoadEntities();
+	functions.LoadSprites();
 
 	int fps = 0;
 	float frametime = 0;
@@ -87,7 +90,6 @@ int main(int ArgCount, char **Args) {
 	float updatetime = 0;
 
 	const int MAX_UPS = 60;
-
 	
 	while (!engine.quit) {
 		const auto& start_time = std::chrono::high_resolution_clock::now();
@@ -101,10 +103,8 @@ int main(int ArgCount, char **Args) {
 
 		renderer.Render(gamewindow);
 
-		#ifdef ENABLE_EDITOR
-			// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		#ifdef ENABLE_DEBUG
 			if (editorwindow.framebuffer != nullptr) renderer.Render(editorwindow, true);
-			// glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 			if (editorwindow.framebuffer != nullptr) {
 				editorwindow.framebuffer->Bind();
@@ -128,14 +128,6 @@ int main(int ArgCount, char **Args) {
 						auto& selected_entity = registry.store<lf::Editor>().selected_entity;
 
 						selected_entity = renderer.drawn_sprite_entities[int(pixel.z)][idx];
-							
-						if (events.dropped_file != "") {
-							// auto& spriterenderer = registry.get_or_emplace<lf::Component::SpriteRenderer>(selected_entity);
-							// auto& sprite = registry.get_or_emplace<lf::Component::Sprite>(selected_entity);
-
-							// sprite.texture = new lgl::Texture();
-							// sprite.texture->LoadFile("")
-						}
 					}
 				}
 
@@ -145,36 +137,48 @@ int main(int ArgCount, char **Args) {
 
 				toggle = !events.mouse_pressed.contains(SDL_BUTTON_LEFT);
 			}
+			
+			if (events.dropped_file != "") {
+				auto& spriteregistry = registry.store<lf::SpriteRegistry>();
 
-			if (events.key_pressed.contains(SDL_SCANCODE_LCTRL) && events.key_pressed.contains(SDL_SCANCODE_S))
+				spriteregistry.GetTexture(events.dropped_file);
+			}
+
+			if (events.key_pressed.contains(SDL_SCANCODE_LCTRL) && events.key_pressed.contains(SDL_SCANCODE_S)) {
+				functions.SaveSprites();
 				functions.SaveEntities();
+			}
 			
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplSDL2_NewFrame();
 			ImGui::NewFrame();
 
-			// Docking
-			static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
+			#ifdef ENABLE_EDITOR
+				static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
 
-			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+				ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
 
-			ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-			ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+				ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+				ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+				ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 
-			ImGui::SetNextWindowPos(ImVec2(0, 0));
-			ImGui::SetNextWindowSize(ImVec2(window.width, window.height));
+				ImGui::SetNextWindowPos(ImVec2(0, 0));
+				ImGui::SetNextWindowSize(ImVec2(window.width, window.height));
 
-			static bool p_open;
+				static bool p_open;
 
-			ImGui::Begin("DockSpace", &p_open, window_flags);
+				ImGui::Begin("DockSpace", &p_open, window_flags);
 
-			ImGui::PopStyleVar(3);
-			if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DockingEnable) {
-				ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
-				ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
-			}
-			ImGui::End();
+				ImGui::PopStyleVar(3);
+				if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DockingEnable) {
+					ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+					ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+				}
+				ImGui::End();
+				
+				if (gamewindow.framebuffer != nullptr) lf::Panel::GamePanel(registry);
+				if (editorwindow.framebuffer != nullptr) lf::Panel::EditorPanel(registry);
+			#endif
 
 			static bool show_demo = true;
 			ImGui::ShowDemoWindow(&show_demo);
@@ -182,9 +186,6 @@ int main(int ArgCount, char **Args) {
 			lf::Panel::SpritePanel(registry);
 			lf::Panel::ScenePanel(registry);
 			lf::Panel::InspectorPanel(registry);
-
-			if (gamewindow.framebuffer != nullptr )lf::Panel::GamePanel(registry);
-			if (editorwindow.framebuffer != nullptr) lf::Panel::EditorPanel(registry);
 
 			ImGui::EndFrame();
 			ImGui::Render();
@@ -196,6 +197,11 @@ int main(int ArgCount, char **Args) {
 		const auto& end_time = std::chrono::high_resolution_clock::now();
 		engine.dt = std::chrono::duration<double, std::ratio<1, MAX_UPS>>(end_time - start_time).count();
 	}
+	
+	#ifdef ENABLE_DEBUG
+		ImGui_ImplOpenGL3_Shutdown();
+		ImGui_ImplSDL2_Shutdown();
+	#endif
 
 	return 0;
 }

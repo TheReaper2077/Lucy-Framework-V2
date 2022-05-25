@@ -74,7 +74,7 @@ void lf::Events::Update(Registry& registry) {
 			dropped_file = std::string(engine.event.drop.file);
 		}
 		
-		#ifdef ENABLE_EDITOR
+		#ifdef ENABLE_DEBUG
 			ImGui_ImplSDL2_ProcessEvent(&engine.event);
 			
 			// if (ImGui::IsMouseDragging(ImGuiPopupFlags_MouseButtonLeft) && !relative) {

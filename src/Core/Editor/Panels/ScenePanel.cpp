@@ -64,7 +64,7 @@ void lf::Panel::ScenePanel(Registry& registry) {
 		// std::unordered_map<Entity, Node> scene_tree;
 		auto& selected_entity = registry.store<Editor>().selected_entity;
 		
-		PopupOpenLogic(registry, open, toggle);
+		ImGui::PopupOpenLogic(registry, open, toggle);
 
 		for (auto [entity, tag]: registry.view<lf::Component::Tag>().each()) {
 			auto parent = registry.try_get<lf::Component::ParentEntity>(entity);
@@ -135,18 +135,4 @@ void lf::Panel::ScenePanel(Registry& registry) {
 		}
 	}
 	ImGui::End();
-}
-
-void PopupOpenLogic(lf::Registry& registry, bool& open, bool& toggle) {
-	auto& events = registry.store<lf::Events>();
-
-	if ((!ImGui::IsWindowHovered() && events.mouse_pressed.size() != 0) || (ImGui::IsWindowHovered() && !events.mouse_pressed.contains(SDL_BUTTON_RIGHT) && events.mouse_pressed.size() != 0)) {
-		open = false;
-	}
-
-	if (toggle && ImGui::IsWindowHovered() && events.mouse_pressed.contains(SDL_BUTTON_RIGHT)) {
-		open = true;
-	}
-	
-	toggle = (ImGui::IsWindowHovered() && !events.mouse_pressed.contains(SDL_BUTTON_RIGHT));
 }

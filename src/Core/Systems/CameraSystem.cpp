@@ -112,7 +112,9 @@ void lf::EditorCamera(Registry& registry) {
 void lf::CameraSystem(Registry& registry) {
 	using namespace lf::Component;
 
-	EditorCamera(registry);
+	#ifdef ENABLE_EDITOR
+		EditorCamera(registry);
+	#endif
 
 	auto& engine = registry.store<Engine>();
 	auto& gamewindow = registry.store<GameWindow>();
