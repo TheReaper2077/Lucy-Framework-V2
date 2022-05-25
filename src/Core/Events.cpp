@@ -20,6 +20,7 @@ void lucy::Events::Update(Registry& registry) {
 	auto& window = registry.store<Window>();
 	auto& engine = registry.store<Engine>();
 
+	dragging = false;
 	dropped_file = "";
 
 	while (SDL_PollEvent(&engine.event)) {
@@ -62,9 +63,16 @@ void lucy::Events::Update(Registry& registry) {
 		}
 		if (engine.event.type == SDL_MOUSEBUTTONDOWN) {
 			mouse_pressed.insert(engine.event.button.button);
+			if (engine.event.button.button == SDL_BUTTON_LEFT) {
+				dragging = true;
+			}
 		}
 		if (engine.event.type == SDL_MOUSEBUTTONUP) {
 			mouse_pressed.erase(engine.event.button.button);
+			if (engine.event.button.button == SDL_BUTTON_LEFT) {
+				payload = nullptr;
+				payload_type = "";
+			}
 		}
 		if (engine.event.type == SDL_MOUSEWHEEL) {
 			mouse_scrollup = (engine.event.wheel.y > 0);
@@ -76,15 +84,7 @@ void lucy::Events::Update(Registry& registry) {
 		
 		#ifdef ENABLE_DEBUG
 			ImGui_ImplSDL2_ProcessEvent(&engine.event);
-			
-			// if (ImGui::IsMouseDragging(ImGuiPopupFlags_MouseButtonLeft) && !relative) {
-			// 	SDL_SetRelativeMouseMode(SDL_TRUE);
-			// 	relative = true;
-			// }
-			// if (!ImGui::IsMouseDragging(ImGuiPopupFlags_MouseButtonLeft) && relative) {
-			// 	SDL_SetRelativeMouseMode(SDL_FALSE);
-			// 	relative = false;
-			// }
 		#endif
 	}
 }
+

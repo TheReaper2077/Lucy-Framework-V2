@@ -34,6 +34,6 @@ namespace lucy {
 	class Editor {
 	public:
 		Entity selected_entity = (Entity)0;
-		lucy::Component::TextureRaw* selected_texture = nullptr;
+		std::string selected_texture = "";
 	};
 }

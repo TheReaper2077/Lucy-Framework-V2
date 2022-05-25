@@ -40,6 +40,7 @@ int main(int ArgCount, char **Args) {
 
 	engine.quit = false;
 
+
 	SDL_Init(SDL_INIT_VIDEO);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 5);
@@ -77,7 +78,8 @@ int main(int ArgCount, char **Args) {
 
 	renderer.Init(&registry);
 
-	glViewport(0, 0, window.width, window.height);
+	auto& null_texture = registry.store<lgl::Texture>();
+	null_texture.LoadFile("");
 
 	auto& functions = registry.store<lucy::Functions>(&registry);
 
@@ -107,6 +109,7 @@ int main(int ArgCount, char **Args) {
 
 		lucy::CameraSystem(registry);
 
+		glViewport(0, 0, window.width, window.height);
 		glClearColor(0, 0, 0, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -189,14 +192,14 @@ int main(int ArgCount, char **Args) {
 				// if (editorwindow.framebuffer != nullptr) lucy::Panel::EditorPanel(registry);
 			#endif
 
-			spriteregistry_panel.RenderWindow();
-			textureregistry_panel.RenderWindow();
+			// spriteregistry_panel.RenderWindow();
 			spriteeditor_panel.RenderWindow();
 			inspector_panel.RenderWindow();
 			sceneheirarchy_panel.RenderWindow();
 			// materialeditor_panel.RenderWindow();
 			debuggame_panel.RenderWindow();
 			debugeditor_panel.RenderWindow();
+			textureregistry_panel.RenderWindow();
 
 			static bool show_demo = true;
 			ImGui::ShowDemoWindow(&show_demo);

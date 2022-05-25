@@ -127,7 +127,7 @@ template <>
 void lucy::Panel::GuiPanel<lucy::Panel::Inspector>::Render() {
 	if (ImGui::Begin("Inspector")) {
 		Entity entity = registry->store<Editor>().selected_entity;
-		auto* texture_raw = registry->store<Editor>().selected_texture;
+		auto* texture_raw = registry->store<lucy::SpriteRegistry>().GetTextureById(registry->store<Editor>().selected_texture);
 
 		if (entity != (Entity)0) {
 			static ComponentHeader<Tag> tag("Tag", true);

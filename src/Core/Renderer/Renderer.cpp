@@ -40,8 +40,6 @@ void lucy::RenderContext::Init(lucy::Registry* registry) {
 	uniformbuffer->BindRange(0, sizeof(glm::mat4)*4, 0);
 
 	InsertRenderPass<SpriteRenderPass>();
-
-	// shader = Shader("test1", "D:\\C++\\Lucy Framework V2\\src\\Core\\Renderer\\Shaders\\default.vs", "D:\\C++\\Lucy Framework V2\\src\\Core\\Renderer\\Shaders\\color.fs");
 }
 
 void lucy::RenderContext::Render(lgl::FrameBuffer* framebuffer, Entity camera_entity, int width, int height, bool debug) {

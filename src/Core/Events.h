@@ -27,6 +27,9 @@ namespace lucy {
 		std::set<SDL_Scancode> key_toggled;
 
 		bool dragging = false;
+		void* payload = nullptr;
+		std::string payload_type;
+
 		bool relative = false;
 
 		glm::vec3 mousepos_normalized;
