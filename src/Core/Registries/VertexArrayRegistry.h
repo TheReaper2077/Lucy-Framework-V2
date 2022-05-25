@@ -5,7 +5,7 @@
 #include <array>
 #include <assert.h>
 
-namespace lf {
+namespace lucy {
 	enum VertexArrayAttrib_ {
 		VertexArrayAttrib_POSITION = 0,
 		VertexArrayAttrib_NORMAL = 1,

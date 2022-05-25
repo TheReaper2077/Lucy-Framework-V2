@@ -12,7 +12,7 @@
 #include "Engine.h"
 #include "Window.h"
 
-namespace lf {
+namespace lucy {
 	struct Events {
 		bool mouse_scrollup;
 		bool mouse_scrolldown;

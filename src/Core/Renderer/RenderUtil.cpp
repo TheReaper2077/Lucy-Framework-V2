@@ -2,7 +2,7 @@
 
 #include "RenderUtil.h"
 
-lgl::IndexBuffer* lf::GetQuadIndices(lgl::VertexArray* vertexarray, int vertexcount) {
+lgl::IndexBuffer* lucy::GetQuadIndices(lgl::VertexArray* vertexarray, int vertexcount) {
 	static lgl::IndexBuffer* indexbuffer;
 	static int indexcount;
 

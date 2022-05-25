@@ -5,13 +5,13 @@
 #include <string>
 #include "../Components/Components.h"
 
-namespace lf {
+namespace lucy {
 	struct SpriteRegistry {
-		std::unordered_map<std::string, lf::Component::TextureRaw*> texture_store;
-		std::unordered_map<std::string, lf::Component::Sprite> sprite_store;
+		std::unordered_map<std::string, lucy::Component::TextureRaw*> texture_store;
+		std::unordered_map<std::string, lucy::Component::Sprite> sprite_store;
 
-		lf::Component::TextureRaw* GetTexture(const std::string& filename);
+		lucy::Component::TextureRaw* GetTexture(const std::string& filename);
 
-		lf::Component::Sprite& GetSprite(const std::string& filename);
+		lucy::Component::Sprite& GetSprite(const std::string& filename);
 	};
 }

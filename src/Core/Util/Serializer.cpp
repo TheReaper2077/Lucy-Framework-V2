@@ -6,8 +6,8 @@
 
 #include "../Registries/SpriteRegistry.h"
 
-bool lf::Util::SerializeEntities(Registry* registry, const std::string& filename) {
-	using namespace lf::Component;
+bool lucy::Util::SerializeEntities(Registry* registry, const std::string& filename) {
+	using namespace lucy::Component;
 
 	YAML::Emitter out;
 	out << YAML::BeginSeq;
@@ -51,17 +51,17 @@ bool lf::Util::SerializeEntities(Registry* registry, const std::string& filename
 	return WriteFile(filename, out.c_str());
 }
 
-lf::Entity is_entity_present(const lf::Registry* registry, const std::string& id) {
-	for (auto [entity, tag]: registry->view<lf::Component::Tag>().each()) {
+lucy::Entity is_entity_present(const lucy::Registry* registry, const std::string& id) {
+	for (auto [entity, tag]: registry->view<lucy::Component::Tag>().each()) {
 		if (tag.id == id) return entity;
 	}
 
-	return (lf::Entity)0;
+	return (lucy::Entity)0;
 }
 
 
-void lf::Util::DeserializeEntities(Registry* registry, const std::string& filename) {
-	using namespace lf::Component;
+void lucy::Util::DeserializeEntities(Registry* registry, const std::string& filename) {
+	using namespace lucy::Component;
 
 	std::string src = ReadFile(filename);
 
@@ -114,7 +114,7 @@ void lf::Util::DeserializeEntities(Registry* registry, const std::string& filena
 	}
 }
 
-bool lf::Util::SerializeSpriteRegistry(Registry* registry, const std::string& filename) {
+bool lucy::Util::SerializeSpriteRegistry(Registry* registry, const std::string& filename) {
 	auto& spriteregistry = registry->store<SpriteRegistry>();
 
 	YAML::Emitter out;
@@ -133,7 +133,7 @@ bool lf::Util::SerializeSpriteRegistry(Registry* registry, const std::string& fi
 	return WriteFile(filename, out.c_str());
 }
 
-void lf::Util::DeserializeSpriteRegistry(Registry* registry, const std::string& filename) {
+void lucy::Util::DeserializeSpriteRegistry(Registry* registry, const std::string& filename) {
 	auto& spriteregistry = registry->store<SpriteRegistry>();
 
 	std::string src = ReadFile(filename);

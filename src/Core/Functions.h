@@ -2,7 +2,7 @@
 
 #include "ECS.h"
 
-namespace lf {
+namespace lucy {
 	struct Functions {
 		Registry* registry = nullptr;
 

@@ -1,7 +1,7 @@
 #include "Events.h"
 #include <iostream>
 
-glm::vec3 lf::Events::GetMousePos(const Window* window, bool normalized) {
+glm::vec3 lucy::Events::GetMousePos(const Window* window, bool normalized) {
 	auto norm = glm::vec3(((window_mousepos.x - window->posx) / (window->width * 0.5)) - 1.0, ((window_mousepos.y - window->posy) / (window->height * 0.5)) - 1.0, 0);
 	
 	if (normalized)
@@ -13,7 +13,7 @@ glm::vec3 lf::Events::GetMousePos(const Window* window, bool normalized) {
 	return pos;
 }
 
-void lf::Events::Update(Registry& registry) {
+void lucy::Events::Update(Registry& registry) {
 	mouse_scrollup = false;
 	mouse_scrolldown = false;
 

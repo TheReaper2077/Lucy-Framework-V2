@@ -6,7 +6,7 @@
 #include "../Events.h"
 #include "../Window.h"
 
-namespace lf {
+namespace lucy {
 	void EditorCamera(Registry& registry);
 
 	void CameraSystem(Registry& registry);

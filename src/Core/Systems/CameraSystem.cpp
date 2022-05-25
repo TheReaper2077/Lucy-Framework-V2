@@ -1,7 +1,7 @@
 #include "CameraSystem.h"
 
-void lf::EditorCamera(Registry& registry) {
-	using namespace lf::Component;
+void lucy::EditorCamera(Registry& registry) {
+	using namespace lucy::Component;
 
 	auto& engine = registry.store<Engine>();
 	auto& editorwindow = registry.store<EditorWindow>();
@@ -13,7 +13,7 @@ void lf::EditorCamera(Registry& registry) {
 	if ((uint32_t)editorwindow.camera == 0) {
 		editorwindow.camera = registry.create();
 		registry.emplace<Transform>(editorwindow.camera);
-		Camera camera(lf::PERSPECTIVE, true, Default);
+		Camera camera(lucy::PERSPECTIVE, true, Default);
 		camera.clear_color = glm::vec4(0, 0, 0, 0);
 		registry.emplace<Camera>(editorwindow.camera, camera);
 	}
@@ -109,8 +109,8 @@ void lf::EditorCamera(Registry& registry) {
 	}
 }
 
-void lf::CameraSystem(Registry& registry) {
-	using namespace lf::Component;
+void lucy::CameraSystem(Registry& registry) {
+	using namespace lucy::Component;
 
 	#ifdef ENABLE_EDITOR
 		EditorCamera(registry);

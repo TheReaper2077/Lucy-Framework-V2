@@ -4,7 +4,7 @@
 #include <vector>
 #include "../ECS.h"
 
-namespace lf {
+namespace lucy {
 	namespace Component {
 		using ParentEntity = Entity;
 	}

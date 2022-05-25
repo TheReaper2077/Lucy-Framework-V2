@@ -5,7 +5,7 @@
 
 #include <LucyGL/API.h>
 
-namespace lf {
+namespace lucy {
 	namespace Component {
 		struct Sprite {
 			std::string id;

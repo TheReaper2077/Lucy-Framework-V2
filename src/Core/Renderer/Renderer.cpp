@@ -11,28 +11,28 @@
 #include <iostream>
 #include <glad/glad.h>
 
-void lf::RenderContext::SetModel(const glm::mat4& model) {
+void lucy::RenderContext::SetModel(const glm::mat4& model) {
 	if (this->model == model) return;
 	this->model = model;
 	uniformbuffer->AddDataDynamic(&this->model[0][0], sizeof(glm::mat4), sizeof(glm::mat4) * 0);
 }
-void lf::RenderContext::SetView(const glm::mat4& view) {
+void lucy::RenderContext::SetView(const glm::mat4& view) {
 	if (this->view == view) return;
 	this->view = view;
 	uniformbuffer->AddDataDynamic(&this->view[0][0], sizeof(glm::mat4), sizeof(glm::mat4) * 1);
 }
-void lf::RenderContext::SetProjection(const glm::mat4& projection) {
+void lucy::RenderContext::SetProjection(const glm::mat4& projection) {
 	if (this->projection == projection) return;
 	this->projection = projection;
 	uniformbuffer->AddDataDynamic(&this->projection[0][0], sizeof(glm::mat4), sizeof(glm::mat4) * 2);
 }
-void lf::RenderContext::SetViewPosition(const glm::vec3& view_position) {
+void lucy::RenderContext::SetViewPosition(const glm::vec3& view_position) {
 	if (this->view_position == view_position) return;
 	this->view_position = view_position;
 	uniformbuffer->AddDataDynamic(&this->view_position[0], sizeof(glm::vec3), sizeof(glm::mat4) * 3);
 }
 
-void lf::RenderContext::Init(lf::Registry* registry) {
+void lucy::RenderContext::Init(lucy::Registry* registry) {
 	this->registry = registry;
 
 	uniformbuffer = new lgl::UniformBuffer();
@@ -44,11 +44,11 @@ void lf::RenderContext::Init(lf::Registry* registry) {
 	// shader = Shader("test1", "D:\\C++\\Lucy Framework V2\\src\\Core\\Renderer\\Shaders\\default.vs", "D:\\C++\\Lucy Framework V2\\src\\Core\\Renderer\\Shaders\\color.fs");
 }
 
-void lf::RenderContext::Render(lgl::FrameBuffer* framebuffer, Entity camera_entity, int width, int height, bool debug) {
+void lucy::RenderContext::Render(lgl::FrameBuffer* framebuffer, Entity camera_entity, int width, int height, bool debug) {
 	if (camera_entity == (Entity)0) return;
 	if (!registry->valid(camera_entity)) return;
 
-	auto [transform, camera] = registry->try_get<lf::Component::Transform, lf::Component::Camera>(camera_entity);
+	auto [transform, camera] = registry->try_get<lucy::Component::Transform, lucy::Component::Camera>(camera_entity);
 
 	if (transform == nullptr || camera == nullptr) return;
 
@@ -69,7 +69,7 @@ void lf::RenderContext::Render(lgl::FrameBuffer* framebuffer, Entity camera_enti
 	if (framebuffer != nullptr) framebuffer->UnBind();
 }
 
-void lf::RenderContext::Test() {
+void lucy::RenderContext::Test() {
 	static std::vector<glm::vec3> vertices = {
 		{1.0, 1.0, 0.0},
 		{1.0, 0.0, 0.0},
@@ -96,8 +96,8 @@ void lf::RenderContext::Test() {
 	shader->SetUniformi("wireframe_mode", 0);
 }
 
-void lf::RenderContext::Render(int width, int height, bool debug) {
-	using namespace lf::Component;
+void lucy::RenderContext::Render(int width, int height, bool debug) {
+	using namespace lucy::Component;
 
 	drawcount = 0;
 	drawn_sprite_entities.clear();
@@ -126,12 +126,12 @@ void lf::RenderContext::Render(int width, int height, bool debug) {
 	}
 }
 
-void lf::RenderContext::RenderMesh() {
+void lucy::RenderContext::RenderMesh() {
 	
 }
 
-void lf::RenderContext::RenderCamera() {
-	using namespace lf::Component;
+void lucy::RenderContext::RenderCamera() {
+	using namespace lucy::Component;
 
 	std::vector<glm::vec3> vertices;
 
@@ -192,8 +192,8 @@ void lf::RenderContext::RenderCamera() {
 	RenderLines(vertices, wireframe_color);
 }
 
-void lf::RenderContext::SetLighting() {
-	using namespace lf::Component;
+void lucy::RenderContext::SetLighting() {
+	using namespace lucy::Component;
 
 	int point_light = 0;
 	int dir_light = 0;

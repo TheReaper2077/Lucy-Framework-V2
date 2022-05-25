@@ -1,9 +1,9 @@
 #include "SpriteRegistry.h"
 #include <uuid.h>
 
-lf::Component::TextureRaw* lf::SpriteRegistry::GetTexture(const std::string& filename) {
+lucy::Component::TextureRaw* lucy::SpriteRegistry::GetTexture(const std::string& filename) {
 	if (texture_store.find(filename) == texture_store.end()) {
-		texture_store[filename] = new lf::Component::TextureRaw();
+		texture_store[filename] = new lucy::Component::TextureRaw();
 
 		texture_store[filename]->filename = filename;
 		texture_store[filename]->id = uuids::to_string(uuids::uuid_system_generator{}());
@@ -15,8 +15,8 @@ lf::Component::TextureRaw* lf::SpriteRegistry::GetTexture(const std::string& fil
 	return texture_store[filename];
 }
 
-// lf::Component::Sprite& lf::SpriteRegistry::GetSprite(const std::string& filename) {
-// 	lf::Component::Sprite sprite;
+// lucy::Component::Sprite& lucy::SpriteRegistry::GetSprite(const std::string& filename) {
+// 	lucy::Component::Sprite sprite;
 
 // 	if (sprite_store.find(filename) == sprite_store.end()) {
 // 		sprite.texture = GetTexture(filename);

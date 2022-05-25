@@ -9,7 +9,7 @@
 #include <LucyGL/API.h>
 #include "../Enumerations.h"
 
-namespace lf {
+namespace lucy {
 	namespace Component {
 		struct Mesh {
 			std::string id;

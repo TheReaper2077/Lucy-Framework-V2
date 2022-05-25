@@ -14,9 +14,9 @@
 #include "RenderPass.h"
 #include "assert.h"
 
-namespace lf {
+namespace lucy {
 	class RenderContext {
-		lf::Registry* registry = nullptr;
+		lucy::Registry* registry = nullptr;
 
 	public:
 		lgl::Shader* shader = nullptr;
@@ -42,7 +42,7 @@ namespace lf {
 		void SetProjection(const glm::mat4& projection);
 		void SetViewPosition(const glm::vec3& view_position);
 
-		void Init(lf::Registry* registry);
+		void Init(lucy::Registry* registry);
 
 		void Render(int width, int height, bool debug = false);
 		

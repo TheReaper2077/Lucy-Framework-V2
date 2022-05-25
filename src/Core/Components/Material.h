@@ -3,7 +3,7 @@
 #include <string>
 #include <glm/vec3.hpp>
 
-namespace lf {
+namespace lucy {
 	namespace Component {
 		struct Material {
 			std::string id;

@@ -23,7 +23,7 @@ static std::string read_file(const std::string &filename) {
 	return text;
 }
 
-namespace lf {
+namespace lucy {
 	struct ShaderRegistry {
 		std::unordered_map<std::string, lgl::Shader*> registry;
 

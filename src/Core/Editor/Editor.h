@@ -11,7 +11,7 @@
 #include "../ECS.h"
 #include "../Registries/SpriteRegistry.h"
 namespace ImGui {
-	void PopupOpenLogic(lf::Registry& registry, bool& open, bool& toggle);
+	void PopupOpenLogic(lucy::Registry* registry, bool& open, bool& toggle);
 
 	bool in_expections(std::string value, const std::vector<std::string>& exceptions = {});
 
@@ -29,11 +29,11 @@ namespace ImGui {
 	}
 }
 
-namespace lf {
+namespace lucy {
 
 	class Editor {
 	public:
 		Entity selected_entity = (Entity)0;
-		lf::Component::TextureRaw* selected_texture = nullptr;
+		lucy::Component::TextureRaw* selected_texture = nullptr;
 	};
 }

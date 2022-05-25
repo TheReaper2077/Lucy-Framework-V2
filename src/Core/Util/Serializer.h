@@ -2,7 +2,7 @@
 
 #include "../ECS.h"
 
-namespace lf {
+namespace lucy {
 	namespace Util {
 		bool SerializeEntities(Registry* registry, const std::string& filename);
 		void DeserializeEntities(Registry* registry, const std::string& filename);

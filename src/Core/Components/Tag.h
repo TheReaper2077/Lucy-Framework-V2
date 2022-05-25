@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace lf {
+namespace lucy {
 	namespace Component {
 		struct Tag {
 			std::string name;

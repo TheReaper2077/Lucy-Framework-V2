@@ -1,8 +1,11 @@
-#include "GamePanel.h"
+#include "Import.h"
 
-void lf::Panel::GamePanel(Registry& registry) {
-	auto& window = registry.store<Window>();
-	auto& gamewindow = registry.store<GameWindow>();
+template <>
+void lucy::Panel::GuiPanel<lucy::Panel::DebugGame>::Render() {
+	auto& window = registry->store<Window>();
+	auto& gamewindow = registry->store<GameWindow>();
+
+	if (gamewindow.framebuffer == nullptr) return;
 	
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 	ImGui::Begin(gamewindow.title.c_str());

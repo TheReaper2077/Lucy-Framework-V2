@@ -2,7 +2,7 @@
 #include <iostream>
 #include <bitset>
        
-lgl::VertexArray* lf::VertexArrayRegistry::GetVertexArray(uint32_t flags) {
+lgl::VertexArray* lucy::VertexArrayRegistry::GetVertexArray(uint32_t flags) {
 	if (bit_layout.find(flags) == bit_layout.end()) {
 		std::vector<lgl::VertexArrayAttribDescriptor> descriptor;
 		std::array<bool, VertexArrayAttrib_COUNT> attrib_present;

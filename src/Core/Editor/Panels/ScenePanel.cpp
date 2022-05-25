@@ -1,8 +1,8 @@
-#include "ScenePanel.h"
+#include "Import.h"
 #include <iostream>
 
-// void lf::RenderTree(const Entity& entity, Registry& registry, std::unordered_map<Entity, Node>& scene_tree, Node& node) {
-// 	auto* name = registry.get<lf::Component::Tag>(entity).name.c_str();
+// void lucy::RenderTree(const Entity& entity, Registry& registry, std::unordered_map<Entity, Node>& scene_tree, Node& node) {
+// 	auto* name = registry->get<lucy::Component::Tag>(entity).name.c_str();
 
 // 	static Entity selected_entity;
 // 	static bool drag, toggle;
@@ -11,7 +11,7 @@
 // 		if (ImGui::TreeNode(name)) {
 // 			if (ImGui::IsItemHovered() && drag) {
 // 				drag = false;
-// 				registry.get<lf::Component::ParentEntity>(selected_entity) = entity;
+// 				registry->get<lucy::Component::ParentEntity>(selected_entity) = entity;
 // 			}
 
 // 			while (node.children.size()) {
@@ -23,10 +23,10 @@
 // 		}
 // 	} else if (ImGui::TreeNodeEx(name, ImGuiTreeNodeFlags_Leaf)) {
 // 		if (ImGui::IsItemClicked()) {
-// 			registry.store<EditorPropeties>().selected_entity = entity;
+// 			registry->store<EditorPropeties>().selected_entity = entity;
 // 		}
 
-// 		if (ImGui::IsItemHovered() && registry.store<Events>().mouse_pressed.contains(SDL_BUTTON_RIGHT)) {
+// 		if (ImGui::IsItemHovered() && registry->store<Events>().mouse_pressed.contains(SDL_BUTTON_RIGHT)) {
 // 			ImGui::OpenPopup("Entity SHMenu");
 // 		}
 
@@ -43,7 +43,7 @@
 	
 // 	if (ImGui::IsWindowHovered() && drag) {
 // 		drag = false;
-// 		auto& parent = registry.get<lf::Component::ParentEntity>(selected_entity);
+// 		auto& parent = registry->get<lucy::Component::ParentEntity>(selected_entity);
 		
 // 		for (int i = 0; i < scene_tree[parent].children.size(); i++) {
 // 			if (scene_tree[parent].children[i] == selected_entity) {
@@ -56,18 +56,19 @@
 // 	}
 // };
 
-void lf::Panel::ScenePanel(Registry& registry) {
-	auto& events = registry.store<Events>();
+template <>
+void lucy::Panel::GuiPanel<lucy::Panel::SceneHeirarchy>::Render() {
+	auto& events = registry->store<Events>();
 
-	if (ImGui::Begin("Scene")) {
+	if (ImGui::Begin("Scene", &window_open)) {
 		static bool open, toggle;
 		// std::unordered_map<Entity, Node> scene_tree;
-		auto& selected_entity = registry.store<Editor>().selected_entity;
+		auto& selected_entity = registry->store<Editor>().selected_entity;
 		
 		ImGui::PopupOpenLogic(registry, open, toggle);
 
-		for (auto [entity, tag]: registry.view<lf::Component::Tag>().each()) {
-			auto parent = registry.try_get<lf::Component::ParentEntity>(entity);
+		for (auto [entity, tag]: registry->view<lucy::Component::Tag>().each()) {
+			auto parent = registry->try_get<lucy::Component::ParentEntity>(entity);
 
 			// if (scene_tree.find(entity) == scene_tree.end())
 			// 	scene_tree[entity] = Node{};
@@ -85,20 +86,20 @@ void lf::Panel::ScenePanel(Registry& registry) {
 					selected_entity = entity;
 				}
 
-				if (ImGui::IsItemHovered() && registry.store<Events>().mouse_pressed.contains(SDL_BUTTON_RIGHT)) {
-					// registry.store<Events>().mouse_pressed.c
+				if (ImGui::IsItemHovered() && registry->store<Events>().mouse_pressed.contains(SDL_BUTTON_RIGHT)) {
+					// registry->store<Events>().mouse_pressed.c
 					ImGui::OpenPopup("Entity SHMenu");
 					open = false;
 				}
 
 				if (ImGui::BeginPopup("Entity SHMenu")) {
-					auto& functions = registry.store<Functions>();
+					auto& functions = registry->store<Functions>();
 
 					if (ImGui::Selectable("Delete")) {
 						if (selected_entity == entity) {
 							selected_entity = (Entity)0;
 						}
-						registry.destroy(entity);
+						registry->destroy(entity);
 					}
 					ImGui::EndPopup();
 				}
@@ -117,7 +118,7 @@ void lf::Panel::ScenePanel(Registry& registry) {
 		// }
 
 		if (ImGui::BeginPopup("Scene Shortcut")) {
-			auto& functions = registry.store<Functions>();
+			auto& functions = registry->store<Functions>();
 
 			if (ImGui::Selectable("New Entity")) {
 				selected_entity = functions.CreateEmptyEntity();

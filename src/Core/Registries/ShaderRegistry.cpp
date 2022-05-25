@@ -1,7 +1,7 @@
 #include "ShaderRegistry.h"
 
-lgl::Shader* lf::ShaderRegistry::GetShader(uint32_t flags, lf::Registry* registry) {
-	using namespace lf::Component;
+lgl::Shader* lucy::ShaderRegistry::GetShader(uint32_t flags, lucy::Registry* registry) {
+	using namespace lucy::Component;
 
 	int point_light = 0;
 	int dir_light = 0;
@@ -20,11 +20,11 @@ lgl::Shader* lf::ShaderRegistry::GetShader(uint32_t flags, lf::Registry* registr
 	return RegisterShader(flags, point_light, dir_light);
 }
 
-void lf::ShaderRegistry::AddShader(lgl::Shader* shader) {
+void lucy::ShaderRegistry::AddShader(lgl::Shader* shader) {
 	registry[shader->name] = shader;
 }
 
-lgl::Shader* lf::ShaderRegistry::GetShader(std::string name) {
+lgl::Shader* lucy::ShaderRegistry::GetShader(std::string name) {
 	return registry[name];
 }
 
@@ -35,7 +35,7 @@ void replace_first(std::string& s, std::string const& toReplace, std::string con
     s.replace(pos, toReplace.length(), replaceWith);
 }
 
-lgl::Shader* lf::ShaderRegistry::RegisterShader(uint32_t shader_flags, int point_light, int dir_light) {
+lgl::Shader* lucy::ShaderRegistry::RegisterShader(uint32_t shader_flags, int point_light, int dir_light) {
 	std::string id = std::to_string(shader_flags) + '_' + std::to_string(dir_light) + '_' + std::to_string(point_light);
 
 	if (registry.find(id) == registry.end()) {
@@ -54,7 +54,7 @@ lgl::Shader* lf::ShaderRegistry::RegisterShader(uint32_t shader_flags, int point
 	return registry[id];
 }
 
-std::string lf::ShaderRegistry::SetUniforms(int point_light, int dir_light) {
+std::string lucy::ShaderRegistry::SetUniforms(int point_light, int dir_light) {
 	std::string uniforms;
 
 	for (int i = 0; i < point_light; i++)
@@ -65,7 +65,7 @@ std::string lf::ShaderRegistry::SetUniforms(int point_light, int dir_light) {
 	return uniforms;
 }
 
-std::string lf::ShaderRegistry::SetFunctions(int point_light, int dir_light) {
+std::string lucy::ShaderRegistry::SetFunctions(int point_light, int dir_light) {
 	std::string functions;
 
 	functions += "#define LIGHTING_ENABLE\n";
@@ -73,7 +73,7 @@ std::string lf::ShaderRegistry::SetFunctions(int point_light, int dir_light) {
 	return functions;
 }
 
-std::string lf::ShaderRegistry::SetLogic(int point_light, int dir_light) {
+std::string lucy::ShaderRegistry::SetLogic(int point_light, int dir_light) {
 	std::string logic;
 
 	for (int i = 0; i < point_light; i++)

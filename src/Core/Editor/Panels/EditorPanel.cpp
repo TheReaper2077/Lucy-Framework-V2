@@ -1,8 +1,11 @@
-#include "EditorPanel.h"
+#include "Import.h"
 
-void lf::Panel::EditorPanel(Registry& registry) {
-	auto& window = registry.store<Window>();
-	auto& editorwindow = registry.store<EditorWindow>();
+template <>
+void lucy::Panel::GuiPanel<lucy::Panel::DebugEditor>::Render() {
+	auto& window = registry->store<Window>();
+	auto& editorwindow = registry->store<EditorWindow>();
+
+	if (editorwindow.framebuffer == nullptr) return;
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 

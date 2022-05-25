@@ -3,7 +3,7 @@
 #include <string>
 #include <fstream>
 
-namespace lf {
+namespace lucy {
 	namespace Util {
 		std::string ReadFile(const std::string& filename) {
 			std::string line, text = "";

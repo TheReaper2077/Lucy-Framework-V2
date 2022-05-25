@@ -2,7 +2,7 @@
 
 #include "../ECS.h"
 
-namespace lf {
+namespace lucy {
 	class RenderPass {
 	public:
 		Registry *registry = nullptr;

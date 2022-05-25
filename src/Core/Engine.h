@@ -10,7 +10,7 @@
 	#endif
 #endif
 
-namespace lf {
+namespace lucy {
 	struct Engine {
 		bool quit = false;
 

@@ -9,3 +9,5 @@
 #include "../Editor.h"
 
 #include <imgui.h>
+
+#include "GuiPanel.h"

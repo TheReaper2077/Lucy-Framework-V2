@@ -13,8 +13,8 @@ bool ImGui::in_expections(std::string value, const std::vector<std::string>& exc
 	return false;
 }
 
-void ImGui::PopupOpenLogic(lf::Registry& registry, bool& open, bool& toggle) {
-	auto& events = registry.store<lf::Events>();
+void ImGui::PopupOpenLogic(lucy::Registry* registry, bool& open, bool& toggle) {
+	auto& events = registry->store<lucy::Events>();
 
 	if ((!ImGui::IsWindowHovered() && events.mouse_pressed.size() != 0) || (ImGui::IsWindowHovered() && !events.mouse_pressed.contains(SDL_BUTTON_RIGHT) && events.mouse_pressed.size() != 0)) {
 		open = false;

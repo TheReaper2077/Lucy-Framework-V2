@@ -8,7 +8,7 @@
 
 #include "../Enumerations.h"
 
-namespace lf {
+namespace lucy {
 	namespace Component {
 		struct MeshFilter {
 			std::string mesh_id;

@@ -3,12 +3,12 @@
 #include "RenderPass.h"
 #include "../Components/Components.h"
 
-namespace lf {
+namespace lucy {
 	class SpriteRenderPass: public RenderPass {
 		void Init();
 		void Render();
 
-		void RenderRect(const lf::Component::Transform& transform, const lf::Component::SpriteRenderer& spriterenderer, const glm::quat& quaternion);
+		void RenderRect(const lucy::Component::Transform& transform, const lucy::Component::SpriteRenderer& spriterenderer, const glm::quat& quaternion);
 		void Flush();
 	};
 }

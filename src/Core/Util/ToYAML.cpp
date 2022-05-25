@@ -36,7 +36,7 @@ YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec4& v) {
 	return out;
 }
 
-YAML::Emitter& operator<<(YAML::Emitter& out, const lf::Component::Tag* v) {
+YAML::Emitter& operator<<(YAML::Emitter& out, const lucy::Component::Tag* v) {
 	out << YAML::BeginMap;
 	out << YAML::Key << "name";
 	out << YAML::Value << v->name;
@@ -46,7 +46,7 @@ YAML::Emitter& operator<<(YAML::Emitter& out, const lf::Component::Tag* v) {
 	return out;
 }
 
-YAML::Emitter& operator<<(YAML::Emitter& out, const lf::Component::Transform* v) {
+YAML::Emitter& operator<<(YAML::Emitter& out, const lucy::Component::Transform* v) {
 	out << YAML::BeginMap;
 	out << YAML::Key << "translation";
 	out << YAML::Value << v->translation;
@@ -58,7 +58,7 @@ YAML::Emitter& operator<<(YAML::Emitter& out, const lf::Component::Transform* v)
 	return out;
 }
 
-YAML::Emitter& operator<<(YAML::Emitter& out, const lf::Component::Camera* v) {
+YAML::Emitter& operator<<(YAML::Emitter& out, const lucy::Component::Camera* v) {
 	out << YAML::BeginMap;
 	out << YAML::Key << "Up";
 	out << YAML::Value << v->Up;
@@ -80,7 +80,7 @@ YAML::Emitter& operator<<(YAML::Emitter& out, const lf::Component::Camera* v) {
 	return out;
 }
 
-YAML::Emitter& operator<<(YAML::Emitter& out, const lf::Component::Light* v) {
+YAML::Emitter& operator<<(YAML::Emitter& out, const lucy::Component::Light* v) {
 	out << YAML::BeginMap;
 	out << YAML::Key << "active";
 	out << YAML::Value << v->active;
@@ -92,7 +92,7 @@ YAML::Emitter& operator<<(YAML::Emitter& out, const lf::Component::Light* v) {
 	return out;
 }
 
-YAML::Emitter& operator<<(YAML::Emitter& out, const lf::Component::SpriteRenderer* v) {
+YAML::Emitter& operator<<(YAML::Emitter& out, const lucy::Component::SpriteRenderer* v) {
 	out << YAML::BeginMap;
 	out << YAML::Key << "visible";
 	out << YAML::Value << v->visible;
@@ -110,7 +110,7 @@ YAML::Emitter& operator<<(YAML::Emitter& out, const lf::Component::SpriteRendere
 	return out;
 }
 
-YAML::Emitter& operator<<(YAML::Emitter& out, const lf::Component::MeshRenderer* v) {
+YAML::Emitter& operator<<(YAML::Emitter& out, const lucy::Component::MeshRenderer* v) {
 	out << YAML::BeginMap;
 	out << YAML::Key << "visible";
 	out << YAML::Value << v->visible;
@@ -122,7 +122,7 @@ YAML::Emitter& operator<<(YAML::Emitter& out, const lf::Component::MeshRenderer*
 	return out;
 }
 
-YAML::Emitter& operator<<(YAML::Emitter& out, const lf::Component::TextureRaw* v) {
+YAML::Emitter& operator<<(YAML::Emitter& out, const lucy::Component::TextureRaw* v) {
 	out << YAML::BeginMap;
 	out << YAML::Key << "filename";
 	out << YAML::Value << v->filename;

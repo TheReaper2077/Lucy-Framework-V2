@@ -3,7 +3,7 @@
 #include <string>
 #include <glm/vec4.hpp>
 
-namespace lf {
+namespace lucy {
 	namespace Component {
 		struct SpriteRenderer {
 			std::string material_id;

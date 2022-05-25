@@ -3,7 +3,7 @@
 #include <entt/entt.hpp>
 #include <unordered_map>
 
-namespace lf {
+namespace lucy {
 	typedef entt::entity Entity;
 
 	class Registry: public entt::registry {

@@ -7,13 +7,13 @@
 #include <chrono>
 
 #include "Core/Editor/Editor.h"
-#include "Core/Editor/Panels/Panels.h"
 #include "Core/Systems/CameraSystem.h"
 #include "Core/ECS.h"
 #include "Core/Engine.h"
 #include "Core/Window.h"
 #include "Core/Events.h"
 #include "Core/Functions.h"
+#include "Core/Editor/Panels/GuiPanel.h"
 
 #include "Core/Renderer/Renderer.h"
 
@@ -28,15 +28,15 @@
 #include "ImGuiStyles.h"
 
 int main(int ArgCount, char **Args) {
-	lf::Registry registry;
+	lucy::Registry registry;
 
 	registry.create();
 
-	auto& engine = registry.store<lf::Engine>();
-	auto& events = registry.store<lf::Events>();
-	auto& window = registry.store<lf::Window>();
+	auto& engine = registry.store<lucy::Engine>();
+	auto& events = registry.store<lucy::Events>();
+	auto& window = registry.store<lucy::Window>();
 
-	auto& renderer = registry.store<lf::RenderContext>();
+	auto& renderer = registry.store<lucy::RenderContext>();
 
 	engine.quit = false;
 
@@ -51,7 +51,7 @@ int main(int ArgCount, char **Args) {
 
 	gladLoadGLLoader(SDL_GL_GetProcAddress);
 
-	auto& gamewindow = registry.store<lf::GameWindow>();
+	auto& gamewindow = registry.store<lucy::GameWindow>();
 
 	#ifdef ENABLE_DEBUG
 		IMGUI_CHECKVERSION();
@@ -67,7 +67,7 @@ int main(int ArgCount, char **Args) {
 		ImGui::StyleColorsDark();
 		VS_Theme();
 		
-		auto& editorwindow = registry.store<lf::EditorWindow>();
+		auto& editorwindow = registry.store<lucy::EditorWindow>();
 
 		#ifdef ENABLE_EDITOR
 			editorwindow.framebuffer = new lgl::FrameBuffer(editorwindow.width, editorwindow.height, true);
@@ -79,7 +79,7 @@ int main(int ArgCount, char **Args) {
 
 	glViewport(0, 0, window.width, window.height);
 
-	auto& functions = registry.store<lf::Functions>(&registry);
+	auto& functions = registry.store<lucy::Functions>(&registry);
 
 	functions.LoadEntities();
 	functions.LoadSprites();
@@ -90,13 +90,22 @@ int main(int ArgCount, char **Args) {
 	float updatetime = 0;
 
 	const int MAX_UPS = 60;
+
+	auto& spriteregistry_panel = registry.store<lucy::Panel::GuiPanel<lucy::Panel::SpriteRegistry>>(&registry, "Sprite Registry");
+	auto& textureregistry_panel = registry.store<lucy::Panel::GuiPanel<lucy::Panel::TextureRegistry>>(&registry, "Texture Registry");
+	auto& spriteeditor_panel = registry.store<lucy::Panel::GuiPanel<lucy::Panel::SpriteEditor>>(&registry, "Sprite Editor");
+	auto& inspector_panel = registry.store<lucy::Panel::GuiPanel<lucy::Panel::Inspector>>(&registry, "Inspector");
+	auto& sceneheirarchy_panel = registry.store<lucy::Panel::GuiPanel<lucy::Panel::SceneHeirarchy>>(&registry, "Scene Heirarchy");
+	// auto& materialeditor_panel = registry.store<lucy::Panel::GuiPanel<lucy::Panel::MaterialEditor>>(&registry, "Material Editor");
+	auto& debuggame_panel = registry.store<lucy::Panel::GuiPanel<lucy::Panel::DebugGame>>(&registry);
+	auto& debugeditor_panel = registry.store<lucy::Panel::GuiPanel<lucy::Panel::DebugEditor>>(&registry, "Editor");
 	
 	while (!engine.quit) {
 		const auto& start_time = std::chrono::high_resolution_clock::now();
 
 		events.Update(registry);
 
-		lf::CameraSystem(registry);
+		lucy::CameraSystem(registry);
 
 		glClearColor(0, 0, 0, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -125,7 +134,7 @@ int main(int ArgCount, char **Args) {
 					idx /= 2;
 
 					if (events.mouse_pressed.contains(SDL_BUTTON_LEFT) && toggle) {
-						auto& selected_entity = registry.store<lf::Editor>().selected_entity;
+						auto& selected_entity = registry.store<lucy::Editor>().selected_entity;
 
 						selected_entity = renderer.drawn_sprite_entities[int(pixel.z)][idx];
 					}
@@ -139,7 +148,7 @@ int main(int ArgCount, char **Args) {
 			}
 			
 			if (events.dropped_file != "") {
-				auto& spriteregistry = registry.store<lf::SpriteRegistry>();
+				auto& spriteregistry = registry.store<lucy::SpriteRegistry>();
 
 				spriteregistry.GetTexture(events.dropped_file);
 			}
@@ -176,16 +185,21 @@ int main(int ArgCount, char **Args) {
 				}
 				ImGui::End();
 				
-				if (gamewindow.framebuffer != nullptr) lf::Panel::GamePanel(registry);
-				if (editorwindow.framebuffer != nullptr) lf::Panel::EditorPanel(registry);
+				// if (gamewindow.framebuffer != nullptr) lucy::Panel::GamePanel(registry);
+				// if (editorwindow.framebuffer != nullptr) lucy::Panel::EditorPanel(registry);
 			#endif
+
+			spriteregistry_panel.RenderWindow();
+			textureregistry_panel.RenderWindow();
+			spriteeditor_panel.RenderWindow();
+			inspector_panel.RenderWindow();
+			sceneheirarchy_panel.RenderWindow();
+			// materialeditor_panel.RenderWindow();
+			debuggame_panel.RenderWindow();
+			debugeditor_panel.RenderWindow();
 
 			static bool show_demo = true;
 			ImGui::ShowDemoWindow(&show_demo);
-			
-			lf::Panel::SpritePanel(registry);
-			lf::Panel::ScenePanel(registry);
-			lf::Panel::InspectorPanel(registry);
 
 			ImGui::EndFrame();
 			ImGui::Render();
@@ -197,6 +211,8 @@ int main(int ArgCount, char **Args) {
 		const auto& end_time = std::chrono::high_resolution_clock::now();
 		engine.dt = std::chrono::duration<double, std::ratio<1, MAX_UPS>>(end_time - start_time).count();
 	}
+
+	// registry.destroy();
 	
 	#ifdef ENABLE_DEBUG
 		ImGui_ImplOpenGL3_Shutdown();

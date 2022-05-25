@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace lf {
+namespace lucy {
 	namespace Component {
 		struct MeshRenderer {
 			std::string material_id;

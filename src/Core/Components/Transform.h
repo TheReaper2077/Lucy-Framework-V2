@@ -6,7 +6,7 @@
 #include <glm/common.hpp>
 #include <glm/gtc/quaternion.hpp>
 
-namespace lf {
+namespace lucy {
 	namespace Component {
 		struct Transform {
 			glm::vec3 translation = glm::vec3(0, 0, 0);

@@ -1,6 +1,6 @@
 #pragma once
 
-namespace lf {
+namespace lucy {
 	enum Projection {
 		ORTHOGRAPHIC,
 		PERSPECTIVE,

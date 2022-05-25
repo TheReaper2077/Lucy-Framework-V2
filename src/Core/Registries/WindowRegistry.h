@@ -4,7 +4,7 @@
 #include "../Window.h"
 #include "../Enumerations.h"
 
-namespace lf {
+namespace lucy {
 	struct WindowRegistry {
 		std::unordered_map<std::uint32_t, Window> window_registry;
 

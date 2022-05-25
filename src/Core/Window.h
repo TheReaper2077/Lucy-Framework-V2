@@ -3,7 +3,7 @@
 #include "ECS.h"
 #include <LucyGL/API.h>
 
-namespace lf {
+namespace lucy {
 	struct Window {
 		std::string title = "Lucy V2";
 		int width = 1280, height = 640, posx = 50, posy = 50;

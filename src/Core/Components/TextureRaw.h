@@ -3,7 +3,7 @@
 #include <string>
 #include <LucyGL/Texture.h>
 
-namespace lf {
+namespace lucy {
 	namespace Component {
 		struct TextureRaw {
 			std::string id;

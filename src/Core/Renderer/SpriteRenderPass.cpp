@@ -14,7 +14,7 @@
 #include <glm/vec4.hpp>
 
 using namespace lgl;
-using namespace lf::Component;
+using namespace lucy::Component;
 
 static struct Vertex {
 	glm::vec3 position;
@@ -26,7 +26,7 @@ static std::vector<Vertex> vertices;
 static VertexArray* vertexarray = nullptr;
 // static std::set<TextureId> vertexarray;
 
-void lf::SpriteRenderPass::RenderRect(const Transform& transform, const SpriteRenderer& spriterenderer, const glm::quat& quaternion) {
+void lucy::SpriteRenderPass::RenderRect(const Transform& transform, const SpriteRenderer& spriterenderer, const glm::quat& quaternion) {
 	vertices.reserve(4 + vertices.size());
 
 	vertices.emplace_back(Vertex{ (quaternion * glm::vec3(-transform.scale.x / 2.0, -transform.scale.y / 2.0, 0.0)) + transform.translation, spriterenderer.color, glm::vec3(spriterenderer.uv0.x, spriterenderer.uv0.y, 0.0) });
@@ -35,7 +35,7 @@ void lf::SpriteRenderPass::RenderRect(const Transform& transform, const SpriteRe
 	vertices.emplace_back(Vertex{ (quaternion * glm::vec3(-transform.scale.x / 2.0, +transform.scale.y / 2.0, 0.0)) + transform.translation, spriterenderer.color, glm::vec3(spriterenderer.uv1.x, spriterenderer.uv1.y, 0.0) });
 }
 
-void lf::SpriteRenderPass::Flush() {
+void lucy::SpriteRenderPass::Flush() {
 	if (!vertices.size()) return;
 
 	static VertexBuffer* vertexbuffer;
@@ -48,15 +48,15 @@ void lf::SpriteRenderPass::Flush() {
 
 	vertexarray->Bind();
 	vertexarray->BindVertexBuffer(vertexbuffer);
-	vertexarray->BindIndexBuffer(lf::GetQuadIndices(vertexarray, int(vertices.size() * 1.5)));
+	vertexarray->BindIndexBuffer(lucy::GetQuadIndices(vertexarray, int(vertices.size() * 1.5)));
 
 	DrawIndexed(TRIANGLE, vertices.size() * 1.5, UNSIGNED_INT, nullptr);
-	registry->store<lf::RenderContext>().drawn_sprite_entities.push_back(std::vector<Entity>());
+	registry->store<lucy::RenderContext>().drawn_sprite_entities.push_back(std::vector<Entity>());
 
 	vertices.clear();
 }
 
-void lf::SpriteRenderPass::Init() {
+void lucy::SpriteRenderPass::Init() {
 	if (vertexarray == nullptr) {
 		vertexarray = registry->store<VertexArrayRegistry>().SetVertexArray<Vertex>({
 			{ VertexArrayAttrib_POSITION, VertexArrayAttribSize_POSITION, FLOAT },
@@ -66,7 +66,7 @@ void lf::SpriteRenderPass::Init() {
 	}
 }
 
-void lf::SpriteRenderPass::Render() {
+void lucy::SpriteRenderPass::Render() {
 	auto& renderer = registry->store<RenderContext>();
 
 	renderer.shader->SetUniformi("has_texture", 1);
@@ -80,7 +80,7 @@ void lf::SpriteRenderPass::Render() {
 		auto quaternion = transform.GetRotationQuat();
 
 		RenderRect(transform, spriterenderer, quaternion);
-		registry->store<lf::RenderContext>().drawn_sprite_entities[renderer.drawcount].push_back(entity);
+		registry->store<lucy::RenderContext>().drawn_sprite_entities[renderer.drawcount].push_back(entity);
 	}
 
 	Flush();
