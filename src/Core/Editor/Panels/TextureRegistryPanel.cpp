@@ -5,8 +5,7 @@ void lucy::Panel::GuiPanel<lucy::Panel::TextureRegistry>::Render() {
 	auto& editor = registry->store<Editor>();
 	auto& events = registry->store<Events>();
 
-	if (ImGui::Begin("Texture Registry")) {
-		
+	if (ImGui::Begin("Texture Registry")) {		
 		static float padding = 15.0f;
 		static float thumbnail_size = 80;
 		float cell_size = padding + thumbnail_size;

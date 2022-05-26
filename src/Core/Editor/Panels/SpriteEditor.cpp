@@ -44,31 +44,16 @@ void lucy::Panel::GuiPanel<lucy::Panel::SpriteEditor>::Render() {
 
 			static bool is_panning;			
 			static ImVec2 offset, delta, init_pos;
-	
 
 			if (is_panning) {
 				delta.x = events.window_mousepos.x - init_pos.x;
 				delta.y = events.window_mousepos.y - init_pos.y;
-			}
-			if (events.mouse_scrolldown) {
-				scale.x += 0.1;
-				scale.y += 0.1;
-			}
-			if (events.mouse_scrollup) {
-				scale.x -= 0.1;
-				scale.y -= 0.1;
-			}
-			if (events.mouse_scrolldown || events.mouse_scrollup) {
-				delta.x = (events.window_mousepos.x - init_pos.x) * (scale.x - 1);
-				delta.y = (events.window_mousepos.y - init_pos.y) * (scale.y - 1);
 			}
 
 			if (events.mouse_pressed.contains(SDL_BUTTON_MIDDLE) && !is_panning && is_over_window) {
 				init_pos.x = events.window_mousepos.x;
 				init_pos.y = events.window_mousepos.y;
 				is_panning = true;
-
-				delta = { 0, 0 };
 			} else if (is_panning && !events.mouse_pressed.contains(SDL_BUTTON_MIDDLE) || !is_over_window) {
 				offset.x += delta.x;
 				offset.y += delta.y;
@@ -79,7 +64,7 @@ void lucy::Panel::GuiPanel<lucy::Panel::SpriteEditor>::Render() {
 
             ImDrawList* draw_list = ImGui::GetWindowDrawList();
 			
-			draw_list->AddImage((void*)texture_raw->texture->id, { pos.x + offset.x + delta.x, pos.y + offset.y + delta.y }, { pos.x + offset.x + delta.x + texture_raw->texture->width * scale.x, pos.y + offset.y + delta.y + texture_raw->texture->height * scale.y }, { 0, 0 }, { 1, 1 });
+			draw_list->AddImage((void*)texture_raw->texture->id, { pos.x + offset.x + delta.x, pos.y + offset.y + delta.y }, { pos.x + offset.x + delta.x + texture_raw->texture->width, pos.y + offset.y + delta.y + texture_raw->texture->height }, { 0, 0 }, { 1, 1 });
 
 			if (ImGui::Begin("Sprite Tools")) {
 				static bool opt_enable_grid = true;
@@ -88,18 +73,14 @@ void lucy::Panel::GuiPanel<lucy::Panel::SpriteEditor>::Render() {
 				ImGui::Checkbox("Enable Grid", &opt_enable_grid);
 
 				if (opt_enable_grid) {
-					static glm::vec2 grid_step = { 32, 32 };
+					static glm::ivec2 grid_step = { 32, 32 };
 					
-					ImGui::DragFloat2("Grid Size", &grid_step[0], 1, 2);
+					ImGui::DragInt2("Grid Size", &grid_step[0], 1, 2);
 
-					grid_step *= scale;
-
-					for (float x = fmodf(offset.x + delta.x, grid_step.x); x < size.x; x += grid_step.x)
+					for (float x = fmodf(offset.x + delta.x, (float)grid_step.x); x < size.x; x += grid_step.x)
 						draw_list->AddLine(ImVec2(pos.x + x, pos.y), ImVec2(pos.x + x, pos.y + size.y), IM_COL32(200, 200, 200, 40));
-					for (float y = fmodf(offset.y + delta.y, grid_step.y); y < size.y; y += grid_step.y)
+					for (float y = fmodf(offset.y + delta.y, (float)grid_step.y); y < size.y; y += grid_step.y)
 						draw_list->AddLine(ImVec2(pos.x, pos.y + y), ImVec2(pos.x + size.x, pos.y + y), IM_COL32(200, 200, 200, 40));
-					
-					grid_step /= scale;
 				}
 			}
 			ImGui::End();

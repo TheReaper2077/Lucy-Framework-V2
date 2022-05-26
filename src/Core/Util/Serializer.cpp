@@ -144,8 +144,9 @@ void lucy::Util::DeserializeSpriteRegistry(Registry* registry, const std::string
 
 	for (int i = 0; i != scene["Textures"].size(); i++) {
 		auto filename = scene["Textures"][i]["filename"].as<std::string>();
-		auto* texture_raw = spriteregistry.GetTexture(filename);
-		texture_raw->name = scene["Textures"][i]["name"].as<std::string>();
-		texture_raw->id = scene["Textures"][i]["id"].as<std::string>();
+		auto name = scene["Textures"][i]["name"].as<std::string>();
+		auto id = scene["Textures"][i]["id"].as<std::string>();
+
+		spriteregistry.LoadTexture(name, filename, id);
 	}
 }

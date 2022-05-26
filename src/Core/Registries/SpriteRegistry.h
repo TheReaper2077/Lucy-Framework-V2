@@ -15,6 +15,8 @@ namespace lucy {
 		lucy::Component::TextureRaw* GetTexture(const std::string& filename);
 		lucy::Component::TextureRaw* GetTextureById(const std::string& id);
 
+		lucy::Component::TextureRaw* LoadTexture(const std::string& name, const std::string& filename, const std::string& id);
+
 		lucy::Component::Sprite& GetSprite(const std::string& filename);
 	};
 }
