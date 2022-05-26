@@ -17,6 +17,9 @@ endif()
 
 add_executable(main ${TARGET_SRC})
 target_compile_features(main PUBLIC cxx_std_20)
+if (MSVC)
+	target_compile_options(main PRIVATE "/MP")
+endif()
 
 find_package(glad CONFIG REQUIRED)
 target_link_libraries(main PRIVATE glad::glad)
