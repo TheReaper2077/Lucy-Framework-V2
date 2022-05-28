@@ -60,6 +60,7 @@ int main(int ArgCount, char **Args) {
 		ImGuiIO& io = ImGui::GetIO();
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableSetMousePos;
+		io.ConfigWindowsMoveFromTitleBarOnly = true;
 		io.ConfigDockingWithShift = true;
 
 		ImGui_ImplSDL2_InitForOpenGL(engine.window, (void*)engine.context);
@@ -192,7 +193,7 @@ int main(int ArgCount, char **Args) {
 				// if (editorwindow.framebuffer != nullptr) lucy::Panel::EditorPanel(registry);
 			#endif
 
-			// spriteregistry_panel.RenderWindow();
+			spriteregistry_panel.RenderWindow();
 			spriteeditor_panel.RenderWindow();
 			inspector_panel.RenderWindow();
 			sceneheirarchy_panel.RenderWindow();

@@ -10,13 +10,12 @@ namespace lucy {
 		std::unordered_map<std::string, lucy::Component::TextureRaw*> texture_store;
 		std::unordered_map<std::string, lucy::Component::Sprite> sprite_store;
 
-		std::unordered_map<std::string, std::string> id_filemname_map;
-
 		lucy::Component::TextureRaw* GetTexture(const std::string& filename);
 		lucy::Component::TextureRaw* GetTextureById(const std::string& id);
 
 		lucy::Component::TextureRaw* LoadTexture(const std::string& name, const std::string& filename, const std::string& id);
 
-		lucy::Component::Sprite& GetSprite(const std::string& filename);
+		lucy::Component::Sprite* LoadSprite();
+		lucy::Component::Sprite* GetSprite(std::string id);
 	};
 }
