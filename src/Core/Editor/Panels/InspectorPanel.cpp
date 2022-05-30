@@ -125,7 +125,9 @@ void lucy::ComponentHeader<MeshRenderer>::Render(Registry* registry, Entity enti
 
 template <>
 void lucy::Panel::GuiPanel<lucy::Panel::Inspector>::Render() {
-	if (ImGui::Begin("Inspector")) {
+	if (!window_open) return;
+
+	if (ImGui::Begin("Inspector", &window_open)) {
 		Entity entity = registry->store<Editor>().selected_entity;
 		auto* texture_raw = registry->store<lucy::SpriteRegistry>().GetTextureById(registry->store<Editor>().selected_texture);
 

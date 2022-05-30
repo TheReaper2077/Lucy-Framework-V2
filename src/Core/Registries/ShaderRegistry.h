@@ -2,6 +2,7 @@
 
 #include "../Components/Components.h"
 #include "../ECS.h"
+#include <iostream>
 
 #include <LucyGL/API.h>
 #include <regex>
@@ -28,6 +29,7 @@ namespace lucy {
 		std::unordered_map<std::string, lgl::Shader*> registry;
 
 		ShaderRegistry() {}
+		~ShaderRegistry() {}
 
 		lgl::Shader* GetShader(uint32_t flags, Registry* registry);
 

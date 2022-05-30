@@ -20,8 +20,22 @@ void lucy::Events::Update(Registry& registry) {
 	auto& window = registry.store<Window>();
 	auto& engine = registry.store<Engine>();
 
-	dragging = false;
 	dropped_file = "";
+	drag_begin = false;
+	static bool drag_end;
+	static int drag_count;
+
+	if (drag_count > 1) {
+		payload = nullptr;
+		payload_type = "";
+		drag_end = false;
+	}
+
+	if (drag_end) {
+		drag_count++;
+	} else {
+		drag_count = 0;
+	}
 
 	while (SDL_PollEvent(&engine.event)) {
 		if (engine.event.type == SDL_QUIT) {
@@ -64,14 +78,13 @@ void lucy::Events::Update(Registry& registry) {
 		if (engine.event.type == SDL_MOUSEBUTTONDOWN) {
 			mouse_pressed.insert(engine.event.button.button);
 			if (engine.event.button.button == SDL_BUTTON_LEFT) {
-				dragging = true;
+				drag_begin = true;
 			}
 		}
 		if (engine.event.type == SDL_MOUSEBUTTONUP) {
 			mouse_pressed.erase(engine.event.button.button);
 			if (engine.event.button.button == SDL_BUTTON_LEFT) {
-				payload = nullptr;
-				payload_type = "";
+				drag_end = true;
 			}
 		}
 		if (engine.event.type == SDL_MOUSEWHEEL) {
@@ -87,4 +100,3 @@ void lucy::Events::Update(Registry& registry) {
 		#endif
 	}
 }
-

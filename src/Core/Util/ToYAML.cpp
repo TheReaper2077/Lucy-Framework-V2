@@ -100,6 +100,8 @@ YAML::Emitter& operator<<(YAML::Emitter& out, const lucy::Component::SpriteRende
 	out << YAML::Value << v->color;
 	out << YAML::Key << "material_id";
 	out << YAML::Value << v->material_id;
+	out << YAML::Key << "sprite_id";
+	out << YAML::Value << v->sprite_id;
 	out << YAML::Key << "uv0";
 	out << YAML::Value << v->uv0;
 	out << YAML::Key << "uv1";
@@ -130,6 +132,24 @@ YAML::Emitter& operator<<(YAML::Emitter& out, const lucy::Component::TextureRaw*
 	out << YAML::Value << v->id;
 	out << YAML::Key << "name";
 	out << YAML::Value << v->name;
+	out << YAML::EndMap;
+	return out;
+}
+
+YAML::Emitter& operator<<(YAML::Emitter& out, const lucy::Component::Sprite* v) {
+	out << YAML::BeginMap;
+	out << YAML::Key << "id";
+	out << YAML::Value << v->id;
+	out << YAML::Key << "raw_texture_id";
+	out << YAML::Value << v->raw_texture_id;
+	out << YAML::Key << "name";
+	out << YAML::Value << v->name;
+	out << YAML::Key << "uv0";
+	out << YAML::Value << v->uv0;
+	out << YAML::Key << "uv1";
+	out << YAML::Value << v->uv1;
+	out << YAML::Key << "idx";
+	out << YAML::Value << v->idx;
 	out << YAML::EndMap;
 	return out;
 }

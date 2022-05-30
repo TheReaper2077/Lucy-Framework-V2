@@ -18,6 +18,7 @@ YAML::Emitter& operator<<(YAML::Emitter& out, const lucy::Component::Light* v);
 YAML::Emitter& operator<<(YAML::Emitter& out, const lucy::Component::SpriteRenderer* v);
 YAML::Emitter& operator<<(YAML::Emitter& out, const lucy::Component::MeshRenderer* v);
 YAML::Emitter& operator<<(YAML::Emitter& out, const lucy::Component::TextureRaw* v);
+YAML::Emitter& operator<<(YAML::Emitter& out, const lucy::Component::Sprite* v);
 
 namespace YAML {
 	template<>
@@ -265,6 +266,7 @@ namespace YAML {
 			node["visible"] = rhs.visible;
 			node["color"] = rhs.color;
 			node["material_id"] = rhs.material_id;
+			node["sprite_id"] = rhs.sprite_id;
 			node["uv0"] = rhs.uv0;
 			node["uv1"] = rhs.uv1;
 			node["custom_flags"] = rhs.custom_flags;
@@ -279,6 +281,7 @@ namespace YAML {
 			rhs.visible = node["visible"].as<bool>();
 			rhs.color = node["color"].as<glm::vec4>();
 			rhs.material_id = node["material_id"].as<std::string>();
+			rhs.sprite_id = node["sprite_id"].as<std::string>();
 			rhs.uv0 = node["uv0"].as<glm::vec2>();
 			rhs.uv1 = node["uv1"].as<glm::vec2>();
 			rhs.custom_flags = node["custom_flags"].as<uint32_t>();

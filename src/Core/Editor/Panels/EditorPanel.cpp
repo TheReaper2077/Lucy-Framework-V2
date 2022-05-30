@@ -2,6 +2,8 @@
 
 template <>
 void lucy::Panel::GuiPanel<lucy::Panel::DebugEditor>::Render() {
+	if (!window_open) return;
+
 	auto& window = registry->store<Window>();
 	auto& editorwindow = registry->store<EditorWindow>();
 
@@ -9,7 +11,7 @@ void lucy::Panel::GuiPanel<lucy::Panel::DebugEditor>::Render() {
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 
-	ImGui::Begin(editorwindow.title.c_str());
+	ImGui::Begin(editorwindow.title.c_str(), &window_open);
 	ImGui::PopStyleVar();
 
 	editorwindow.window_focus = ImGui::IsWindowFocused();

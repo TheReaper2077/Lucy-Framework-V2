@@ -1,13 +1,11 @@
 #pragma once
 
 #include "RenderUtil.h"
+#include <memory>
 
 lgl::IndexBuffer* lucy::GetQuadIndices(lgl::VertexArray* vertexarray, int vertexcount) {
-	static lgl::IndexBuffer* indexbuffer;
+	static lgl::IndexBuffer indexbuffer(vertexarray);
 	static int indexcount;
-
-	if (indexbuffer == nullptr)
-		indexbuffer = new lgl::IndexBuffer(vertexarray);
 
 	if (vertexcount*1.5 > indexcount) {
 		std::vector<uint32_t> indices;
@@ -23,12 +21,11 @@ lgl::IndexBuffer* lucy::GetQuadIndices(lgl::VertexArray* vertexarray, int vertex
 			indices.emplace_back(0 + i*4);
 		}
 
-		indexbuffer->AddData(indices.data(), indices.size()*sizeof(uint32_t));
+		indexbuffer.AddData(indices.data(), indices.size()*sizeof(uint32_t));
 
 		indices.clear();
 		indexcount = vertexcount*1.5;
 	}
 
-	return indexbuffer;
+	return &indexbuffer;
 }
-

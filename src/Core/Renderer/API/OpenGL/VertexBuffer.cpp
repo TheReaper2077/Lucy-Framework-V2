@@ -1,6 +1,7 @@
 #pragma once
 
 #include <LucyGL/VertexBuffer.h>
+#include <LucyGL/Status.h>
 
 #include <glad/glad.h>
 #include <assert.h>

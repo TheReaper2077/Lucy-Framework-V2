@@ -2,13 +2,15 @@
 
 template <>
 void lucy::Panel::GuiPanel<lucy::Panel::DebugGame>::Render() {
+	if (!window_open) return;
+	
 	auto& window = registry->store<Window>();
 	auto& gamewindow = registry->store<GameWindow>();
 
 	if (gamewindow.framebuffer == nullptr) return;
 	
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-	ImGui::Begin(gamewindow.title.c_str());
+	ImGui::Begin(gamewindow.title.c_str(), &window_open);
 	ImGui::PopStyleVar();
 
 	gamewindow.window_focus = ImGui::IsWindowFocused();

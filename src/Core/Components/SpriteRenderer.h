@@ -7,6 +7,7 @@ namespace lucy {
 	namespace Component {
 		struct SpriteRenderer {
 			std::string material_id;
+			std::string sprite_id;
 
 			glm::vec4 color = glm::vec4(1, 1, 1, 1);
 			

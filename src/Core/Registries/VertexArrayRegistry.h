@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <array>
 #include <assert.h>
+#include <memory>
 
 namespace lucy {
 	enum VertexArrayAttrib_ {
@@ -86,32 +87,33 @@ namespace lucy {
 		};
 		
 	public:
-		std::unordered_map<std::size_t, lgl::VertexArray*> bit_layout;
-		std::unordered_map<std::size_t, lgl::VertexArray*> custom_layout;
+		std::unordered_map<size_t, std::shared_ptr<lgl::VertexArray>> bit_layout;
+		std::unordered_map<size_t, std::shared_ptr<lgl::VertexArray>> custom_layout;
 
 		std::unordered_map<lgl::VertexArray*, std::array<uint32_t, VertexArrayAttrib_COUNT>> offset;
 		std::unordered_map<lgl::VertexArray*, std::array<bool, VertexArrayAttrib_COUNT>> is_present;
 
 		VertexArrayRegistry() {}
+		~VertexArrayRegistry() {}
 
 		template <typename T>
 		lgl::VertexArray* SetVertexArray(std::vector<lgl::VertexArrayAttribDescriptor> descriptor) {
 			if (custom_layout.find(typeid(T).hash_code()) == custom_layout.end())
-				custom_layout[typeid(T).hash_code()] = new lgl::VertexArray(descriptor);
+				custom_layout[typeid(T).hash_code()] = std::make_shared<lgl::VertexArray>(descriptor);
 
-			return custom_layout[typeid(T).hash_code()];
+			return custom_layout[typeid(T).hash_code()].get();
 		}
 
 		template <typename T>
 		lgl::VertexArray* GetVertexArray() {
 			assert(custom_layout.find(typeid(T).hash_code()) != custom_layout.end());
 
-			return custom_layout[typeid(T).hash_code()];
+			return custom_layout[typeid(T).hash_code()].get();
 		}
 
 		lgl::VertexArray* GetVertexArray(uint32_t flags);
 		
-		std::size_t GetOffset(lgl::VertexArray* vertexarray, VertexArrayAttrib_ attrib) {
+		size_t GetOffset(lgl::VertexArray* vertexarray, VertexArrayAttrib_ attrib) {
 			assert(attrib < VertexArrayAttrib_COUNT);
 
 			return offset[vertexarray][attrib];
@@ -122,7 +124,7 @@ namespace lucy {
 			return is_present[vertexarray][attrib];
 		}
 
-		std::size_t GetOffset(uint32_t flags);
+		size_t GetOffset(uint32_t flags);
 		bool IsAttribPresent(uint32_t flags);
 	};
 }

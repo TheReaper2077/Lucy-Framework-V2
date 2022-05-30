@@ -1,3 +1,4 @@
+#include <LucyGL/Status.h>
 #include <LucyGL/DrawCall.h>
 
 #include <glad/glad.h>
@@ -76,6 +77,8 @@ bool DrawCmd(DrawMode drawmode, lgl::Primitive mode, lgl::Type type, lgl::Format
 		default:
 			return false;
 	}
+
+	// lgl::GetStatus().drawcount++;
 
 	return true;
 }

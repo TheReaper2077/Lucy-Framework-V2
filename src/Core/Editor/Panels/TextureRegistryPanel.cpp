@@ -2,10 +2,12 @@
 
 template <>
 void lucy::Panel::GuiPanel<lucy::Panel::TextureRegistry>::Render() {
+	if (!window_open) return;
+
 	auto& editor = registry->store<Editor>();
 	auto& events = registry->store<Events>();
 
-	if (ImGui::Begin("Texture Registry")) {		
+	if (ImGui::Begin("Texture Registry", &window_open)) {
 		static float padding = 15.0f;
 		static float thumbnail_size = 80;
 		float cell_size = padding + thumbnail_size;
@@ -13,22 +15,22 @@ void lucy::Panel::GuiPanel<lucy::Panel::TextureRegistry>::Render() {
 		float panel_width = ImGui::GetContentRegionAvail().x;
 		int column_count = (int)(panel_width / cell_size);
 		int width_delta = int(panel_width) - int(cell_size)*(int(panel_width)/int(cell_size));
-		
+
 		if (panel_width > cell_size) {
 			ImGui::Columns(column_count, 0, false);
-			
+
 			for (int i = 1; i < column_count; i++)
 				ImGui::SetColumnOffset(i, i*cell_size);
 		}
 
 		auto* draw_list = ImGui::GetWindowDrawList();
 		auto win_pos = ImGui::GetWindowPos();
-		
+
 		int column_idx = 0;
 		int row_idx = 1;
 
 		float y_scroll = ImGui::GetScrollY();
-		
+
 		for (auto pair_texture: registry->store<lucy::SpriteRegistry>().texture_store) {
 			auto pos = ImGui::GetCursorPos();
 
@@ -44,7 +46,11 @@ void lucy::Panel::GuiPanel<lucy::Panel::TextureRegistry>::Render() {
 					editor.selected_texture = pair_texture.second->id;
 			}
 
-			if (ImGui::IsItemHovered() && events.dragging) {
+			if (ImGui::IsItemHovered() && events.drag_begin) {
+				if (ImGui::BeginDragDropSource()) {
+					ImGui::SetDragDropPayload("raw_texture_id", (void*)pair_texture.second, sizeof(pair_texture.second));
+					ImGui::EndDragDropSource();
+				}
 				events.payload = (void*)pair_texture.second;
 				events.payload_type = "raw_texture_id";
 			}
@@ -68,7 +74,7 @@ void lucy::Panel::GuiPanel<lucy::Panel::TextureRegistry>::Render() {
 			}
 
 			if (panel_width > cell_size) ImGui::NextColumn();
-			
+
 			// {
 			// 	static bool toggle, sprite_mode;
 
@@ -95,7 +101,7 @@ void lucy::Panel::GuiPanel<lucy::Panel::TextureRegistry>::Render() {
 
 			// 				pos.x += win_pos.x;
 			// 				pos.y += win_pos.y;
-							
+
 			// 				// draw_list->AddRectFilled({ pos.x, pos.y + -y_scroll }, { pos.x + cell_size, pos.y + -y_scroll + cell_size }, IM_COL32(200, 0, 200, 255));
 
 			// 				ImGui::ImageButton((void*)pair_texture.second->texture->id, { thumbnail_size, thumbnail_size }, { pair_sprite.second.uv0.x, pair_sprite.second.uv0.y }, { pair_sprite.second.uv1.x, pair_sprite.second.uv1.y }, 1);

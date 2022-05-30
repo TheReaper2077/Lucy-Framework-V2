@@ -26,7 +26,7 @@ namespace lucy {
 		std::vector<SDL_Scancode> key_chord;
 		std::set<SDL_Scancode> key_toggled;
 
-		bool dragging = false;
+		bool drag_begin = false;
 		void* payload = nullptr;
 		std::string payload_type;
 

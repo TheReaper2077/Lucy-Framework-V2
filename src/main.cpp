@@ -102,6 +102,8 @@ int main(int ArgCount, char **Args) {
 	// auto& materialeditor_panel = registry.store<lucy::Panel::GuiPanel<lucy::Panel::MaterialEditor>>(&registry, "Material Editor");
 	auto& debuggame_panel = registry.store<lucy::Panel::GuiPanel<lucy::Panel::DebugGame>>(&registry);
 	auto& debugeditor_panel = registry.store<lucy::Panel::GuiPanel<lucy::Panel::DebugEditor>>(&registry, "Editor");
+
+	spriteeditor_panel.window_open = false;
 	
 	while (!engine.quit) {
 		const auto& start_time = std::chrono::high_resolution_clock::now();
@@ -162,6 +164,7 @@ int main(int ArgCount, char **Args) {
 				functions.SaveEntities();
 			}
 			
+			static bool show_demo = true;
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplSDL2_NewFrame();
 			ImGui::NewFrame();
@@ -169,7 +172,7 @@ int main(int ArgCount, char **Args) {
 			#ifdef ENABLE_EDITOR
 				static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
 
-				ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+				ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
 
 				ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 				ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
@@ -178,12 +181,58 @@ int main(int ArgCount, char **Args) {
 				ImGui::SetNextWindowPos(ImVec2(0, 0));
 				ImGui::SetNextWindowSize(ImVec2(window.width, window.height));
 
+
 				static bool p_open;
 
 				ImGui::Begin("DockSpace", &p_open, window_flags);
+				if (ImGui::BeginMainMenuBar()) {
+                    if (ImGui::BeginMenu("File")) {
+                        if (ImGui::MenuItem("Save Entities")) {
+							
+                        }
+						if (ImGui::MenuItem("Save Sprites")) {
+							functions.SaveSprites();
+                        }
+						if (ImGui::MenuItem("Load Scene")) {
+							functions.SaveEntities();
+						}
+                        ImGui::EndMenu();
+                    }
+
+					if (ImGui::BeginMenu("Windows")) {
+                        if (ImGui::MenuItem("Sprite Editor")) {
+							spriteeditor_panel.window_open = true;
+                        }
+						if (ImGui::MenuItem("Texture Registry")) {
+							textureregistry_panel.window_open = true;
+                        }
+						if (ImGui::MenuItem("Sprite Registry")) {
+							spriteregistry_panel.window_open = true;
+                        }
+						if (ImGui::MenuItem("Inspector")) {
+							inspector_panel.window_open = true;
+						}
+						if (ImGui::MenuItem("Scene Heirarchy")) {
+							sceneheirarchy_panel.window_open = true;
+						}
+						if (ImGui::MenuItem("Editor")) {
+							debugeditor_panel.window_open = true;
+						}
+						if (ImGui::MenuItem("Game")) {
+							debuggame_panel.window_open = true;
+						}
+						if (ImGui::MenuItem("Demo")) {
+							show_demo = true;
+						}
+                        ImGui::EndMenu();
+                    }
+
+                    ImGui::EndMainMenuBar();
+                }
 
 				ImGui::PopStyleVar(3);
 				if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DockingEnable) {
+					
 					ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
 					ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 				}
@@ -202,7 +251,6 @@ int main(int ArgCount, char **Args) {
 			debugeditor_panel.RenderWindow();
 			textureregistry_panel.RenderWindow();
 
-			static bool show_demo = true;
 			ImGui::ShowDemoWindow(&show_demo);
 
 			ImGui::EndFrame();
@@ -216,8 +264,6 @@ int main(int ArgCount, char **Args) {
 		engine.dt = std::chrono::duration<double, std::ratio<1, MAX_UPS>>(end_time - start_time).count();
 	}
 
-	// registry.destroy();
-	
 	#ifdef ENABLE_DEBUG
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplSDL2_Shutdown();

@@ -20,12 +20,11 @@ void lgl::IndexBuffer::UnBind() {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-
 lgl::IndexBuffer::~IndexBuffer() {
 	glDeleteBuffers(1, &id);
 }
 
-void lgl::IndexBuffer::Allocate(std::size_t size) {
+void lgl::IndexBuffer::Allocate(size_t size) {
 	if (this->size > size) return;
 
 	this->Bind();
@@ -33,7 +32,7 @@ void lgl::IndexBuffer::Allocate(std::size_t size) {
 	this->size = size;
 };
 
-void lgl::IndexBuffer::AddData(void* data, std::size_t size, std::size_t offset) {
+void lgl::IndexBuffer::AddData(void* data, size_t size, size_t offset) {
 	if (size == 0) return;
 
 	if (offset == 0 && size > this->size) {

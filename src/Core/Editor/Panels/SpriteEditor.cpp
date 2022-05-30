@@ -3,33 +3,23 @@
 
 template <>
 void lucy::Panel::GuiPanel<lucy::Panel::SpriteEditor>::Render() {
+	if (!window_open) return;
+	
 	auto& events = registry->store<Events>();
 	auto& spriteregistry = registry->store<lucy::SpriteRegistry>();
 
 	static lucy::Component::TextureRaw* texture_raw;
 	static std::string texture_raw_id;
-	static bool push;
 
-	ImGui::Begin("Sprite Editor");
-	{
+	if (ImGui::Begin("Sprite Editor", &window_open)) {
 		auto pos = ImGui::GetWindowPos();
 		auto size = ImGui::GetWindowSize();
-		bool is_over_window = (events.window_mousepos.x > pos.x && events.window_mousepos.y > pos.y && events.window_mousepos.x < pos.x + size.x && events.window_mousepos.y < pos.y + size.y);
-
-		if (is_over_window && !events.mouse_pressed.contains(SDL_BUTTON_LEFT) && push)
-			push = false;
-		if (!is_over_window && push) {
-			texture_raw_id = "";
-			texture_raw = nullptr;
-			push = false;
-		}
+		bool is_over_window = ImGui::IsWindowHovered();
 
 		if (texture_raw_id != "") texture_raw = spriteregistry.GetTextureById(texture_raw_id);
 
 		if (events.payload != nullptr && events.payload_type == "raw_texture_id" && is_over_window) {
-			texture_raw = (lucy::Component::TextureRaw*)events.payload;
-			texture_raw_id = texture_raw->id;
-			push = true;
+			texture_raw_id = ((lucy::Component::TextureRaw*)events.payload)->id;
 		}
 
 		if (texture_raw != nullptr) {
@@ -162,6 +152,7 @@ void lucy::Panel::GuiPanel<lucy::Panel::SpriteEditor>::Render() {
 			draw_list->AddLine({ events.window_mousepos.x - 10, events.window_mousepos.y }, { events.window_mousepos.x + 10, events.window_mousepos.y }, IM_COL32(200, 200, 200, 255), 1);
 		} else {
 			ImGui::GetWindowDrawList()->AddImage((void*)registry->store<lgl::Texture>().id, pos, { pos.x + size.x, pos.y + size.y });
+			ImGui::Image((void*)registry->store<lgl::Texture>().id, { pos.x + size.x, pos.y + size.y }, { 0, 0 }, { 1, 1 });
 		}
 	}
 	ImGui::End();

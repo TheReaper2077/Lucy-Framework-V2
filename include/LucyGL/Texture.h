@@ -9,7 +9,7 @@ namespace lgl {
 	
 	struct Texture {
 		TextureId id;
-		unsigned int texture_mode;
+		TextureMode texture_mode;
 
 		int width, height, channels;
 

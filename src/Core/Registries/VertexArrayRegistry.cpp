@@ -1,7 +1,7 @@
 #include "VertexArrayRegistry.h"
 #include <iostream>
 #include <bitset>
-       
+
 lgl::VertexArray* lucy::VertexArrayRegistry::GetVertexArray(uint32_t flags) {
 	if (bit_layout.find(flags) == bit_layout.end()) {
 		std::vector<lgl::VertexArrayAttribDescriptor> descriptor;
@@ -22,11 +22,11 @@ lgl::VertexArray* lucy::VertexArrayRegistry::GetVertexArray(uint32_t flags) {
 			}
 		}
 
-		auto* vertexarray = new lgl::VertexArray(descriptor);
+		auto vertexarray = std::make_shared<lgl::VertexArray>(descriptor);
 		bit_layout[flags] = vertexarray;
-		this->offset[vertexarray] = attrib_offset;
-		this->is_present[vertexarray] = attrib_present;
+		this->offset[vertexarray.get()] = attrib_offset;
+		this->is_present[vertexarray.get()] = attrib_present;
 	}
 
-	return bit_layout[flags];
+	return bit_layout[flags].get();
 }

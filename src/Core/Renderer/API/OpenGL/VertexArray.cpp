@@ -47,6 +47,10 @@ lgl::VertexArray::VertexArray(std::vector<VertexArrayAttribDescriptor> layouts) 
 	this->elem_stride = elem_relativeoffset;
 }
 
+lgl::VertexArray::~VertexArray() {
+	glDeleteVertexArrays(1, &id);
+}
+
 void lgl::VertexArray::Bind() {
 	glBindVertexArray(id);
 }
@@ -55,7 +59,7 @@ void lgl::VertexArray::UnBind() {
 	glBindVertexArray(0);
 }
 
-void lgl::VertexArray::BindVertexBuffer(VertexBuffer *vertexbuffer, std::size_t stride, std::size_t offset) {
+void lgl::VertexArray::BindVertexBuffer(VertexBuffer *vertexbuffer, size_t stride, size_t offset) {
 	glVertexArrayVertexBuffer(id, 0, vertexbuffer->id, offset, (stride == 0) ? this->stride : stride);
 }
 

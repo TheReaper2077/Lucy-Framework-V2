@@ -58,6 +58,8 @@
 
 template <>
 void lucy::Panel::GuiPanel<lucy::Panel::SceneHeirarchy>::Render() {
+	if (!window_open) return;
+	
 	auto& events = registry->store<Events>();
 
 	if (ImGui::Begin("Scene", &window_open)) {

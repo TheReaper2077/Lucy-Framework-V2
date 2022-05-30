@@ -2,11 +2,13 @@
 
 template <>
 void lucy::Panel::GuiPanel<lucy::Panel::SpriteRegistry>::Render() {
+	if (!window_open) return;
+	
 	auto& editor = registry->store<Editor>();
 	auto& events = registry->store<Events>();
 	auto* texture_raw = registry->store<lucy::SpriteRegistry>().GetTextureById(registry->store<Editor>().selected_texture);
 
-	if (ImGui::Begin("Sprite Registry")) {		
+	if (ImGui::Begin("Sprite Registry", &window_open)) {
 		if (texture_raw != nullptr) {
 			static float padding = 15.0f;
 			static float thumbnail_size = 80;
@@ -30,7 +32,7 @@ void lucy::Panel::GuiPanel<lucy::Panel::SpriteRegistry>::Render() {
 			int row_idx = 1;
 
 			float y_scroll = ImGui::GetScrollY();
-			
+
 			for (auto pair_sprite: registry->store<lucy::SpriteRegistry>().sprite_store) {
 				if (pair_sprite.second.raw_texture_id != registry->store<Editor>().selected_texture)
 					continue;

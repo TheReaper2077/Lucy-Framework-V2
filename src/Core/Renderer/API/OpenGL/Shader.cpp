@@ -160,7 +160,7 @@ bool lgl::Shader::SetUniformVec4(std::string uniform, const float *v) {
 	return (location > 0);
 }
 
-bool lgl::Shader::SetUniformArray(std::string uniform, std::size_t count, const float *v) {
+bool lgl::Shader::SetUniformArray(std::string uniform, size_t count, const float *v) {
 	this->Bind();
 	auto location = this->GetUniformLoc(uniform);
 	glUniform1fv(location, count, v);

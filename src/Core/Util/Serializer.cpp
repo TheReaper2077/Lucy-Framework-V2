@@ -69,7 +69,7 @@ void lucy::Util::DeserializeEntities(Registry* registry, const std::string& file
 
 	YAML::Node scene = YAML::LoadFile(filename);
 
-	for (std::size_t i = 0; i < scene.size(); i++) {
+	for (size_t i = 0; i < scene.size(); i++) {
 		Entity entity;
 
 		if (scene[i]["Tag"]) {
@@ -119,12 +119,22 @@ bool lucy::Util::SerializeSpriteRegistry(Registry* registry, const std::string& 
 
 	YAML::Emitter out;
 	out << YAML::BeginMap;
-	out << YAML::Key << "Textures";
-	out << YAML::Value;
+		out << YAML::Key << "Textures";
+		out << YAML::Value;
 		out << YAML::BeginSeq;
 
 		for (auto& pair: spriteregistry.texture_store) {
 			out << pair.second;
+		}
+
+		out << YAML::EndSeq;
+
+		out << YAML::Key << "Sprites";
+		out << YAML::Value;
+		out << YAML::BeginSeq;
+
+		for (auto& pair: spriteregistry.sprite_store) {
+			out << &pair.second;
 		}
 
 		out << YAML::EndSeq;
@@ -148,5 +158,18 @@ void lucy::Util::DeserializeSpriteRegistry(Registry* registry, const std::string
 		auto id = scene["Textures"][i]["id"].as<std::string>();
 
 		spriteregistry.LoadTexture(name, filename, id);
+	}
+
+	for (int i = 0; i != scene["Sprites"].size(); i++) {
+		lucy::Component::Sprite sprite;
+
+		sprite.id = scene["Sprites"][i]["id"].as<std::string>();
+		sprite.raw_texture_id = scene["Sprites"][i]["raw_texture_id"].as<std::string>();
+		sprite.name = scene["Sprites"][i]["name"].as<std::string>();
+		sprite.uv0 = scene["Sprites"][i]["uv0"].as<glm::vec2>();
+		sprite.uv1 = scene["Sprites"][i]["uv1"].as<glm::vec2>();
+		sprite.idx = scene["Sprites"][i]["idx"].as<int>();
+
+		spriteregistry.sprite_store[sprite.id] = sprite;
 	}
 }
