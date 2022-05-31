@@ -21,6 +21,6 @@ void lucy::Panel::GuiPanel<lucy::Panel::DebugGame>::Render() {
 	gamewindow.width = ImGui::GetWindowSize().x;
 	gamewindow.height = ImGui::GetWindowSize().y;
 
-	ImGui::GetWindowDrawList()->AddImage((void*)gamewindow.framebuffer->texture, ImVec2(gamewindow.posx, gamewindow.posy), ImVec2(gamewindow.posx + gamewindow.width, gamewindow.posy + gamewindow.height), ImVec2(0, (float)gamewindow.height / window.height), ImVec2((float)gamewindow.width / window.width, 0));
+	ImGui::GetWindowDrawList()->AddImage((void*)gamewindow.framebuffer->texture->id, ImVec2(gamewindow.posx, gamewindow.posy), ImVec2(gamewindow.posx + gamewindow.width, gamewindow.posy + gamewindow.height), ImVec2(0, (float)gamewindow.height / window.height), ImVec2((float)gamewindow.width / window.width, 0));
 	ImGui::End();
 }

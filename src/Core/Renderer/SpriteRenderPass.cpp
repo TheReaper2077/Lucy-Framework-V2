@@ -48,7 +48,7 @@ void lucy::SpriteRenderPass::Flush() {
 
 	vertexarray->Bind();
 	vertexarray->BindVertexBuffer(vertexbuffer);
-	vertexarray->BindIndexBuffer(lucy::GetQuadIndices(vertexarray, int(vertices.size() * 1.5)));
+	vertexarray->BindIndexBuffer(lucy::GetQuadIndices(int(vertices.size() * 1.5)));
 
 	DrawIndexed(TRIANGLE, vertices.size() * 1.5, UNSIGNED_INT, nullptr);
 	registry->store<lucy::RenderContext>().drawn_sprite_entities.push_back(std::vector<Entity>());

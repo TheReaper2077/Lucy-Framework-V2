@@ -87,7 +87,7 @@ void lucy::RenderContext::Test() {
 
 	vertexarray->Bind();
 	vertexarray->BindVertexBuffer(vertexbuffer, vertexarray->stride);
-	vertexarray->BindIndexBuffer(GetQuadIndices(vertexarray, 4));
+	vertexarray->BindIndexBuffer(GetQuadIndices(4));
 
 	lgl::DrawIndexed(lgl::TRIANGLE, 6, lgl::UNSIGNED_INT, nullptr);
 

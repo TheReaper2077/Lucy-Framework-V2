@@ -142,7 +142,9 @@ int main(int ArgCount, char **Args) {
 					if (events.mouse_pressed.contains(SDL_BUTTON_LEFT) && toggle) {
 						auto& selected_entity = registry.store<lucy::Editor>().selected_entity;
 
-						selected_entity = renderer.drawn_sprite_entities[int(pixel.z)][idx];
+						if (int(pixel.z) < renderer.drawn_sprite_entities.size())
+							if (idx < renderer.drawn_sprite_entities[int(pixel.z)].size())
+								selected_entity = renderer.drawn_sprite_entities[int(pixel.z)][idx];
 					}
 				}
 

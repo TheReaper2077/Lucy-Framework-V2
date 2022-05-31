@@ -46,10 +46,10 @@ void lgl::Texture::LoadFile(const char* filename) {
 			  0,   0,   0, 255, 255,   0, 255, 255,   0,   0,   0, 255, 255,   0, 255, 255,
 		};
 
-		glTexImage2D(GetMap(texture_mode), 0, GL_RGBA, 4, 4, 0, GL_RGBA, GL_UNSIGNED_BYTE, default_data);
+		Load2D(0, RGBA, 4, 4, 0, RGBA, UNSIGNED_BYTE, default_data);
 	} else {
-		if (channels == 4) glTexImage2D(GetMap(texture_mode), 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-		if (channels == 3) glTexImage2D(GetMap(texture_mode), 0, GL_RGBA, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		if (channels == 4) Load2D(0, RGBA, width, height, 0, RGBA, UNSIGNED_BYTE, data);
+		if (channels == 3) Load2D(0, RGBA, width, height, 0, RGB, UNSIGNED_BYTE, data);
 	}
 
 	stbi_image_free(data);
@@ -57,8 +57,15 @@ void lgl::Texture::LoadFile(const char* filename) {
 	UnBind();
 }
 
+void lgl::Texture::Load2D(int level, Format internalformat, int width, int height, int border, Format format, Type type, void* data) {
+	Bind();
+
+	glTexImage2D(GetMap(texture_mode), level, GetMap(internalformat), width, height, border, GetMap(format), GetMap(type), data);
+}
+
 void lgl::Texture::GenerateMimmap() {
 	Bind();
+
 	glGenerateMipmap(id);
 }
 

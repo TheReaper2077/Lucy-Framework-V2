@@ -6,5 +6,5 @@
 #include "../Registries/VertexArrayRegistry.h"
 
 namespace lucy {
-	lgl::IndexBuffer* GetQuadIndices(lgl::VertexArray* vertexarray, int vertexcount);
+	lgl::IndexBuffer* GetQuadIndices(int vertexcount);
 }

@@ -5,63 +5,57 @@
 #include <glad/glad.h>
 #include <assert.h>
 
-lgl::FrameBuffer::FrameBuffer(int width, int height, bool picking) {
+lgl::FrameBuffer::FrameBuffer(int width, int height, bool is_picking) {
 	this->width = width;
 	this->height = height;
 
-	glGenFramebuffers(1, &this->id);
+	glGenFramebuffers(1, &id);
 
-	this->Bind();
+	Bind();
 
-	glGenTextures(1, &this->texture);
-	glBindTexture(GL_TEXTURE_2D, this->texture);
+	texture = new Texture();
+	texture->Bind();
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-	
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-	if (picking) {
-		glGenTextures(1, &this->picking);
-		glBindTexture(GL_TEXTURE_2D, this->picking);
-
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+	texture->Load2D(0, RGBA, width, height, 0, RGBA, UNSIGNED_BYTE, nullptr);
 		
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	texture->SetWrapMode(WrapMode_MIRRORED_REPEAT, WrapMode_MIRRORED_REPEAT);
+	texture->SetFilteringMode(FilterMode_LINEAR, FilterMode_LINEAR);
 
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, this->picking, 0);
+	texture->UnBind();
+
+	if (is_picking) {
+		picking = new Texture();
+		picking->Bind();
+
+		picking->Load2D(0, RGBA32F, width, height, 0, RGBA, UNSIGNED_BYTE, nullptr);
+		
+		picking->SetWrapMode(WrapMode_MIRRORED_REPEAT, WrapMode_MIRRORED_REPEAT);
+		picking->SetFilteringMode(FilterMode_LINEAR, FilterMode_LINEAR);
+
+		picking->UnBind();
+		AttachTexture2D(COLOR_ATTACHMENT1, TEXTURE_2D, picking->id, 0);
 	}
 
-	unsigned int depth_stencil;
-	glGenTextures(1, &depth_stencil);
-	glBindTexture(GL_TEXTURE_2D, depth_stencil);
+	Texture depth_stencil;
 	
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, width, height, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, nullptr);
+	depth_stencil.Bind();
 	
-	glBindTexture(GL_TEXTURE_2D, 0);
+	depth_stencil.Load2D(0, DEPTH24_STENCIL8, width, height, 0, DEPTH_STENCIL, UNSIGNED_INT_24_8, nullptr);
+	
+	depth_stencil.UnBind();
 
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->texture, 0);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, depth_stencil, 0);
+	AttachTexture2D(COLOR_ATTACHMENT0, TEXTURE_2D, texture->id, 0);
+	AttachTexture2D(DEPTH_STENCIL_ATTACHMENT, TEXTURE_2D, depth_stencil.id, 0);
 
 	if (picking) {
-		unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-		glDrawBuffers(2, attachments);
+		SetDrawAttachments({ COLOR_ATTACHMENT0, COLOR_ATTACHMENT1 });
 	} else {
-		unsigned int attachments[1] = { GL_COLOR_ATTACHMENT0 };
-		glDrawBuffers(1, attachments);
+		SetDrawAttachments({ COLOR_ATTACHMENT0 });
 	}
 
-	assert(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
+	assert(FramebufferStatus());
 
-	this->UnBind();
+	UnBind();
 }
 
 void lgl::FrameBuffer::Bind() {
@@ -74,4 +68,30 @@ void lgl::FrameBuffer::UnBind() {
 
 lgl::FrameBuffer::~FrameBuffer() {
 	glDeleteFramebuffers(1, &id);
+}
+
+void lgl::FrameBuffer::AttachTexture2D(Attachment attachment, TextureMode target, TextureId texture, int level) {
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GetMap(attachment), GetMap(target), texture, level);
+}
+
+void lgl::FrameBuffer::AttachTexture2D(Attachment attachment, Texture* texture, int level) {
+	assert(texture != nullptr);
+
+	AttachTexture2D(attachment, texture->texture_mode, texture->id, level);
+}
+
+#include <iostream>
+void lgl::FrameBuffer::SetDrawAttachments(const std::vector<Attachment>& attachments) {
+	auto* draw_attachments = (unsigned int*)malloc(attachments.size()*sizeof(unsigned int));
+
+	for (int i = 0; i < attachments.size(); i++)
+		draw_attachments[i] = GetMap(attachments[i]);
+
+	glDrawBuffers(attachments.size(), draw_attachments);
+
+	delete[] draw_attachments;
+}
+
+bool lgl::FrameBuffer::FramebufferStatus() {
+	return (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
 }

@@ -22,7 +22,7 @@ void lucy::Panel::GuiPanel<lucy::Panel::DebugEditor>::Render() {
 	editorwindow.width = ImGui::GetWindowSize().x;
 	editorwindow.height = ImGui::GetWindowSize().y;
 
-	ImGui::GetWindowDrawList()->AddImage((void*)editorwindow.framebuffer->texture, ImVec2(editorwindow.posx, editorwindow.posy), ImVec2(editorwindow.posx + editorwindow.width, editorwindow.posy + editorwindow.height), ImVec2(0, (float)editorwindow.height / window.height), ImVec2((float)editorwindow.width / window.width, 0));
+	ImGui::GetWindowDrawList()->AddImage((void*)editorwindow.framebuffer->texture->id, ImVec2(editorwindow.posx, editorwindow.posy), ImVec2(editorwindow.posx + editorwindow.width, editorwindow.posy + editorwindow.height), ImVec2(0, (float)editorwindow.height / window.height), ImVec2((float)editorwindow.width / window.width, 0));
 
 	ImGui::End();
 }

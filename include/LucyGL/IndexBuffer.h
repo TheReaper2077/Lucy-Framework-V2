@@ -3,16 +3,13 @@
 #include <stddef.h>
 
 namespace lgl {
-	struct VertexArray;
-
 	typedef unsigned int IndexBufferId;
 
 	struct IndexBuffer {
 		IndexBufferId id;
 		size_t size;
-		VertexArray* vertexarray;
 		
-		IndexBuffer(VertexArray* vertexarray);
+		IndexBuffer();
 		~IndexBuffer();
 
 		void Bind();

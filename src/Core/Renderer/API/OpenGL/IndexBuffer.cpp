@@ -1,18 +1,14 @@
-#include <LucyGL/VertexArray.h>
 #include <LucyGL/IndexBuffer.h>
 
 #include <glad/glad.h>
 #include <assert.h>
 
-lgl::IndexBuffer::IndexBuffer(VertexArray* vertexarray) {
+lgl::IndexBuffer::IndexBuffer() {
 	glGenBuffers(1, &id);
 	size = 0;
-
-	this->vertexarray = vertexarray;
 }
 
 void lgl::IndexBuffer::Bind() {
-	vertexarray->Bind();
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->id);
 }
 

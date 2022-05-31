@@ -3,8 +3,8 @@
 #include "RenderUtil.h"
 #include <memory>
 
-lgl::IndexBuffer* lucy::GetQuadIndices(lgl::VertexArray* vertexarray, int vertexcount) {
-	static lgl::IndexBuffer indexbuffer(vertexarray);
+lgl::IndexBuffer* lucy::GetQuadIndices(int vertexcount) {
+	static lgl::IndexBuffer indexbuffer;
 	static int indexcount;
 
 	if (vertexcount*1.5 > indexcount) {
