@@ -36,6 +36,8 @@ void lucy::RenderContext::Init(lucy::Registry* registry) {
 	this->registry = registry;
 
 	uniformbuffer = new lgl::UniformBuffer();
+
+	uniformbuffer->Bind();
 	uniformbuffer->Allocate(sizeof(glm::mat4)*4);
 	uniformbuffer->BindRange(0, sizeof(glm::mat4)*4, 0);
 
@@ -49,6 +51,8 @@ void lucy::RenderContext::Render(lgl::FrameBuffer* framebuffer, Entity camera_en
 	auto [transform, camera] = registry->try_get<lucy::Component::Transform, lucy::Component::Camera>(camera_entity);
 
 	if (transform == nullptr || camera == nullptr) return;
+
+	uniformbuffer->Bind();
 
 	SetProjection(camera->projection);
 	SetModel(glm::mat4(1.0));
@@ -82,6 +86,7 @@ void lucy::RenderContext::Test() {
 	if (vertexbuffer == nullptr) {
 		vertexbuffer = new lgl::VertexBuffer();
 
+		vertexbuffer->Bind();
 		vertexbuffer->AddDataStatic(vertices.data(), vertices.size()*vertexarray->stride);
 	}
 

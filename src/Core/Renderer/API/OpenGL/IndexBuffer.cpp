@@ -23,7 +23,6 @@ lgl::IndexBuffer::~IndexBuffer() {
 void lgl::IndexBuffer::Allocate(size_t size) {
 	if (this->size > size) return;
 
-	this->Bind();
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
 	this->size = size;
 };
@@ -32,7 +31,6 @@ void lgl::IndexBuffer::AddData(void* data, size_t size, size_t offset) {
 	if (size == 0) return;
 
 	if (offset == 0 && size > this->size) {
-		Bind();
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, GL_DYNAMIC_DRAW);
 		this->size = size;
 		return;
@@ -40,7 +38,6 @@ void lgl::IndexBuffer::AddData(void* data, size_t size, size_t offset) {
 
 	assert(offset + size <= this->size);
 
-	Bind();
 	glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, offset, size, data);
 	this->size = size;
 }

@@ -21,6 +21,7 @@ lgl::IndexBuffer* lucy::GetQuadIndices(int vertexcount) {
 			indices.emplace_back(0 + i*4);
 		}
 
+		indexbuffer.Bind();
 		indexbuffer.AddData(indices.data(), indices.size()*sizeof(uint32_t));
 
 		indices.clear();

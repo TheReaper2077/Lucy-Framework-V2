@@ -9,7 +9,8 @@
 
 lgl::VertexArray::VertexArray(std::vector<VertexArrayAttribDescriptor> layouts) {
 	glGenVertexArrays(1, &this->id);
-	this->Bind();
+	
+	Bind();
 
 	uint32_t relativeoffset = 0;
 	uint32_t elem_relativeoffset = 0;

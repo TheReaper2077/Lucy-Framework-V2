@@ -203,12 +203,16 @@ void lucy::Panel::GuiPanel<lucy::Panel::Inspector>::Render() {
 
 			ImGui::Spacing();
 
+			texture_raw->texture->Bind();
+
 			texture_raw->texture->SetFilteringMode(mag, min);
 			texture_raw->texture->SetWrapMode(wrap_s, wrap_t, wrap_r);
 
 			if (ImGui::Button("Generate Mipmap")) {
 				texture_raw->texture->GenerateMimmap();
 			}
+
+			texture_raw->texture->UnBind();
 		}
 	}
 	ImGui::End();

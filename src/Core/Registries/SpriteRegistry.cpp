@@ -22,7 +22,9 @@ lucy::Component::TextureRaw* lucy::SpriteRegistry::LoadTexture(const std::string
 	texture_store[id]->id = id;
 
 	texture_store[id]->texture = new lgl::Texture();
+	texture_store[id]->texture->Bind();
 	texture_store[id]->texture->LoadFile(filename.c_str());
+	texture_store[id]->texture->UnBind();
 
 	return texture_store[id];
 }

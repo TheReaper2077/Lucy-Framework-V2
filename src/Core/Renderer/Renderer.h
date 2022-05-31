@@ -78,6 +78,7 @@ namespace lucy {
 			if (vertexbuffer == nullptr)
 				vertexbuffer = new lgl::VertexBuffer();
 			
+			vertexbuffer->Bind();
 			vertexbuffer->Allocate(sizeof(glm::vec3)*vertices.size());
 			vertexbuffer->AddDataDynamic((void*)vertices.data(), sizeof(glm::vec3)*vertices.size());
 

@@ -19,8 +19,6 @@ lgl::Texture::~Texture() {
 }
 
 void lgl::Texture::LoadFile(const char* filename) {
-	Bind();
-
 	SetWrapMode(WrapMode_MIRRORED_REPEAT, WrapMode_MIRRORED_REPEAT);
 	SetFilteringMode(FilterMode_NEAREST, FilterMode_NEAREST);
 
@@ -53,24 +51,17 @@ void lgl::Texture::LoadFile(const char* filename) {
 	}
 
 	stbi_image_free(data);
-
-	UnBind();
 }
 
 void lgl::Texture::Load2D(int level, Format internalformat, int width, int height, int border, Format format, Type type, void* data) {
-	Bind();
-
 	glTexImage2D(GetMap(texture_mode), level, GetMap(internalformat), width, height, border, GetMap(format), GetMap(type), data);
 }
 
 void lgl::Texture::GenerateMimmap() {
-	Bind();
-
 	glGenerateMipmap(id);
 }
 
 void lgl::Texture::SetWrapMode(TextureWrapMode wrap_s, TextureWrapMode wrap_t, TextureWrapMode wrap_r) {
-	Bind();
 	if (this->wrap_s != wrap_s && wrap_s != WrapMode_None) {
 		this->wrap_s = wrap_s;
 		glTexParameteri(GetMap(texture_mode), GL_TEXTURE_WRAP_S, GetMap(wrap_s));
@@ -86,7 +77,6 @@ void lgl::Texture::SetWrapMode(TextureWrapMode wrap_s, TextureWrapMode wrap_t, T
 }
 
 void lgl::Texture::SetFilteringMode(TextureFilteringMode mag, TextureFilteringMode min) {
-	Bind();
 	if (this->mag != mag && mag != FilterMode_None) {
 		this->mag = mag;
 		glTexParameteri(GetMap(texture_mode), GL_TEXTURE_MAG_FILTER, GetMap(mag));

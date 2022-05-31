@@ -13,7 +13,6 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
-using namespace lgl;
 using namespace lucy::Component;
 
 static struct Vertex {
@@ -23,7 +22,7 @@ static struct Vertex {
 };
 
 static std::vector<Vertex> vertices;
-static VertexArray* vertexarray = nullptr;
+static lgl::VertexArray* vertexarray = nullptr;
 // static std::set<TextureId> vertexarray;
 
 void lucy::SpriteRenderPass::RenderRect(const Transform& transform, const SpriteRenderer& spriterenderer, const glm::quat& quaternion) {
@@ -38,19 +37,17 @@ void lucy::SpriteRenderPass::RenderRect(const Transform& transform, const Sprite
 void lucy::SpriteRenderPass::Flush() {
 	if (!vertices.size()) return;
 
-	static VertexBuffer* vertexbuffer;
+	static lgl::VertexBuffer vertexbuffer;
 
-	if (vertexbuffer == nullptr)
-		vertexbuffer = new VertexBuffer();
-
-	vertexbuffer->Allocate(vertices.size()*sizeof(Vertex));
-	vertexbuffer->AddDataDynamic(vertices.data(), vertices.size()*sizeof(Vertex));
+	vertexbuffer.Bind();
+	vertexbuffer.Allocate(vertices.size()*sizeof(Vertex));
+	vertexbuffer.AddDataDynamic(vertices.data(), vertices.size()*sizeof(Vertex));
 
 	vertexarray->Bind();
-	vertexarray->BindVertexBuffer(vertexbuffer);
+	vertexarray->BindVertexBuffer(&vertexbuffer);
 	vertexarray->BindIndexBuffer(lucy::GetQuadIndices(int(vertices.size() * 1.5)));
 
-	DrawIndexed(TRIANGLE, vertices.size() * 1.5, UNSIGNED_INT, nullptr);
+	lgl::DrawIndexed(lgl::TRIANGLE, vertices.size() * 1.5, lgl::UNSIGNED_INT, nullptr);
 	registry->store<lucy::RenderContext>().drawn_sprite_entities.push_back(std::vector<Entity>());
 
 	vertices.clear();
@@ -59,9 +56,9 @@ void lucy::SpriteRenderPass::Flush() {
 void lucy::SpriteRenderPass::Init() {
 	if (vertexarray == nullptr) {
 		vertexarray = registry->store<VertexArrayRegistry>().SetVertexArray<Vertex>({
-			{ VertexArrayAttrib_POSITION, VertexArrayAttribSize_POSITION, FLOAT },
-			{ VertexArrayAttrib_COLOR, VertexArrayAttribSize_COLOR, FLOAT },
-			{ VertexArrayAttrib_UVW, VertexArrayAttribSize_UVW, FLOAT },
+			{ VertexArrayAttrib_POSITION, VertexArrayAttribSize_POSITION, lgl::FLOAT },
+			{ VertexArrayAttrib_COLOR, VertexArrayAttribSize_COLOR, lgl::FLOAT },
+			{ VertexArrayAttrib_UVW, VertexArrayAttribSize_UVW, lgl::FLOAT },
 		});
 	}
 }

@@ -80,7 +80,12 @@ int main(int ArgCount, char **Args) {
 	renderer.Init(&registry);
 
 	auto& null_texture = registry.store<lgl::Texture>();
+
+	null_texture.Bind();
+
 	null_texture.LoadFile("");
+
+	null_texture.UnBind();
 
 	auto& functions = registry.store<lucy::Functions>(&registry);
 
