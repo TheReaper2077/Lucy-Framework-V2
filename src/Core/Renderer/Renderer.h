@@ -69,7 +69,6 @@ namespace lucy {
 		
 		void RenderLines(const std::vector<glm::vec3>& vertices, const glm::vec4& color) {
 			shader->Bind();
-
 			shader->SetUniformi("wireframe_mode", 1);
 
 			static lgl::VertexBuffer* vertexbuffer;

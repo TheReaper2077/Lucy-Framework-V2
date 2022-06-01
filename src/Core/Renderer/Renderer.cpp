@@ -81,6 +81,7 @@ void lucy::RenderContext::Test() {
 	static lgl::VertexBuffer* vertexbuffer;
 	lgl::VertexArray* vertexarray = registry->store<VertexArrayRegistry>().GetVertexArray(VertexArrayAttribFlag_POSITION);
 
+	shader->Bind();
 	shader->SetUniformi("wireframe_mode", 1);
 
 	if (vertexbuffer == nullptr) {
@@ -191,6 +192,7 @@ void lucy::RenderContext::RenderCamera() {
 		vertices.emplace_back(near3);
 	}
 
+	shader->Bind();
 	shader->SetUniformVec4("wireframe_color", &glm::vec4(1, 1, 0, 1)[0]);
 	RenderLines(vertices, wireframe_color);
 }
@@ -200,6 +202,8 @@ void lucy::RenderContext::SetLighting() {
 
 	int point_light = 0;
 	int dir_light = 0;
+
+	shader->Bind();
 
 	for (auto& entity : registry->view<Tag, Transform, Light>()) {
 		auto& transform = registry->get<Transform>(entity);

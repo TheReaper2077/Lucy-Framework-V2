@@ -13,7 +13,7 @@ namespace lgl {
 		UNSIGNED_INT_24_8,
 	};
 
-	const unsigned int GetMap(const Type type);
+	const unsigned int Map(const Type type);
 
 	enum Format {
 		RGB,
@@ -28,7 +28,7 @@ namespace lgl {
 		DEPTH24_STENCIL8,
 	};
 
-	const unsigned int GetMap(const Format format);
+	const unsigned int Map(const Format format);
 
 	enum Primitive {
 		POINT,
@@ -39,7 +39,7 @@ namespace lgl {
 		TRIANGLE_STRIP,
 	};
 
-	const unsigned int GetMap(const Primitive primitive);
+	const unsigned int Map(const Primitive primitive);
 
 	enum TextureFilteringMode {
 		FilterMode_None = 0,
@@ -47,7 +47,7 @@ namespace lgl {
 		FilterMode_NEAREST,
 	};
 
-	const unsigned int GetMap(const TextureFilteringMode texturefilteringmode);
+	const unsigned int Map(const TextureFilteringMode texturefilteringmode);
 
 	enum TextureWrapMode {
 		WrapMode_None = 0,
@@ -58,7 +58,7 @@ namespace lgl {
 		WrapMode_MIRROR_CLAMP_TO_EDGE,
 	};
 
-	const unsigned int GetMap(const TextureWrapMode texturewrapmode);
+	const unsigned int Map(const TextureWrapMode texturewrapmode);
 
 	enum TextureMode {
 		TEXTURE_1D,
@@ -74,7 +74,7 @@ namespace lgl {
 		TEXTURE_2D_MULTISAMPLE_ARRAY,
 	};
 
-	const unsigned int GetMap(const TextureMode texturemode);
+	const unsigned int Map(const TextureMode texturemode);
 
 	enum Attachment {
 		COLOR_ATTACHMENT0,
@@ -114,5 +114,5 @@ namespace lgl {
 		DEPTH_STENCIL_ATTACHMENT,
 	};
 
-	const unsigned int GetMap(const Attachment atachment);
+	const unsigned int Map(const Attachment atachment);
 }

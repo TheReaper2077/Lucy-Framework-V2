@@ -66,6 +66,7 @@ void lucy::SpriteRenderPass::Init() {
 void lucy::SpriteRenderPass::Render() {
 	auto& renderer = registry->store<RenderContext>();
 
+	renderer.shader->Bind();
 	renderer.shader->SetUniformi("has_texture", 1);
 
 	for (auto entity: registry->view<Tag, Transform, SpriteRenderer>()) {

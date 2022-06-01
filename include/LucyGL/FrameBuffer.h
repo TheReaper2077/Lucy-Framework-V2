@@ -26,6 +26,6 @@ namespace lgl {
 
 		void SetDrawAttachments(const std::vector<Attachment>& attachments);
 
-		bool FramebufferStatus();
+		bool IsFrameBufferComplete();
 	};
 }

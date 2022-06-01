@@ -54,7 +54,7 @@ void lgl::Texture::LoadFile(const char* filename) {
 }
 
 void lgl::Texture::Load2D(int level, Format internalformat, int width, int height, int border, Format format, Type type, void* data) {
-	glTexImage2D(GetMap(texture_mode), level, GetMap(internalformat), width, height, border, GetMap(format), GetMap(type), data);
+	glTexImage2D(Map(texture_mode), level, Map(internalformat), width, height, border, Map(format), Map(type), data);
 }
 
 void lgl::Texture::GenerateMimmap() {
@@ -64,31 +64,31 @@ void lgl::Texture::GenerateMimmap() {
 void lgl::Texture::SetWrapMode(TextureWrapMode wrap_s, TextureWrapMode wrap_t, TextureWrapMode wrap_r) {
 	if (this->wrap_s != wrap_s && wrap_s != WrapMode_None) {
 		this->wrap_s = wrap_s;
-		glTexParameteri(GetMap(texture_mode), GL_TEXTURE_WRAP_S, GetMap(wrap_s));
+		glTexParameteri(Map(texture_mode), GL_TEXTURE_WRAP_S, Map(wrap_s));
 	}
 	if (this->wrap_t != wrap_t && wrap_t != WrapMode_None) {
 		this->wrap_t = wrap_t;
-		glTexParameteri(GetMap(texture_mode), GL_TEXTURE_WRAP_T, GetMap(wrap_t));
+		glTexParameteri(Map(texture_mode), GL_TEXTURE_WRAP_T, Map(wrap_t));
 	}
 	if (this->wrap_r != wrap_r && wrap_r != WrapMode_None) {
 		this->wrap_r = wrap_r;
-		glTexParameteri(GetMap(texture_mode), GL_TEXTURE_WRAP_R, GetMap(wrap_r));
+		glTexParameteri(Map(texture_mode), GL_TEXTURE_WRAP_R, Map(wrap_r));
 	}
 }
 
 void lgl::Texture::SetFilteringMode(TextureFilteringMode mag, TextureFilteringMode min) {
 	if (this->mag != mag && mag != FilterMode_None) {
 		this->mag = mag;
-		glTexParameteri(GetMap(texture_mode), GL_TEXTURE_MAG_FILTER, GetMap(mag));
+		glTexParameteri(Map(texture_mode), GL_TEXTURE_MAG_FILTER, Map(mag));
 	}
 	if (this->min != min && min != FilterMode_None) {
 		this->min = min;
-		glTexParameteri(GetMap(texture_mode), GL_TEXTURE_MIN_FILTER, GetMap(min));
+		glTexParameteri(Map(texture_mode), GL_TEXTURE_MIN_FILTER, Map(min));
 	}
 }
 
 void lgl::Texture::Bind() {
-	glBindTexture(GetMap(texture_mode), id);
+	glBindTexture(Map(texture_mode), id);
 }
 
 void lgl::Texture::BindUnit(unsigned int unit) {
@@ -96,5 +96,5 @@ void lgl::Texture::BindUnit(unsigned int unit) {
 }
 
 void lgl::Texture::UnBind() {
-	glBindTexture(GetMap(texture_mode), 0);
+	glBindTexture(Map(texture_mode), 0);
 }

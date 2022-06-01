@@ -53,7 +53,7 @@ lgl::FrameBuffer::FrameBuffer(int width, int height, bool is_picking) {
 		SetDrawAttachments({ COLOR_ATTACHMENT0 });
 	}
 
-	assert(FramebufferStatus());
+	assert(IsFrameBufferComplete());
 
 	UnBind();
 }
@@ -71,7 +71,7 @@ lgl::FrameBuffer::~FrameBuffer() {
 }
 
 void lgl::FrameBuffer::AttachTexture2D(Attachment attachment, TextureMode target, TextureId texture, int level) {
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GetMap(attachment), GetMap(target), texture, level);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, Map(attachment), Map(target), texture, level);
 }
 
 void lgl::FrameBuffer::AttachTexture2D(Attachment attachment, Texture* texture, int level) {
@@ -80,18 +80,17 @@ void lgl::FrameBuffer::AttachTexture2D(Attachment attachment, Texture* texture, 
 	AttachTexture2D(attachment, texture->texture_mode, texture->id, level);
 }
 
-#include <iostream>
 void lgl::FrameBuffer::SetDrawAttachments(const std::vector<Attachment>& attachments) {
-	auto* draw_attachments = (unsigned int*)malloc(attachments.size()*sizeof(unsigned int));
+	auto* draw_attachments = (unsigned int*)malloc(attachments.size() * sizeof(unsigned int));
 
 	for (int i = 0; i < attachments.size(); i++)
-		draw_attachments[i] = GetMap(attachments[i]);
+		draw_attachments[i] = Map(attachments[i]);
 
 	glDrawBuffers(attachments.size(), draw_attachments);
 
 	delete[] draw_attachments;
 }
 
-bool lgl::FrameBuffer::FramebufferStatus() {
+bool lgl::FrameBuffer::IsFrameBufferComplete() {
 	return (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
 }

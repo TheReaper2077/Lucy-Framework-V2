@@ -16,11 +16,11 @@ lgl::VertexArray::VertexArray(std::vector<VertexArrayAttribDescriptor> layouts) 
 	uint32_t elem_relativeoffset = 0;
 
 	for (auto& attrib: layouts) {
-		glVertexArrayAttribFormat(this->id, attrib.idx, attrib.size, GetMap(attrib.type), false, relativeoffset);
+		glVertexArrayAttribFormat(this->id, attrib.idx, attrib.size, Map(attrib.type), false, relativeoffset);
 		glVertexArrayAttribBinding(this->id, attrib.idx, 0);
 		glEnableVertexArrayAttrib(this->id, attrib.idx);
 
-		switch(GetMap(attrib.type)) {
+		switch(Map(attrib.type)) {
 			case GL_FLOAT:
 				relativeoffset += sizeof(GLfloat)*attrib.size;
 				break;
