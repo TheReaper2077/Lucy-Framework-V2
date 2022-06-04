@@ -25,7 +25,7 @@ static std::vector<Vertex> vertices;
 static lgl::VertexArray* vertexarray = nullptr;
 // static std::set<TextureId> vertexarray;
 
-void lucy::SpriteRenderPass::RenderRect(const Transform& transform, const SpriteRenderer& spriterenderer, const glm::quat& quaternion) {
+void RenderRect(const Transform& transform, const SpriteRenderer& spriterenderer, const glm::quat& quaternion) {
 	vertices.reserve(4 + vertices.size());
 
 	vertices.emplace_back(Vertex{ (quaternion * glm::vec3(-transform.scale.x / 2.0, -transform.scale.y / 2.0, 0.0)) + transform.translation, spriterenderer.color, glm::vec3(spriterenderer.uv0.x, spriterenderer.uv0.y, 0.0) });
@@ -34,7 +34,7 @@ void lucy::SpriteRenderPass::RenderRect(const Transform& transform, const Sprite
 	vertices.emplace_back(Vertex{ (quaternion * glm::vec3(-transform.scale.x / 2.0, +transform.scale.y / 2.0, 0.0)) + transform.translation, spriterenderer.color, glm::vec3(spriterenderer.uv1.x, spriterenderer.uv1.y, 0.0) });
 }
 
-void lucy::SpriteRenderPass::Flush() {
+void Flush(lucy::Registry* registry) {
 	if (!vertices.size()) return;
 
 	static lgl::VertexBuffer vertexbuffer;
@@ -48,7 +48,7 @@ void lucy::SpriteRenderPass::Flush() {
 	vertexarray->BindIndexBuffer(lucy::GetQuadIndices(int(vertices.size() * 1.5)));
 
 	lgl::DrawIndexed(lgl::TRIANGLE, vertices.size() * 1.5, lgl::UNSIGNED_INT, nullptr);
-	registry->store<lucy::RenderContext>().drawn_sprite_entities.push_back(std::vector<Entity>());
+	registry->store<lucy::RenderContext>().drawn_sprite_entities.push_back(std::vector<lucy::Entity>());
 
 	vertices.clear();
 }
@@ -81,7 +81,7 @@ void lucy::SpriteRenderPass::Render() {
 		registry->store<lucy::RenderContext>().drawn_sprite_entities[renderer.drawcount].push_back(entity);
 	}
 
-	Flush();
+	Flush(registry);
 
 	renderer.shader->SetUniformi("has_texture", 1);
 }

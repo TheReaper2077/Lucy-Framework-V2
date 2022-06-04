@@ -26,10 +26,10 @@ static std::string read_file(const std::string &filename) {
 
 namespace lucy {
 	struct ShaderRegistry {
-		std::unordered_map<std::string, lgl::Shader*> registry;
+		std::unordered_map<std::string, lgl::Shader*> shader_registry;
 
 		ShaderRegistry() {}
-		~ShaderRegistry() {}
+		~ShaderRegistry();
 
 		lgl::Shader* GetShader(uint32_t flags, Registry* registry);
 

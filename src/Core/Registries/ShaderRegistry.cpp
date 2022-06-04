@@ -1,5 +1,11 @@
 #include "ShaderRegistry.h"
 
+lucy::ShaderRegistry::~ShaderRegistry() {
+	for (auto& pair: shader_registry) {
+		delete(pair.second);
+	}
+}
+
 lgl::Shader* lucy::ShaderRegistry::GetShader(uint32_t flags, lucy::Registry* registry) {
 	using namespace lucy::Component;
 
@@ -21,11 +27,11 @@ lgl::Shader* lucy::ShaderRegistry::GetShader(uint32_t flags, lucy::Registry* reg
 }
 
 void lucy::ShaderRegistry::AddShader(lgl::Shader* shader) {
-	registry[shader->name] = shader;
+	shader_registry[shader->name] = shader;
 }
 
 lgl::Shader* lucy::ShaderRegistry::GetShader(std::string name) {
-	return registry[name];
+	return shader_registry[name];
 }
 
 void replace_first(std::string& s, std::string const& toReplace, std::string const& replaceWith) {
@@ -38,7 +44,7 @@ void replace_first(std::string& s, std::string const& toReplace, std::string con
 lgl::Shader* lucy::ShaderRegistry::RegisterShader(uint32_t shader_flags, int point_light, int dir_light) {
 	std::string id = std::to_string(shader_flags) + '_' + std::to_string(dir_light) + '_' + std::to_string(point_light);
 
-	if (registry.find(id) == registry.end()) {
+	if (shader_registry.find(id) == shader_registry.end()) {
 		std::string vertexshader = read_file("D:\\C++\\Lucy Framework V2\\src\\Core\\Renderer\\Shaders\\default.vs");
 		std::string fragmentshader = read_file("D:\\C++\\Lucy Framework V2\\src\\Core\\Renderer\\Shaders\\pbr.fs");
 
@@ -48,10 +54,10 @@ lgl::Shader* lucy::ShaderRegistry::RegisterShader(uint32_t shader_flags, int poi
 
 		// std::cout << fragmentshader << '\n';
 
-		registry[id] = new lgl::Shader(id, vertexshader, fragmentshader, false);
+		shader_registry[id] = new lgl::Shader(id, vertexshader, fragmentshader, false);
 	}
 
-	return registry[id];
+	return shader_registry[id];
 }
 
 std::string lucy::ShaderRegistry::SetUniforms(int point_light, int dir_light) {

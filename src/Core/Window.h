@@ -17,6 +17,12 @@ namespace lucy {
 		void SetCamera(Entity camera) {
 			this->camera = camera;
 		}
+
+		~Window() {
+			if (framebuffer != nullptr) {
+				delete(framebuffer);
+			}
+		}
 	};
 
 	struct GameWindow: public Window {};

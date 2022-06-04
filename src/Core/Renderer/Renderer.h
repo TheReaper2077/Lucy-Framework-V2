@@ -44,6 +44,8 @@ namespace lucy {
 
 		void Init(lucy::Registry* registry);
 
+		void Clear();
+
 		void Render(int width, int height, bool debug = false);
 		
 		void Render(lgl::FrameBuffer* framebuffer, Entity camera_entity, int width, int height, bool debug = false);
